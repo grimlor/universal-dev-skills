@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# Copilot scripts (generated, not tracked)
+.copilot/scripts/
+
+# Editor
+.vscode/
+*.swp
+*.swo
+*~
