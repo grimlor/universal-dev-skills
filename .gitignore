@@ -9,3 +9,7 @@
 *.swp
 *.swo
 *~
+
+# Copilot work plans
+.copilot/*
+!.copilot/README.md
