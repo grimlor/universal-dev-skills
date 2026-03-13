@@ -50,7 +50,17 @@ Example:
 
 Do not begin work until this confirmation is posted.
 
-### Step 4 — Proceed
+### Step 4 — Locate or Create the Tracking Document
+
+Before beginning work, locate or create the file that will track progress
+for this session. Follow the decision tree in the `plan-updates` skill.
+
+For refactoring, audit, or remediation passes where no plan doc exists,
+this means creating `.copilot/task.md` before the first work item begins.
+Do not use an in-session todo list as a substitute — it is invisible to
+context restore and lost on session end.
+
+### Step 5 — Proceed
 
 After posting the confirmation, begin the task using the procedures
 defined in the loaded skills.
@@ -59,7 +69,7 @@ If at any point during the task you realize an additional skill applies
 that you did not load, stop, read it, and post an amended confirmation
 before continuing.
 
-### Step 5 — Protect Skills from Context Loss
+### Step 6 — Protect Skills from Context Loss
 
 Skill content loaded via file reads lives in conversation history. When
 the context window fills, the system compresses older messages into
@@ -70,25 +80,29 @@ and conflating distinct rules.
 natural checkpoints that externalize state before context pressure
 builds:
 
-1. **Pause for review after completing a logical unit of work.** A
-   phase of the feature workflow, a test module, a coverage pass —
-   each is a checkpoint. Present the result, update the plan doc or
-   spec with what was completed and what remains, and wait for the
-   user before continuing. This externalized state is the recovery
-   point — if context degrades later, the plan doc captures where
-   things stand.
+1. **Pause for review after completing a logical unit of work.** For
+   feature work, a logical unit is a phase of the feature workflow or a
+   test module. For audit and remediation passes, a logical unit is a
+   test class — update `.copilot/task.md` after every class, not every
+   file. Present the result and wait for the user before continuing.
 
-2. **Externalize before moving on.** When finishing a phase or unit
-   of work, update the project's plan document or tracking artifact
-   with completed items, open items, and any decisions made. This
-   ensures that progress is recorded outside the conversation, not
-   just in it.
+2. **Externalize before moving on.** When finishing a unit of work,
+   update the tracking document (`.copilot/plan.md` or
+   `.copilot/task.md`) with completed items, open items, and any
+   decisions made. This ensures progress is recorded outside the
+   conversation, not just in it.
 
-3. **If the conversation is getting long, say so.** When you notice
-   significant depth has accumulated (many tool calls, large file
-   reads, multiple implementation rounds), proactively suggest a
-   checkpoint: update the plan doc, confirm status with the user,
-   and then either continue or start a new session as appropriate.
+3. **If the conversation is getting long, restore context — do not
+   abandon it.** When significant depth has accumulated (many tool
+   calls, large file reads, multiple implementation rounds), the
+   correct response is to re-read, not restart. Re-read the agent
+   instructions file (e.g., `copilot-instructions.md` or equivalent),
+   re-read this skill, re-read the skills relevant to the current task,
+   and re-read the tracking document to establish where work left off.
+   Then confirm to the user what was re-loaded and continue. Starting a
+   new session is a user decision, not an agent decision — suggest it
+   only if the tracking document is missing or so out of date that
+   current state cannot be reconstructed from it.
 
 4. **Never assume compressed context is accurate.** If you are unsure
    whether a skill procedure has a specific step or rule, re-read the

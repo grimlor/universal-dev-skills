@@ -1,26 +1,46 @@
 ---
 name: plan-updates
-description: "Progress tracking in project artifacts. Use after completing implementation work (Phase 5 of the feature workflow), or when the user asks to update project status."
+description: "Progress tracking in project artifacts. Use after completing implementation work (Phase 5 of the feature workflow), at checkpoints during refactoring or audit passes, or when the user asks to update project status."
 ---
 
 # Plan Updates — Tracking Progress in Project Artifacts
 
 ## When This Skill Applies
 
-After completing implementation work (Phase 5 of the feature workflow), or whenever
-the user asks to update project status. Also applies when reviewing what has been
-done vs. what remains.
+After completing implementation work (Phase 5 of the feature workflow), at checkpoints
+during refactoring, audit, or remediation passes, or whenever the user asks to update
+project status. Also applies when reviewing what has been done vs. what remains.
+
+---
+
+## Locating or Creating the Tracking Document
+
+Use this decision tree every time before updating progress:
+
+1. **Is there an established plan document for this project?**
+   Check `docs/`, the project root, and `.copilot/` for a Markdown file with
+   checkbox lists organized by phase. If found, use it.
+
+2. **Is this a feature or non-trivial change?**
+   If yes and no plan doc exists, create one at `.copilot/plan.md` (git-ignored).
+   Follow the project plan format below.
+
+3. **Is this a refactoring, audit, or remediation pass?**
+   Create or update `.copilot/task.md` (git-ignored). Follow the task tracking
+   format below. This file is the session state for the current pass — update it
+   at every checkpoint and re-read it when resuming after context loss.
+
+`.copilot/` is git-ignored by convention. If the directory does not exist, create it
+and add `.copilot/` to `.gitignore` before writing any files there.
 
 ---
 
 ## Artifacts to Update
 
-### 1. Project Plan
+### 1. Project Plan (feature work)
 
-**Location:** The project's plan document — typically a Markdown file with checkbox
-lists organized by phase. Common locations include a `docs/` directory,
-`.copilot/` directory, project root, or a project management tool.
-Ask the user for the location if not obvious.
+**Location:** `.copilot/plan.md`, or an existing plan document found in `docs/` or
+the project root.
 
 Each phase has a heading like `### Phase N — Description` followed by checkboxes:
 
@@ -40,7 +60,47 @@ Each phase has a heading like `### Phase N — Description` followed by checkbox
   (e.g., `BDD specs: test_validation.py (18 tests), test_processing.py (12 tests)`)
 - Brief descriptions should explain WHAT was built and WHERE in the codebase
 
-### 2. BDD Specifications
+### 2. Task Tracking (refactoring, audit, and remediation passes)
+
+**Location:** `.copilot/task.md`
+
+For work that touches existing test or source files rather than adding new features,
+track progress at the **test class** level — not the file level. Files are too large
+to be a meaningful completion unit; a class maps to one REQUIREMENT and can be
+completed without context pressure building mid-work.
+
+Group classes by file for orientation, but make each class its own checkable item.
+Record findings inline so that context can be restored from this file alone:
+
+```markdown
+# Task — BDD Test Remediation
+
+## Goal
+Audit all test files against the current bdd-testing skill. Fix violations in place.
+
+## Status
+Started: 2026-01-15
+
+## Files
+
+### tools/code_review/prescriptive_io_test.py
+- [x] TestPrescriptiveIOParsing — WHAT enumeration added; Given elision fixed in 3 methods
+- [x] TestPrescriptiveIOValidation — clean
+- [ ] TestPrescriptiveIOErrorHandling
+- [ ] TestPrescriptiveIOFormatting
+
+### tools/code_review/static_analysis_test.py
+- [ ] TestStaticAnalysisSignals
+- [ ] TestStaticAnalysisThresholds
+```
+
+**Rules:**
+- Update this file at the end of every test class, not just at the end of every file
+- Record a one-line finding per class: either "clean" or a brief description of what was fixed
+- When resuming after a context reset, re-read this file first to establish where work left off
+- Do not mark a class complete until all violations are fixed and the class compiles
+
+### 3. BDD Specifications
 
 **Location:** The project's BDD specifications document — a canonical listing of all
 behavioral contracts. Look for it alongside the project plan, or in a `specs/` or
@@ -71,9 +131,10 @@ The BDD Specifications document contains `TestClass` definitions with method sig
 
 ## Update Workflow
 
-1. Identify which plan items were completed
-2. Verify coverage before checking off implementation items
-3. Check off completed items in the project plan
-4. Add any new items that were discovered during implementation
-5. Update BDD Specifications if specs were added or modified
-6. Briefly confirm to the user what was updated
+1. Locate or create the tracking document using the decision tree above
+2. Identify which items were completed
+3. Verify correctness before checking off items (tests pass, no violations remain)
+4. Check off completed items with a one-line finding
+5. Add any new items discovered during the work
+6. Update BDD Specifications if specs were added or modified
+7. Briefly confirm to the user what was updated
