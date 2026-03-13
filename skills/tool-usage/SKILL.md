@@ -67,6 +67,7 @@ Use specialized VS Code tools instead of terminal commands. This is not a prefer
 | Search code | `semantic_search`, `grep_search` | `grep`, `find` in terminal |
 | Find files | `file_search`, `list_dir` | `ls`, `find` in terminal |
 | Git status | `get_changed_files` | `git status`, `git diff` |
+| Run Python snippets | Pylance `RunCodeSnippet` MCP tool | `python -c "..."` in terminal |
 
 **Running tests via terminal is not permitted** except for the coverage exception below. The `runTests` tool handles test environment setup, path configuration, and output formatting that raw test commands will get wrong or miss entirely. Any session step that would otherwise run `pytest`, `jest`, `dotnet test`, etc. in the terminal must use `runTests` instead — no exceptions, including quick sanity checks.
 
@@ -91,9 +92,46 @@ This exception applies only to deliberate coverage reporting steps, not to routi
 - **Type-check + lint sweep**: Running `pyright` and linters after edits to catch diagnostics invisible to `get_errors`
 - **Commands with no tool equivalent**: When no specialized tool exists
 
-General test runs are not on this list. They have a tool equivalent — `runTests` — and that tool must be used.
+General test runs are not on this list. They have a tool equivalent — `runTests` — and that tool must be used. Similarly, ad-hoc Python execution has a tool equivalent — Pylance `RunCodeSnippet` — which should be preferred over terminal `python` invocations.
 
 ## Script Handling
+
+### Python scripts — Pylance RunCodeSnippet (preferred)
+
+For Python projects, the Pylance MCP server exposes a `RunCodeSnippet` tool that
+executes Python directly using the workspace's configured interpreter. Prefer it
+over terminal execution for scripts of any size:
+
+- **No shell escaping.** Heredocs and `python -c` require careful quoting of
+  quotes, backslashes, and dollar signs. `RunCodeSnippet` accepts raw Python —
+  the code you write is the code that runs.
+- **Correct interpreter.** The tool automatically uses the Python environment
+  configured for the workspace, matching what Pylance and `runTests` use. No
+  risk of hitting the system Python or a stale venv.
+- **Clean output.** stdout and stderr are returned as structured data, not
+  interleaved with shell prompts and ANSI escape sequences.
+
+Use `RunCodeSnippet` for: audit/analysis scripts, code generation helpers,
+data transformation one-offs, import validation, and any ad-hoc Python
+execution during a session. No temporary files needed — code runs directly
+in memory.
+
+```python
+# Example: audit every test file for bare assertions
+# Passed directly to RunCodeSnippet — no quoting gymnastics required
+import ast, os
+for root, _, files in os.walk("tests"):
+    for f in files:
+        if not f.endswith(".py"):
+            continue
+        path = os.path.join(root, f)
+        tree = ast.parse(open(path).read())
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Assert) and node.msg is None:
+                print(f"BARE_ASSERT: {path}:{node.lineno}")
+```
+
+### Non-Python scripts and fallback
 
 | Script Size | Approach |
 |-------------|----------|
