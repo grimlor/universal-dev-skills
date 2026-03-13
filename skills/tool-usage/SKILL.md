@@ -29,6 +29,26 @@ Without these extensions and settings, `get_errors` will not cover the full lint
 
 Adapt these recommendations to your project's language and toolchain. The principle — use extensions that feed diagnostics into `get_errors` — is universal.
 
+### Pyright / Pylance pragma policy
+
+Pyright diagnostics must be fixed — not silenced. Pragmas (`# type: ignore`, `# pyright: ignore`) are a last resort, not a first response.
+
+**File-level pragmas are never acceptable.** Do not add `# pyright: basic`, `# pyright: ignore`, `# type: ignore` (without a specific code), or any other directive at the top of a file to suppress type-checking wholesale. This hides an unknown number of real bugs and defeats strict mode entirely.
+
+**Inline pragmas are rarely acceptable.** Use a narrow, code-specific comment (e.g., `# type: ignore[assignment]`) only when all of the following are true:
+
+1. The issue is a **known Pyright limitation** — a dynamic pattern Pyright cannot model, or a third-party library ships incomplete stubs **and** creating a stub file (e.g., `stubs/<package>.pyi`) is not feasible (the library is too large, too volatile, or has no stable public API surface worth stubbing)
+2. The code is **provably correct** — you have verified it manually or via tests
+3. The suppression is **as narrow as possible** — targeting a single rule code, on a single line
+
+When an inline pragma is added, include a comment on the same line explaining why:
+
+```python
+result = some_dynamic_call()  # type: ignore[no-any-return]  # third-party stub missing return type
+```
+
+If you find yourself adding more than one or two pragmas while fixing a file, stop. The volume indicates a structural problem — incorrect type annotations, a missing stub package, or code that needs to be restructured — not a pragma problem.
+
 ### Known gap — Ruff severity
 
 The Ruff extension hardcodes diagnostic severity in `_get_severity()`: only `F821`, `E902`, and `E999` are reported as **Error**; every other rule is **Warning**. The `get_errors` tool only returns error-severity diagnostics — so most Ruff findings are invisible to it.

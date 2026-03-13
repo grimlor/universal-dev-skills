@@ -18,7 +18,9 @@ before any work begins. It is not optional. It applies to every task.
 
 Before writing any code, editing any file, or executing any command, scan
 the task description and identify which skills apply. The available skills
-are in `.github/skills/`. Read the directory listing first.
+are in the skills directory configured for your agent (e.g., `.github/skills/`,
+`.windsurf/skills/`, or the location specified in your editor settings).
+Read the directory listing first.
 
 ### Step 2 — Read Each Relevant Skill
 
@@ -56,6 +58,42 @@ defined in the loaded skills.
 If at any point during the task you realize an additional skill applies
 that you did not load, stop, read it, and post an amended confirmation
 before continuing.
+
+### Step 5 — Protect Skills from Context Loss
+
+Skill content loaded via file reads lives in conversation history. When
+the context window fills, the system compresses older messages into
+summaries — silently dropping procedural steps, weakening requirements,
+and conflating distinct rules.
+
+**The defense is prevention, not recovery.** Structure work around
+natural checkpoints that externalize state before context pressure
+builds:
+
+1. **Pause for review after completing a logical unit of work.** A
+   phase of the feature workflow, a test module, a coverage pass —
+   each is a checkpoint. Present the result, update the plan doc or
+   spec with what was completed and what remains, and wait for the
+   user before continuing. This externalized state is the recovery
+   point — if context degrades later, the plan doc captures where
+   things stand.
+
+2. **Externalize before moving on.** When finishing a phase or unit
+   of work, update the project's plan document or tracking artifact
+   with completed items, open items, and any decisions made. This
+   ensures that progress is recorded outside the conversation, not
+   just in it.
+
+3. **If the conversation is getting long, say so.** When you notice
+   significant depth has accumulated (many tool calls, large file
+   reads, multiple implementation rounds), proactively suggest a
+   checkpoint: update the plan doc, confirm status with the user,
+   and then either continue or start a new session as appropriate.
+
+4. **Never assume compressed context is accurate.** If you are unsure
+   whether a skill procedure has a specific step or rule, re-read the
+   skill file rather than relying on what you recall from earlier in
+   the conversation.
 
 ---
 

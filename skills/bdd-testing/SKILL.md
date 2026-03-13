@@ -380,18 +380,43 @@ than patching around it.
 
 ## Public APIs Only — No Private Imports
 
-Tests must **never** import `_`-prefixed names from production modules.
+These are **system specs**, not traditional unit tests. The internal
+implementation is a black box — we specify *what* the system does, not
+*how* it does it. Tests must exercise internal logic **through the public
+API**, not by importing private names directly.
 
 ```python
-# ❌ Testing private internals
+# ❌ Testing private internals — breaks the black-box boundary
 from mypackage.pipeline.processor import _parse_header
 
-# ✅ Testing through the public API
+# ✅ Exercise _parse_header indirectly through the public API
 from mypackage.pipeline.processor import load_files
 ```
 
-If a private function's logic seems worth testing directly, that is a signal it
-should be promoted to its own module — not a justification to import it.
+**When a private function "seems worth testing directly":**
+
+1. **Default action — test it through the public API.** Find the public
+   entry point that exercises the private logic and write specs against
+   that. If a failure condition cannot be induced through public inputs
+   alone, flag it in the deviation log rather than patching around it.
+
+2. **Override, don't import.** When a test must force a specific condition
+   (e.g., simulating a failure), it is acceptable to override a private
+   *variable* or inject a dependency — but importing private *functions*
+   to call them directly is not.
+
+3. **Promote only when another production module needs it.** A private
+   function is promoted to the public API only when a non-test module has
+   a legitimate use for it. Test convenience alone is never a reason to
+   promote.
+
+### Pragmas for existing private imports
+
+When modifying a test file that already imports `_`-prefixed names, do not
+add a file-level `# pyright: reportPrivateUsage=false` pragma — file-level
+pragmas hide both intentional and unintentional issues. If the import cannot
+be removed yet, place a narrow inline `# pyright: ignore[reportPrivateUsage]`
+on each import line. See the **tool-usage** skill for the full pragma policy.
 
 ---
 

@@ -145,6 +145,9 @@ lifecycle hook. All startup handlers have been migrated to
    other types are recorded in the changelog but don't change the version.
 5. **Use `!` or `BREAKING CHANGE:` for breaking changes.** Both are equivalent;
    `!` is shorter for simple cases.
+6. **Always show the user the diff and proposed commit message before committing.**
+   Present changes with `git diff --staged` (or equivalent) and the draft message,
+   then wait for explicit user approval. Do not commit autonomously.
 
 ---
 

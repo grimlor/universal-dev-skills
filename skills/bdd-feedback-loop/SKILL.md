@@ -85,8 +85,8 @@ For each method:
 4. Assert on SUT output, not on objects you constructed yourself
 5. Include a diagnostic message on every assertion
 
-Refer to `.github/skills/bdd-testing/SKILL.md` and
-`.github/skills/bdd-testing/references/test-patterns.md` for all conventions.
+Refer to the `bdd-testing` skill (`SKILL.md`) and its
+`references/test-patterns.md` for all conventions.
 Refer to tool-usage skill for how to use the tools to validate the tests fail 
 as expected.
 
