@@ -134,6 +134,13 @@ A good name without a docstring leaves the scenario ambiguous. A docstring witho
 body comments buries the structure in undifferentiated code. All three are required
 on every test method.
 
+Note that the method docstring and the body comments serve different purposes even
+though they share the Given/When/Then form. The docstring is the *specification* —
+legible in isolation in test output, spec reports, and code review. The body comments
+are the *structure* — they delineate setup, action, and assertion for the reader
+inside the code. The docstring captures semantic intent; the body comments map that
+intent to concrete lines. Both are required; neither substitutes for the other.
+
 ---
 
 ## Class-Level Docstrings — REQUIREMENT / WHO / WHAT / WHY
@@ -146,9 +153,11 @@ class TestAdapterRegistration:
     REQUIREMENT: Adapters self-register and are discoverable by name.
 
     WHO: The pipeline runner loading adapters from configuration
-    WHAT: Registered adapters are retrievable by name string;
-          an unregistered name produces an error that names the
-          requested adapter and lists available options
+    WHAT: (1) a registered adapter is retrievable by its board name string
+          (2) an unregistered name raises ValueError identifying the missing name
+          (3) all registered boards are enumerable via list_registered()
+          (4) duplicate registration replaces silently (last write wins)
+          (5) register() returns the original class unchanged (decorator idiom)
     WHY: The runner must not know concrete adapter classes — IoC requires
          that the name is the only coupling between config and implementation
     """
@@ -158,8 +167,16 @@ class TestAdapterRegistration:
 |-------|---------|---------------------|
 | **REQUIREMENT** | One-line capability statement | What promise does this group verify? |
 | **WHO** | Stakeholder or consumer | Who benefits when this is met? |
-| **WHAT** | Concrete, testable behavior | What observable behavior proves it? |
+| **WHAT** | Enumerated testable behaviors | What observable behavior proves it? |
 | **WHY** | Business/operational justification | What goes wrong if it's missing? |
+
+**WHAT must enumerate, not summarize.** Write WHAT as a numbered list of claims —
+one per testable scenario. Prose like "adapters are retrievable and errors are clear"
+describes a capability; it does not generate a test inventory. Numbered clauses do:
+the test author reads WHAT top-to-bottom and implements exactly those scenarios;
+coverage review reads them bottom-up to verify completeness. A test method that
+cannot trace to any WHAT clause is speculative or WHAT is incomplete. A WHAT clause
+with no implementing test method is a coverage gap.
 
 The WHAT field is the bridge between the user story and the test methods. Each clause
 in WHAT should correspond to one or more test methods. If a test method cannot be
