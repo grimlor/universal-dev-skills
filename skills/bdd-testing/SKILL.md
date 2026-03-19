@@ -478,3 +478,6 @@ an unhandled failure. For every feature, the spec must cover:
 For detailed implementation examples including mock boundary contracts, tautology
 anti-patterns, assertion quality, test data, and conftest infrastructure:
 - `.github/skills/bdd-testing/references/test-patterns.md`
+
+For maintenance scripts (WHAT clause rewriting, audits):
+- `skills/bdd-testing/scripts/` — see each script's `--help` for usage
