@@ -66,7 +66,13 @@ Use specialized VS Code tools instead of terminal commands. This is not a prefer
 | Check errors | `get_errors` tool (Pylance/Pyright; partial Ruff) | — |
 | Search code | `semantic_search`, `grep_search` | `grep`, `find` in terminal |
 | Find files | `file_search`, `list_dir` | `ls`, `find` in terminal |
-| Git status | `get_changed_files` | `git status`, `git diff` |
+| Git status/changes | `get_changed_files`, GitKraken `git_status` | `git status` in terminal |
+| Git add/commit | GitKraken `git_add_or_commit` | `git add`, `git commit` in terminal |
+| Git diff/log | GitKraken `git_log_or_diff` | `git log`, `git diff` in terminal |
+| Git branch | GitKraken `git_branch`, `git_checkout` | `git branch`, `git checkout` in terminal |
+| Git push | GitKraken `git_push` | `git push` in terminal |
+| Git blame | GitKraken `git_blame` | `git blame` in terminal |
+| Git stash | GitKraken `git_stash` | `git stash` in terminal |
 | Run Python snippets | Pylance `RunCodeSnippet` MCP tool | `python -c "..."` in terminal |
 
 **Running tests via terminal is not permitted** except for the coverage exception below. The `runTests` tool handles test environment setup, path configuration, and output formatting that raw test commands will get wrong or miss entirely. Any session step that would otherwise run `pytest`, `jest`, `dotnet test`, etc. in the terminal must use `runTests` instead — no exceptions, including quick sanity checks.
@@ -81,6 +87,37 @@ pytest --cov=<package> --cov-report=term-missing tests/
 This exception applies only to deliberate coverage reporting steps, not to routine test runs during development.
 
 **Terminal verification:** The VS Code Problems panel aggregates diagnostics from configured extensions, but `get_errors` does not surface everything. Pylance omits some Pyright diagnostics, and Ruff reports most rules as warnings (invisible to `get_errors`). After completing edits, run both `pyright` and your project's lint command in the terminal as a final verification step.
+
+## Platform-Dependent Operations
+
+Some operations depend on the git hosting platform (GitHub, Azure DevOps, GitLab, etc.) and have different tool implementations depending on what MCP servers or extensions are installed. **Do not hardcode a specific tool for these tasks.** Instead, discover what is available at runtime.
+
+### Principle
+
+When the task is platform-dependent, search the available tool list using the discovery pattern for that task category. Use whatever tool matches. If nothing matches, fall back to the terminal or web UI.
+
+### Discovery procedure
+
+1. Use the tool search capability to probe available tools with the pattern from the table below
+2. If a matching tool is found, use it
+3. If no match, use the documented fallback
+
+### Platform-dependent task categories
+
+| Task | Discovery Pattern | Fallback |
+|------|------------------|----------|
+| Code review | `review` | Manual review in diff view |
+| Pull / merge requests | `pull_request\|merge_request` | Git provider web UI |
+| Work items / issues | `issue\|work_item` | Project tracker web UI |
+| CI / pipeline status | `pipeline\|build\|check` | CI provider web UI |
+
+### Examples
+
+- **GitHub workspace** with GitKraken installed: searching `review` finds `gitlens_start_review` → use it.
+- **ADO workspace** with `ado-workflows-mcp` installed: searching `pull_request` finds ADO PR tools → use them.
+- **Bare workspace** with neither: no match → tell the user to use the web UI or terminal.
+
+The git operations in the tool-first table above (status, commit, branch, push, blame, stash) are platform-agnostic — they work the same regardless of the remote. Only the tasks in this section vary by platform.
 
 ## When Terminal Is Appropriate
 
