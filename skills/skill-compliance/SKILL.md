@@ -1,66 +1,154 @@
 ---
 name: skill-compliance
-description: "ALWAYS READ FIRST. Before performing any task, read all relevant skills and confirm to the user which skills were loaded. Use at the start of every task, before any other skill."
+description: "ALWAYS READ FIRST. Before performing any task, identify the task type, the files being modified, and the relevant languages or subprojects, then load the right skills and references and confirm them to the user. Use at the start of every task, before any other skill."
 ---
 
-# Skill Compliance — Pre-Task Checklist
+# Skill Compliance — Polyglot Routing
 
 ## Purpose
 
 This skill exists to ensure all relevant skills are read and acknowledged
 before any work begins. It is not optional. It applies to every task.
 
+It also acts as the **routing layer** for the skills system:
+
+- identify the task type
+- identify the files or subtree being changed
+- determine which languages are in scope
+- load the correct generic skills plus the correct language-specific skills or
+   references
+
+The goal is to prevent Python defaults from leaking into TypeScript, Java, C#,
+or mixed-language monorepos.
+
 ---
 
 ## Procedure
 
-### Step 1 — Identify Relevant Skills
+### Step 1 — Identify the Task Type
 
-Before writing any code, editing any file, or executing any command, scan
-the task description and identify which skills apply. The available skills
-are in the skills directory configured for your agent (e.g., `.github/skills/`,
-`.windsurf/skills/`, or the location specified in your editor settings).
-Read the directory listing first.
+Before writing any code, editing any file, or executing any command, classify the
+request. This determines which generic workflow skills apply.
 
-### Step 2 — Read Each Relevant Skill
+Common task types:
 
-Read each identified skill's `SKILL.md` in full. Do not skim. Do not
-summarize from memory. Use the file read tool to load the complete content.
+- **Planning / architecture** — likely `plan-updates`, sometimes `feature-workflow`
+- **Feature implementation** — `feature-workflow`
+- **Test writing or review** — `bdd-testing`; `bdd-feedback-loop` when implementing
+   from a spec document
+- **Commit / PR description work** — `conventional-commits`
+- **Tooling or standards work** — relevant language standards skill
+- **Customization work** — agent customization guidance if editing instructions,
+   skills, prompts, or agents
 
-At minimum, the following skills apply to almost every task:
+`tool-usage` is cross-cutting whenever tools or terminal commands are used.
+
+### Step 2 — Identify the Work Surface
+
+Determine which files or directories are actually in scope.
+
+Use this priority order:
+
+1. **Explicit target files from the user request**
+2. **Files already being edited in the current task**
+3. **Nearest manifest/config files relative to those targets**
+4. **Repository-level defaults** only if the first three do not resolve scope
+
+If the task is a monorepo or mixed-language repo, do **not** route based only on
+repo identity. Route based on the subtree that contains the files being modified.
+
+### Step 3 — Determine the Language and Subproject
+
+Use the touched files and nearest manifests to determine the active language or
+languages.
+
+Primary routing signals:
+
+- **Python:** `.py`, `pyproject.toml`, `uv.lock`, `requirements*.txt`
+- **TypeScript / JavaScript:** `.ts`, `.tsx`, `.js`, `.jsx`, `package.json`,
+   `tsconfig.json`, `tsconfig.*.json`
+- **Java:** `.java`, `pom.xml`, `build.gradle`, `build.gradle.kts`
+- **C#:** `.cs`, `.csproj`, `.sln`
+
+For monorepos, prefer the **nearest** manifest or build file to the edited file:
+
+- nearest `package.json` / `tsconfig.json`
+- nearest `pyproject.toml`
+- nearest `pom.xml` / `build.gradle*`
+- nearest `.csproj` / `.sln`
+
+Do not assume the repo root governs every subtree.
+
+### Step 4 — Select the Relevant Skills
+
+Read each identified skill's `SKILL.md` in full. Do not skim. Do not summarize
+from memory. Use the file read tool to load the complete content.
+
+At minimum, the following rules apply:
+
 - `tool-usage` — applies whenever you use any tool or terminal command
-- `bdd-testing` — applies whenever tests are involved
-- `bdd-feedback-loop` — applies whenever implementing from a spec doc
+- `plan-updates` — applies whenever progress or status needs to persist across sessions
 
-### Step 3 — Confirm to the User
+Then add task-specific skills:
+
+- `feature-workflow` — feature or non-trivial implementation work
+- `bdd-testing` — whenever tests are being written, modified, or reviewed
+- `bdd-feedback-loop` — whenever implementing tests from a spec document
+- `conventional-commits` — whenever staging, committing, or preparing PR titles
+
+Then add language-specific standards skills or references for the active language
+and subtree. Examples:
+
+- Python tooling/config work → `python-code-standards`
+- TypeScript tooling/config work → `typescript-code-standards`
+- Java tooling/config work → `java-code-standards`
+- C# tooling/config work → `csharp-code-standards`
+
+For mixed-language changes, load the relevant skills or references for **each**
+language in scope. Apply them per file or subtree rather than as repo-wide defaults.
+
+### Step 5 — Handle Ambiguity Explicitly
+
+If the target files, subtree, or language are ambiguous, do not guess.
+
+Use this fallback order:
+
+1. Infer from the files already named or open
+2. Infer from the nearest manifest files
+3. If ambiguity remains, ask the user which subtree or language is authoritative
+4. Until clarified, apply only the generic workflow skills and avoid committing
+    language-specific config changes
+
+### Step 6 — Confirm to the User
 
 Before beginning any work, post a message to the user that includes:
 
 1. The task as you understand it (one sentence)
 2. The skills you loaded (list each by name)
-3. Any skills you considered but determined were not relevant, with a
+3. The routing basis you used (files, subtree, manifests, language)
+4. Any skills you considered but determined were not relevant, with a
    one-line reason for exclusion
 
 Example:
 
-> **Task:** Implement test coverage for the validation module.
-> **Skills loaded:** tool-usage, bdd-testing, bdd-feedback-loop
-> **Skills excluded:** feature-workflow (no new feature being added),
-> plan-updates (no plan doc changes required)
+> **Task:** Update the TypeScript lint config for the web package.
+> **Skills loaded:** tool-usage, plan-updates, typescript-code-standards
+> **Routing basis:** `packages/web/src/...` and nearest `packages/web/package.json`
+> and `packages/web/tsconfig.json`
+> **Skills excluded:** python-code-standards (Python not in scope),
+> bdd-testing (no tests being written)
 
 Do not begin work until this confirmation is posted.
 
-### Step 4 — Locate or Create the Tracking Document
+### Step 7 — Locate or Create the Tracking Document
 
 Before beginning work, locate or create the file that will track progress
 for this session. Follow the decision tree in the `plan-updates` skill.
 
-For refactoring, audit, or remediation passes where no plan doc exists,
-this means creating `.copilot/task.md` before the first work item begins.
-Do not use an in-session todo list as a substitute — it is invisible to
-context restore and lost on session end.
+If an established `.copilot/plan.md` already exists for the work, use it as the
+canonical async tracker rather than duplicating state in another file.
 
-### Step 5 — Proceed
+### Step 8 — Proceed
 
 After posting the confirmation, begin the task using the procedures
 defined in the loaded skills.
@@ -69,7 +157,7 @@ If at any point during the task you realize an additional skill applies
 that you did not load, stop, read it, and post an amended confirmation
 before continuing.
 
-### Step 6 — Protect Skills from Context Loss
+### Step 9 — Protect Skills from Context Loss
 
 Skill content loaded via file reads lives in conversation history. When
 the context window fills, the system compresses older messages into
@@ -81,14 +169,13 @@ natural checkpoints that externalize state before context pressure
 builds:
 
 1. **Pause for review after completing a logical unit of work.** For
-   feature work, a logical unit is a phase of the feature workflow or a
-   test module. For audit and remediation passes, a logical unit is a
-   test class — update `.copilot/task.md` after every class, not every
-   file. Present the result and wait for the user before continuing.
+   feature work, a logical unit is a phase of the feature workflow.
+   Present the result and wait for the user before continuing if the
+   work is being reviewed phase-by-phase.
 
 2. **Externalize before moving on.** When finishing a unit of work,
-   update the tracking document (`.copilot/plan.md` or
-   `.copilot/task.md`) with completed items, open items, and any
+   update the tracking document (`.copilot/plan.md` or other established
+   project plan) with completed items, open items, and any
    decisions made. This ensures progress is recorded outside the
    conversation, not just in it.
 
@@ -117,3 +204,7 @@ Skills are reference material, not constraints. The agent must actively
 choose to read and follow them. This skill makes that choice explicit
 and observable, so the user can verify compliance before work begins
 rather than discovering non-compliance after the fact.
+
+Making routing explicit is what allows the same skill system to work across
+Python, TypeScript, Java, C#, and mixed-language monorepos without silently
+applying the wrong defaults.

@@ -11,6 +11,26 @@ Whenever writing, modifying, or reviewing test files. This includes
 creating tests for new features (Phase 2 of the feature workflow) and adding coverage
 specs (Phase 4).
 
+## Role in the Skill System
+
+`bdd-testing` is the **source of truth** for test-quality rules and conventions.
+
+- If the question is "what is correct?", use this skill.
+- If the question is "what steps do I run now?", use `bdd-feedback-loop`.
+
+The feedback-loop skill is an execution runbook. It should reference this skill for
+normative quality rules rather than duplicating them.
+
+## Language References
+
+This file defines language-agnostic BDD testing rules. For language/toolchain-specific
+examples and commands, use:
+
+- `references/python.md`
+- `references/typescript.md`
+- `references/java.md`
+- `references/csharp.md`
+
 ---
 
 ## Foundational Principle — System Specification, Not Unit Testing
@@ -347,11 +367,8 @@ rule referenced by name in the production code.
 ## Coverage = Complete Specification
 
 100% coverage means every line of production code has a spec justifying it.
-After all spec tests pass, run:
-
-```bash
-pytest --cov=<package> --cov-report=term-missing tests/
-```
+After all spec tests pass, run the language-appropriate coverage command from the
+language reference file.
 
 Every uncovered line triggers the question: *"Which requirement is this line serving?"*
 
@@ -429,11 +446,10 @@ from mypackage.pipeline.processor import load_files
 
 ### Pragmas for existing private imports
 
-When modifying a test file that already imports `_`-prefixed names, do not
-add a file-level `# pyright: reportPrivateUsage=false` pragma — file-level
-pragmas hide both intentional and unintentional issues. If the import cannot
-be removed yet, place a narrow inline `# pyright: ignore[reportPrivateUsage]`
-on each import line. See the **tool-usage** skill for the full pragma policy.
+When modifying test files that already import private names, do not use
+file-level suppression pragmas for static-analysis warnings. Use narrowly scoped,
+line-level suppressions only when removal is not yet possible, and record why.
+See language-specific details in the reference files.
 
 ---
 
@@ -441,19 +457,10 @@ on each import line. See the **tool-usage** skill for the full pragma policy.
 
 When testing error paths, verify message content, not just that an exception was raised:
 
-```python
-# ✅ Tests the message the operator actually sees
-with pytest.raises(ValueError) as exc_info:
-    registry.get("nonexistent")
+- ✅ Assert both exception type and meaningful message content.
+- ❌ Do not only assert that "some exception" occurred.
 
-assert "nonexistent" in str(exc_info.value), (
-    f"Error should name the missing item. Got: {exc_info.value}"
-)
-
-# ❌ Only confirms an exception occurred
-with pytest.raises(ValueError):
-    registry.get("nonexistent")
-```
+Use language-specific assertion syntax from the reference files.
 
 Errors should include enough context for the operator to diagnose the problem
 without consulting source code.
@@ -476,8 +483,14 @@ an unhandled failure. For every feature, the spec must cover:
 ## Reference Documents
 
 For detailed implementation examples including mock boundary contracts, tautology
-anti-patterns, assertion quality, test data, and conftest infrastructure:
+anti-patterns, assertion quality, and test data:
 - `.github/skills/bdd-testing/references/test-patterns.md`
+
+Language-specific references:
+- `skills/bdd-testing/references/python.md`
+- `skills/bdd-testing/references/typescript.md`
+- `skills/bdd-testing/references/java.md`
+- `skills/bdd-testing/references/csharp.md`
 
 For maintenance scripts (WHAT clause rewriting, audits):
 - `skills/bdd-testing/scripts/` — see each script's `--help` for usage

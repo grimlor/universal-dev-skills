@@ -57,6 +57,10 @@ alwaysApply: false
 | `feature-workflow` | `.cursor/rules/feature-workflow.mdc` | Apply Intelligently |
 | `conventional-commits` | `.cursor/rules/conventional-commits.mdc` | Apply Intelligently |
 | `plan-updates` | `.cursor/rules/plan-updates.mdc` | Apply Intelligently |
+| `python-code-standards` | `.cursor/rules/python-code-standards.mdc` | Specific Files (`**/*.py`) |
+| `typescript-code-standards` | `.cursor/rules/typescript-code-standards.mdc` | Specific Files (`**/*.ts`) |
+| `java-code-standards` | `.cursor/rules/java-code-standards.mdc` | Specific Files (`**/*.java`) |
+| `csharp-code-standards` | `.cursor/rules/csharp-code-standards.mdc` | Specific Files (`**/*.cs`) |
 
 For each skill, copy the `SKILL.md` body into a `.mdc` file and adapt the frontmatter:
 

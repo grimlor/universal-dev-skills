@@ -151,6 +151,30 @@ lifecycle hook. All startup handlers have been migrated to
 
 ---
 
+## Pre-Commit Hooks
+
+Projects may run pre-commit hooks (or equivalent staged-file checks) before a
+commit is accepted. This means **commits can fail at the hook stage** until
+staged files satisfy the configured quality gates.
+
+**Consequence for commit messages:** when the pre-commit hooks fail and you
+fix the violations, the staged changes are now different from what was
+originally staged. Re-stage the fixed files (`git add`) and re-run the
+commit — the message you prepared should be reused as-is. Do not generate
+a new message just because the hook failed and was retried.
+
+**Activating hooks** depends on the project's toolchain. Python projects using
+the canonical setup use:
+
+```bash
+uv run pre-commit install
+```
+
+This only needs to be run once per clone. See the language-specific standards
+skill for your active stack (for example, `python-code-standards`).
+
+---
+
 ## Why This Exists
 
 Semantic release tools (e.g., `semantic-release`, `python-semantic-release`,

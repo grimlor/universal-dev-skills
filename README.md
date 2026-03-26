@@ -10,15 +10,44 @@ The enforcement model is the key design choice: the `skill-compliance` skill mak
 
 ## Skills Included
 
+### Workflow Skills (language-agnostic)
+
+These skills define processes and decision rules. They apply regardless of language and delegate language-specific details to `references/` files.
+
 | Skill | Purpose |
 |-------|---------|
-| **skill-compliance** | Pre-task checklist — ensures all relevant skills are loaded before work begins |
+| **skill-compliance** | Pre-task routing — identifies the task type, work surface, and languages in scope, then loads the right skills and references |
 | **tool-usage** | VS Code tool-first approach — when to use tools vs. terminal commands |
 | **bdd-testing** | BDD test conventions — system specification, not unit testing |
 | **bdd-feedback-loop** | Per-module test implementation procedure — spec to clean output |
 | **feature-workflow** | Spec-before-code development — 5-phase lifecycle from planning to status update |
 | **conventional-commits** | Commit message format following Conventional Commits v1.0.0 |
 | **plan-updates** | Progress tracking in project plan and BDD specification artifacts |
+
+### Language Standards Skills
+
+These skills define toolchain configuration, linting, formatting, coverage thresholds, and documentation standards for a specific language ecosystem.
+
+| Skill | Ecosystem |
+|-------|-----------|
+| **python-code-standards** | Ruff, Pyright, pytest, pyproject.toml |
+| **typescript-code-standards** | ESLint (flat config), TypeScript strict mode, Jest |
+| **java-code-standards** | Checkstyle, SpotBugs, Spotless, Gradle, JUnit 5 |
+| **csharp-code-standards** | Roslyn analyzers, .editorconfig, dotnet CLI, xUnit |
+
+Java and C# standards are forward-looking — authored before live projects exist in the workspace. They will be refined when real project usage begins.
+
+### Language References
+
+Workflow skills use a `references/` subdirectory for language-specific details. The agent loads the right reference based on the files being edited.
+
+| Skill | References |
+|-------|------------|
+| **bdd-testing** | `python.md`, `typescript.md`, `java.md`, `csharp.md`, `test-patterns.md` |
+| **bdd-feedback-loop** | `python.md`, `typescript.md`, `java.md`, `csharp.md` |
+| **tool-usage** | `python.md`, `typescript.md`, `java.md`, `csharp.md` |
+
+`skill-compliance` routes by file extension and nearest manifest file (`pyproject.toml`, `package.json`, `pom.xml`, `build.gradle*`, `.csproj`) to determine which language skills and references to load.
 
 ## Agent Compatibility
 
@@ -67,20 +96,27 @@ Skills can be bundled inside an MCP server package and auto-installed into works
 
 ```
 universal-dev-skills/
-├── instructions/           # Entry-point instruction files
+├── instructions/                    # Entry-point instruction files
 │   └── copilot-instructions.md
-├── skills/                 # Agent Skills (SKILL.md per skill)
-│   ├── skill-compliance/
-│   ├── tool-usage/
-│   ├── bdd-testing/
-│   ├── bdd-feedback-loop/
-│   ├── feature-workflow/
-│   ├── conventional-commits/
-│   └── plan-updates/
-├── agents/                 # Custom agent definitions — one folder per platform
+├── skills/                          # Agent Skills (SKILL.md per skill)
+│   ├── skill-compliance/            # Polyglot routing — always loaded first
+│   ├── tool-usage/                  # Tool-vs-terminal decisions
+│   │   └── references/              #   python.md, typescript.md, java.md, csharp.md
+│   ├── bdd-testing/                 # Test quality conventions
+│   │   └── references/              #   python.md, typescript.md, java.md, csharp.md
+│   ├── bdd-feedback-loop/           # Per-module test implementation loop
+│   │   └── references/              #   python.md
+│   ├── feature-workflow/            # Spec-before-code lifecycle
+│   ├── conventional-commits/        # Commit message format
+│   ├── plan-updates/                # Progress tracking
+│   ├── python-code-standards/       # Ruff + Pyright + pytest config
+│   ├── typescript-code-standards/   # ESLint + tsc + Jest config
+│   ├── java-code-standards/         # Checkstyle + SpotBugs + Gradle config
+│   └── csharp-code-standards/       # Roslyn + .editorconfig + dotnet config
+├── agents/                          # Custom agent definitions — one folder per platform
 │   └── vscode/
 │       └── dev.agent.md
-└── docs/                   # Per-agent setup guides
+└── docs/                            # Per-agent setup guides
 ```
 
 The `agents/` directory is organized by platform so that editor settings can point to a specific subdirectory (e.g., `agents/vscode/`) without picking up agents meant for other tools. Contributions for other IDEs are welcome — add a new subdirectory (e.g., `agents/cursor/`, `agents/windsurf/`).
@@ -101,7 +137,21 @@ description: "When to use this skill and what it covers."
 ...
 ```
 
-Skills may include a `references/` subdirectory with detailed examples and supplementary documentation. The agent loads the `name` and `description` at startup (lightweight), then loads the full `SKILL.md` body only when it decides the skill is relevant (progressive disclosure).
+### Language references
+
+Skills that apply across multiple languages use a `references/` subdirectory for language-specific details:
+
+```
+skills/bdd-testing/
+├── SKILL.md                  # Language-agnostic test conventions
+└── references/
+    ├── python.md             # pytest / coverage patterns
+    ├── typescript.md         # Jest / ts-jest patterns
+    ├── java.md               # JUnit 5 / AssertJ / Mockito patterns
+    └── csharp.md             # xUnit / FluentAssertions / Moq patterns
+```
+
+The agent loads the `name` and `description` at startup (lightweight), then loads the full `SKILL.md` body only when it decides the skill is relevant (progressive disclosure). Language references are loaded based on which files are being edited — `skill-compliance` handles this routing.
 
 ## Adding Repo-Specific Skills
 
@@ -109,9 +159,9 @@ These universal skills cover general development workflow. For domain-specific k
 
 ## Design Principles
 
-- **Universal** — No references to specific repos, packages, or domain objects
-- **Opinionated** — Encodes a specific workflow (spec → test → implement → verify)
-- **Self-reinforcing** — Skills cross-reference each other to form a coherent system
+- **Polyglot** — Workflow skills are language-agnostic; language-specific details live in references and standards skills (Python, TypeScript, Java, C#)
+- **Opinionated** — Encodes a specific workflow (spec → test → implement → verify) with strict toolchain defaults (100% coverage, warnings-as-errors)
+- **Self-reinforcing** — Skills cross-reference each other to form a coherent system; `skill-compliance` routes to the right combination
 - **Portable** — Works across multiple AI agents via the Agent Skills standard
 - **Observable** — `skill-compliance` makes the agent declare what it loaded, so you can verify before work begins
 

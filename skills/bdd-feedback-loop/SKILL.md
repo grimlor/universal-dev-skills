@@ -1,6 +1,6 @@
 ---
 name: bdd-feedback-loop
-description: "Feedback loop procedure for implementing BDD test modules. Use when implementing a spec doc — covering one test module from spec to Pyright-clean, self-audited output."
+description: "Feedback loop procedure for implementing BDD test modules. Use when implementing a spec doc — covering one test module from spec to type-checker-clean, self-audited output."
 ---
 
 # BDD Feedback Loop — Test Implementation Procedure
@@ -11,6 +11,26 @@ Whenever implementing tests from a BDD spec document. Each iteration of this loo
 covers one test module: read the spec, implement, verify, audit, log, and hand off.
 
 Do not proceed to the next module if unresolved failures remain from Steps 4, 5 or 7.
+
+## Role in the Skill System
+
+`bdd-feedback-loop` is an **execution runbook**.
+
+- It defines the sequence, checkpoints, and handoff behavior for a module.
+- It does **not** redefine test-quality standards.
+
+All normative test-quality rules live in `bdd-testing`. When running this loop,
+use `bdd-testing` as the rubric for correctness.
+
+## Language References
+
+This file defines the execution loop. For language/toolchain-specific validation
+and command details, use the reference matching your active language:
+
+- `references/python.md`
+- `references/typescript.md`
+- `references/java.md`
+- `references/csharp.md`
 
 ---
 
@@ -48,13 +68,13 @@ cannot be induced through public API inputs alone, note it in the deviation log
 rather than patching around it.
 
 Record the discovered API surface as a brief comment block at the top of the
-test file, for traceability:
+test file, for traceability. Use your language's comment syntax:
 
-```python
-# Public API surface (from src/myapp/services/processor.py):
-#   Processor(client: Client, store: DataStore, config: Settings)
-#   processor.process(item: Item) -> Result
-#   processor.compute_score(value: float | None, baseline: float) -> float
+```
+// Public API surface (from src/myapp/services/processor):
+//   Processor(client: Client, store: DataStore, config: Settings)
+//   processor.process(item: Item) -> Result
+//   processor.computeScore(value: number | null, baseline: number) -> number
 ```
 
 ---
@@ -96,9 +116,10 @@ as expected.
 
 After implementing each test file:
 
-1. Run the `get_errors` tool on the test file to surface Pylance diagnostics.
-2. Then run `pyright` in the terminal on the test file — Pylance does not surface
-   all Pyright diagnostics through `get_errors`.
+1. Run editor diagnostics for the test file.
+2. Run language-native type/lint checks for the test file or module.
+
+Use language-specific commands from the relevant reference file.
 
 For each reported error from either step, attempt to resolve it. If an error
 cannot be resolved after three attempts, log it as a deviation (Step 6) and
@@ -111,7 +132,7 @@ Common issues to fix:
 - Wrong argument types passed to constructors or methods
 - Incompatible return type assignments
 - Undefined names (typos in fixture names, method names)
-- `AsyncMock` vs `MagicMock` mismatches on async methods
+- Async/sync mock mismatches and incorrect doubles for asynchronous call sites
 
 ---
 
@@ -128,19 +149,15 @@ For every test method, ask: *if I deleted the module under test entirely, would
 this test still pass?* If yes, it is a tautology. The When step must invoke
 production code. The Then step must assert on what that production code returned.
 
-Checklist — work through every item:
+Primary gate checklist for this step:
 
 - [ ] Every test method's When step calls production code (no tautologies)
-- [ ] No test constructs the expected output and asserts on the constructed object
-- [ ] No test accesses `_`-prefixed attributes or methods on the SUT (`._store`, `._registry`, etc.)
-- [ ] No test imports `_`-prefixed names from production modules
 - [ ] Mock boundaries match the class-level MOCK BOUNDARY contract exactly
-- [ ] Every assertion includes a diagnostic message
-- [ ] All Given / When / Then body comments are present
-- [ ] No local imports inside test methods or helper functions
-- [ ] `pytest.approx` used for all float comparisons
-- [ ] Error tests verify message content, not just exception type
-- [ ] No `assert exc_info.value is not None` — this always passes inside `pytest.raises`
+- [ ] Assertions are against SUT behavior, not hand-constructed expected objects
+
+Then run the full quality rubric from `bdd-testing` (docstring contracts,
+Given/When/Then body structure, assertion diagnostics, boundary discipline,
+and language-specific testing conventions from the references).
 
 ---
 
