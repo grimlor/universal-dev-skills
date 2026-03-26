@@ -11,6 +11,11 @@ Whenever writing a commit message, preparing a PR title, or describing changes
 for a changelog. This includes interactive commits, automated commits, and
 squash-merge titles.
 
+This skill defines **message format only**. For how to execute git operations
+(staging, committing, pushing), follow `tool-usage` — it determines whether to
+use GitKraken MCP tools, GitHub MCP tools, or terminal commands based on what
+is available.
+
 ---
 
 ## Format
@@ -146,8 +151,8 @@ lifecycle hook. All startup handlers have been migrated to
 5. **Use `!` or `BREAKING CHANGE:` for breaking changes.** Both are equivalent;
    `!` is shorter for simple cases.
 6. **Always show the user the diff and proposed commit message before committing.**
-   Present changes with `git diff --staged` (or equivalent) and the draft message,
-   then wait for explicit user approval. Do not commit autonomously.
+   Present the staged diff (using the method specified by `tool-usage`) and the
+   draft message, then wait for explicit user approval. Do not commit autonomously.
 
 ---
 
@@ -159,9 +164,10 @@ staged files satisfy the configured quality gates.
 
 **Consequence for commit messages:** when the pre-commit hooks fail and you
 fix the violations, the staged changes are now different from what was
-originally staged. Re-stage the fixed files (`git add`) and re-run the
-commit — the message you prepared should be reused as-is. Do not generate
-a new message just because the hook failed and was retried.
+originally staged. Re-stage the fixed files and re-run the commit — the
+message you prepared should be reused as-is. Do not generate a new message
+just because the hook failed and was retried. Use the tool specified by
+`tool-usage` for staging operations.
 
 **Activating hooks** depends on the project's toolchain. Python projects using
 the canonical setup use:
