@@ -1,6 +1,6 @@
 ---
 name: tool-usage
-description: "Development tool preferences and execution patterns. Use when choosing between VS Code tools and terminal commands, handling long scripts, deciding how to execute file operations, tests, searches, or git commands."
+description: "Tool and terminal decisions for every task. Use for any request involving file reads or edits, running tests, executing searches, git commands, or terminal work — even when the user does not mention tool choice. Determines whether to use VS Code integrations, MCP tools, or terminal commands."
 ---
 
 # Tool Usage Guidelines
