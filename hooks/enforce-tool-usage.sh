@@ -57,8 +57,12 @@ EOF
 }
 
 # --- Git commands: use GitKraken MCP tools ---
-if echo "$STRIPPED" | grep -qE '\bgit\b'; then
-  deny "Use GitKraken MCP tools (git_status, git_add_or_commit, git_log_or_diff, git_branch, git_checkout, git_push, git_blame, git_stash) instead of git in the terminal. See the tool-usage skill."
+# Only block subcommands that have a direct MCP equivalent.
+# Allow through: fetch, pull, rebase, merge, tag, cherry-pick, revert,
+#   remote, config, clean, rm, branch -d, reset, etc.
+GIT_BLOCKED="status|add|commit|push|log|diff|show|branch|checkout|switch|blame|stash|worktree"
+if echo "$STRIPPED" | grep -qE "\bgit ($GIT_BLOCKED)\b"; then
+  deny "Use GitKraken MCP tools (git_status, git_add_or_commit, git_log_or_diff, git_branch, git_checkout, git_push, git_blame, git_stash, git_worktree) instead of git in the terminal. See the tool-usage skill."
 fi
 
 # --- File read/edit commands: use read_file, replace_string_in_file, create_file ---
@@ -72,7 +76,8 @@ if echo "$STRIPPED" | grep -qE '\becho\b.*>'; then
 fi
 
 # --- Search commands: use semantic_search, grep_search, file_search ---
-if echo "$STRIPPED" | grep -qE '\b(grep|rg|find|fd)\b'; then
+# Match only as commands, not as flags (e.g. -fd in git clean -fd)
+if echo "$STRIPPED" | grep -qE '(^|[;&|] *)(grep|rg|find|fd)\b'; then
   deny "Use semantic_search, grep_search, or file_search tools instead of $STRIPPED in the terminal. See the tool-usage skill."
 fi
 
