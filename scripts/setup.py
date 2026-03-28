@@ -237,6 +237,40 @@ def ensure_file_symlink(link: Path, target: Path, *, dry_run: bool) -> str:
     return f"  + {link} → {target}"
 
 
+def write_hook_config(dest: Path, *, dry_run: bool) -> str:
+    """Write enforce-tool-usage.json with an absolute path to the shell script.
+
+    The JSON must contain an absolute path because VS Code resolves relative
+    paths from the workspace root, not from the JSON file's directory.
+    """
+    script_path = str((REPO_ROOT / "hooks" / "enforce-tool-usage.sh").resolve())
+    config: dict[str, Any] = {
+        "hooks": {
+            "PreToolUse": [
+                {
+                    "type": "command",
+                    "command": script_path,
+                    "timeout": 10,
+                }
+            ]
+        }
+    }
+    content = json.dumps(config, indent=2) + "\n"
+
+    if dest.exists():
+        existing = dest.read_text(encoding="utf-8")
+        if existing == content:
+            return f"  ✓ {dest.name} (up to date)"
+        if not dry_run:
+            dest.write_text(content, encoding="utf-8")
+        return f"  ~ {dest.name} (updated)"
+
+    if not dry_run:
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(content, encoding="utf-8")
+    return f"  + {dest.name}"
+
+
 # ── Target: VS Code ─────────────────────────────────────────────────────
 
 
@@ -297,13 +331,20 @@ def setup_vscode(*, dry_run: bool) -> None:
         ],
     )
 
-    # Hooks
+    # Hooks — generate config with absolute path to the shell script
+    # (VS Code resolves relative paths from the workspace root, not the JSON dir)
+    managed_hooks_dir = Path.home() / ".vscode-copilot" / "hooks"
+    hook_action = write_hook_config(
+        managed_hooks_dir / "enforce-tool-usage.json", dry_run=dry_run
+    )
+    all_actions.append(hook_action)
+    managed_hooks_tilde = "~/.vscode-copilot/hooks"
     all_actions += merge_object_setting(
         settings,
         "chat.hookFilesLocations",
         [
             ".github/hooks",
-            f"{repo_path}/hooks",
+            managed_hooks_tilde,
         ],
     )
 
@@ -414,12 +455,7 @@ def setup_copilot_cli(*, dry_run: bool) -> None:
 
     # Hooks
     print("Hooks:")
-    hook_actions = ensure_file_symlink(
-        hooks_dir / "enforce-tool-usage.json",
-        REPO_ROOT / "hooks" / "enforce-tool-usage.json",
-        dry_run=dry_run,
-    )
-    print(hook_actions)
+    print(write_hook_config(hooks_dir / "enforce-tool-usage.json", dry_run=dry_run))
     hook_actions2 = ensure_file_symlink(
         hooks_dir / "enforce-tool-usage.sh",
         REPO_ROOT / "hooks" / "enforce-tool-usage.sh",
