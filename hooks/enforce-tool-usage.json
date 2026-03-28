@@ -3,7 +3,7 @@
     "PreToolUse": [
       {
         "type": "command",
-        "command": "./hooks/enforce-tool-usage.sh",
+        "command": "./enforce-tool-usage.sh",
         "timeout": 10
       }
     ]
