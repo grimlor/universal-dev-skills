@@ -10,7 +10,21 @@
 set -euo pipefail
 
 INPUT=$(cat)
-TOOL_NAME=$(echo "$INPUT" | jq -r '.tool_name // empty')
+
+# Parse JSON with python3 (avoids jq dependency)
+json_field() {
+  echo "$INPUT" | python3 -c "
+import json, sys
+d = json.load(sys.stdin)
+keys = sys.argv[1].split('.')
+v = d
+for k in keys:
+    v = v.get(k, '') if isinstance(v, dict) else ''
+print(v if isinstance(v, str) else '')
+" "$1" 2>/dev/null || echo ''
+}
+
+TOOL_NAME=$(json_field tool_name)
 
 # Only inspect terminal execution tools
 case "$TOOL_NAME" in
@@ -18,7 +32,7 @@ case "$TOOL_NAME" in
   *) echo '{}'; exit 0 ;;
 esac
 
-CMD=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
+CMD=$(json_field tool_input.command)
 if [[ -z "$CMD" ]]; then
   echo '{}'
   exit 0

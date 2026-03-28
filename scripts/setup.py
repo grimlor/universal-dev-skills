@@ -243,7 +243,12 @@ def write_hook_config(dest: Path, *, dry_run: bool) -> str:
     The JSON must contain an absolute path because VS Code resolves relative
     paths from the workspace root, not from the JSON file's directory.
     """
-    script_path = str((REPO_ROOT / "hooks" / "enforce-tool-usage.sh").resolve())
+    script_abs = (REPO_ROOT / "hooks" / "enforce-tool-usage.sh").resolve()
+    home = Path.home().resolve()
+    try:
+        script_path = "~/" + str(script_abs.relative_to(home))
+    except ValueError:
+        script_path = str(script_abs)
     config: dict[str, Any] = {
         "hooks": {
             "PreToolUse": [
