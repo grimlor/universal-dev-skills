@@ -48,7 +48,7 @@ if echo "$STRIPPED" | grep -qE '\bgit\b'; then
 fi
 
 # --- File read/edit commands: use read_file, replace_string_in_file, create_file ---
-if echo "$STRIPPED" | grep -qE '\b(cat|sed|head|tail)\b'; then
+if echo "$STRIPPED" | grep -qE '\b(cat|sed|head|tail|awk)\b'; then
   deny "Use read_file, replace_string_in_file, or create_file tools instead of $STRIPPED in the terminal. See the tool-usage skill."
 fi
 

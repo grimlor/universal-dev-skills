@@ -34,7 +34,7 @@ Use specialized VS Code tools instead of terminal commands. This is not a prefer
 
 | Task | Use This Tool | Never This |
 |------|--------------|----------|
-| Read/edit files | `read_file`, `replace_string_in_file`, `create_file` | `cat`, `sed`, `echo` |
+| Read/edit files | `read_file`, `replace_string_in_file`, `create_file` | `cat`, `sed`, `awk`, `echo` |
 | Run tests | `runTests` tool | `pytest` in terminal |
 | Check errors | `get_errors` tool (Pylance/Pyright; partial Ruff) | — |
 | Search code | `semantic_search`, `grep_search` | `grep`, `find` in terminal |
