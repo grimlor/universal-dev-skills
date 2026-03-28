@@ -52,6 +52,7 @@ COPILOT_TIMEOUT = 120  # seconds per class
 # Repo discovery
 # ---------------------------------------------------------------------------
 
+
 def find_tests_dir(explicit: str | None) -> Path:
     """Resolve the tests directory from explicit arg, env var, or cwd convention."""
     if explicit:
@@ -74,6 +75,7 @@ def find_tests_dir(explicit: str | None) -> Path:
 # ---------------------------------------------------------------------------
 # AST helpers
 # ---------------------------------------------------------------------------
+
 
 def get_class_docstring_node(class_node: ast.ClassDef) -> ast.Constant | None:
     """Return the docstring AST node for a class, or None."""
@@ -120,23 +122,28 @@ def extract_test_methods(
         docstring = ast.get_docstring(node, clean=True) or ""
 
         first_assert = ""
-        for i in range(node.lineno - 1, min((node.end_lineno or node.lineno), len(source_lines))):
+        for i in range(
+            node.lineno - 1, min((node.end_lineno or node.lineno), len(source_lines))
+        ):
             stripped = source_lines[i].strip()
             if stripped.startswith("assert "):
                 first_assert = stripped[:120]
                 break
 
-        methods.append({
-            "name": node.name,
-            "docstring": docstring,
-            "first_assert": first_assert,
-        })
+        methods.append(
+            {
+                "name": node.name,
+                "docstring": docstring,
+                "first_assert": first_assert,
+            }
+        )
     return methods
 
 
 # ---------------------------------------------------------------------------
 # Prompt construction
 # ---------------------------------------------------------------------------
+
 
 def build_prompt(class_name: str, methods: list[dict[str, str]]) -> str:
     """Build the prompt to send to Copilot."""
@@ -178,6 +185,7 @@ def build_prompt(class_name: str, methods: list[dict[str, str]]) -> str:
 # Copilot CLI call
 # ---------------------------------------------------------------------------
 
+
 def call_copilot(prompt: str) -> str:
     """Send prompt to Copilot CLI non-interactively and return response text."""
     cmd = ["copilot", "-p", prompt, "--silent", "--allow-all-tools"]
@@ -197,12 +205,15 @@ def call_copilot(prompt: str) -> str:
     except subprocess.TimeoutExpired as e:
         raise RuntimeError(f"copilot timed out after {COPILOT_TIMEOUT}s") from e
     except FileNotFoundError as e:
-        raise RuntimeError("copilot not found in PATH -- is Copilot CLI installed?") from e
+        raise RuntimeError(
+            "copilot not found in PATH -- is Copilot CLI installed?"
+        ) from e
 
 
 # ---------------------------------------------------------------------------
 # Response parsing
 # ---------------------------------------------------------------------------
+
 
 def parse_what_clauses(response: str, expected: int) -> list[str] | None:
     """Parse numbered clauses from Copilot response.
@@ -236,6 +247,7 @@ def parse_what_clauses(response: str, expected: int) -> list[str] | None:
 # ---------------------------------------------------------------------------
 # Docstring patching
 # ---------------------------------------------------------------------------
+
 
 def build_new_what_block(clauses: list[str], indent: str) -> list[str]:
     """Build replacement WHAT block lines with correct indentation."""
@@ -289,6 +301,7 @@ def patch_docstring(
 # ---------------------------------------------------------------------------
 # Per-class processing
 # ---------------------------------------------------------------------------
+
 
 def process_class(
     class_node: ast.ClassDef,
@@ -355,19 +368,27 @@ def process_class(
 # Main
 # ---------------------------------------------------------------------------
 
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--apply", action="store_true", help="Write changes to files")
-    parser.add_argument("--filter", default="", help="Only process files matching this substring")
     parser.add_argument(
-        "--class", dest="class_filter", default="",
+        "--filter", default="", help="Only process files matching this substring"
+    )
+    parser.add_argument(
+        "--class",
+        dest="class_filter",
+        default="",
         help="Only process classes matching this substring",
     )
     parser.add_argument(
-        "--tests-dir", default=None,
+        "--tests-dir",
+        default=None,
         help="Path to tests directory (default: $REPO_ROOT/tests or ./tests)",
     )
-    parser.add_argument("--verbose", action="store_true", help="Show skipped classes and error detail")
+    parser.add_argument(
+        "--verbose", action="store_true", help="Show skipped classes and error detail"
+    )
     args = parser.parse_args()
 
     tests_dir = find_tests_dir(args.tests_dir)
@@ -405,7 +426,8 @@ def main() -> None:
             continue
 
         classes = [
-            n for n in ast.iter_child_nodes(tree)
+            n
+            for n in ast.iter_child_nodes(tree)
             if isinstance(n, ast.ClassDef)
             and n.name.startswith("Test")
             and (not args.class_filter or args.class_filter in n.name)

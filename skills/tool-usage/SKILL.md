@@ -48,16 +48,7 @@ Use specialized VS Code tools instead of terminal commands. This is not a prefer
 | Git stash | GitKraken `git_stash` | `git stash` in terminal |
 | Run language snippets | Language-server snippet tools when available | ad-hoc shell one-liners when a structured tool exists |
 
-**Running tests via terminal is not permitted** except for the coverage exception below. The `runTests` tool handles test environment setup, path configuration, and output formatting that raw test commands will get wrong or miss entirely. Any session step that would otherwise run `pytest`, `jest`, `dotnet test`, etc. in the terminal must use `runTests` instead — no exceptions, including quick sanity checks.
-
-**Coverage exception:** `runTests` is a VS Code Test Explorer integration and cannot pass arbitrary flags like `--cov` or `--cov-report`. When the explicit goal is generating a coverage report (not just running tests), use the terminal:
-
-```bash
-# Python example
-pytest --cov=<package> --cov-report=term-missing tests/
-```
-
-This exception applies only to deliberate coverage reporting steps, not to routine test runs during development.
+**Running tests via terminal is not permitted.** The `runTests` tool handles test environment setup, path configuration, output formatting, and coverage reporting. Any session step that would otherwise run `pytest`, `jest`, `dotnet test`, etc. in the terminal must use `runTests` instead — no exceptions, including quick sanity checks and coverage runs.
 
 **Terminal verification:** The VS Code Problems panel may not surface every
 diagnostic from every analyzer. After completing edits, run language-native CLI
@@ -100,7 +91,6 @@ The git operations in the tool-first table above (status, commit, branch, push, 
 - **Build/compilation**: Complex build processes requiring environment setup
 - **Background processes**: Servers, long-running tasks (`isBackground=true`)
 - **Environment setup**: Virtual environments, cloud CLI auth
-- **Coverage reporting**: Test coverage report generation (see above)
 - **Type-check + lint sweep**: Running language-native analyzers and linters after edits to catch diagnostics invisible to `get_errors`
 - **Commands with no tool equivalent**: When no specialized tool exists
 

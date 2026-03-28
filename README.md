@@ -56,19 +56,38 @@ These skills work with multiple AI coding agents. The skill content (Markdown + 
 | Agent | Skills (SKILL.md) | AGENTS.md | Setup Guide |
 |-------|-------------------|-----------|-------------|
 | **GitHub Copilot** (VS Code) | Native support | Native support | [Setup guide](docs/vscode-copilot.md) |
+| **GitHub Copilot CLI** | Native support | Native support | [Setup guide](docs/vscode-copilot.md) |
 | **Cursor** | Via rules conversion | Native support | [Setup guide](docs/cursor.md) |
 | **Windsurf** | Native support | Native support | [Setup guide](docs/windsurf.md) |
 | **Claude Code** | Native support | Via CLAUDE.md | [Setup guide](docs/claude-code.md) |
 
-**AGENTS.md** is the one format recognized by all four agents. If you need a single-file approach that works everywhere, start there.
+**AGENTS.md** is the one format recognized by all five agents. If you need a single-file approach that works everywhere, start there.
 
 ## Quick Start
 
-### Option 1 — Clone and point your editor to it (recommended)
+### Option 1 — Clone and run the setup script (recommended)
 
-Clone this repo once, then configure your editor to read skills from the cloned directory. This means every workspace automatically gets the skills with zero per-project setup.
+Clone this repo once, then run the setup script for your agent:
 
-See the setup guide for your agent: [VS Code/Copilot](docs/vscode-copilot.md) · [Cursor](docs/cursor.md) · [Windsurf](docs/windsurf.md) · [Claude Code](docs/claude-code.md)
+```bash
+git clone https://github.com/grimlor/universal-dev-skills.git ~/universal-dev-skills
+cd ~/universal-dev-skills
+
+# Pick your target (or use "all" for everything)
+python3 scripts/setup.py --target vscode       # VS Code / GitHub Copilot
+python3 scripts/setup.py --target copilot-cli   # GitHub Copilot CLI
+python3 scripts/setup.py --target claude        # Claude Code
+python3 scripts/setup.py --target windsurf      # Windsurf
+python3 scripts/setup.py --target cursor \       # Cursor (per-workspace)
+  --workspace /path/to/your-project
+python3 scripts/setup.py --target all           # all of the above (except cursor)
+```
+
+Use `--dry-run` to preview changes without writing anything. Run `--help` for full usage.
+
+The Cursor target converts SKILL.md files to `.cursor/rules/*.mdc` and requires `--workspace` to specify the project directory. The `all` target includes Cursor only when `--workspace` is provided.
+
+For manual setup, see the per-agent guides: [VS Code/Copilot](docs/vscode-copilot.md) · [Cursor](docs/cursor.md) · [Windsurf](docs/windsurf.md) · [Claude Code](docs/claude-code.md)
 
 ### Option 2 — Copy into a repository
 
@@ -113,6 +132,11 @@ universal-dev-skills/
 │   ├── typescript-code-standards/   # ESLint + tsc + Jest config
 │   ├── java-code-standards/         # Checkstyle + SpotBugs + Gradle config
 │   └── csharp-code-standards/       # Roslyn + .editorconfig + dotnet config
+├── hooks/                           # PreToolUse hooks enforcing tool-usage skill
+│   ├── enforce-tool-usage.json      #   Hook configuration (VS Code / Copilot CLI)
+│   └── enforce-tool-usage.sh        #   Shell script matching blocked commands
+├── scripts/                         # Setup automation
+│   └── setup.py                     #   Multi-target installer (vscode, claude, windsurf, copilot-cli, cursor)
 ├── agents/                          # Custom agent definitions — one folder per platform
 │   └── vscode/
 │       └── dev.agent.md
