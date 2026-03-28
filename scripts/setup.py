@@ -257,7 +257,11 @@ def write_hook_config(dest: Path, *, dry_run: bool) -> str:
     }
     content = json.dumps(config, indent=2) + "\n"
 
-    if dest.exists():
+    # Remove existing symlink — writing through it would modify the repo file
+    if not dry_run and dest.is_symlink():
+        dest.unlink()
+
+    if dest.exists() and not dest.is_symlink():
         existing = dest.read_text(encoding="utf-8")
         if existing == content:
             return f"  ✓ {dest.name} (up to date)"
