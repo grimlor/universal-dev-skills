@@ -567,8 +567,10 @@ def main() -> None:
             break
 
     if target is None:
+        print("ERROR: --target is required\n", file=sys.stderr)
+        print(f"Supported targets: {', '.join(TARGETS)}, all\n")
         print(USAGE)
-        sys.exit(0)
+        sys.exit(1)
 
     # Parse --workspace
     workspace: Path | None = None
@@ -579,6 +581,16 @@ def main() -> None:
         if arg.startswith("--workspace="):
             workspace = Path(arg.split("=", 1)[1]).resolve()
             break
+
+    # Validate target name
+    if target != "all" and target not in TARGETS:
+        print(
+            f"ERROR: Unknown target '{target}'.\n",
+            file=sys.stderr,
+        )
+        print(f"Supported targets: {', '.join(TARGETS)}, all\n")
+        print(USAGE)
+        sys.exit(1)
 
     # Validate --workspace requirement
     if target == "cursor" and workspace is None:
@@ -608,13 +620,6 @@ def main() -> None:
         setup_cursor(dry_run=dry_run, workspace=workspace)
     elif target in TARGETS:
         TARGETS[target](dry_run=dry_run)
-    else:
-        print(
-            f"ERROR: Unknown target '{target}'. Choose from: {', '.join(TARGETS)}, all\n",
-            file=sys.stderr,
-        )
-        print(USAGE)
-        sys.exit(1)
 
     print()
     if dry_run:
