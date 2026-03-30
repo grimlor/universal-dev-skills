@@ -104,19 +104,6 @@ the configured workspace environment.
 
 For Python-specific `RunCodeSnippet` guidance, see `references/python.md`.
 
-### Script file fallback
-
-| Script Size | Approach |
-|-------------|----------|
-| ≤ 10 lines | Run directly in terminal |
-| > 10 lines | Create a script file, then execute it |
-
-**For long scripts:**
-1. Store scripts in `.copilot/scripts/` (git-ignored)
-2. Use `create_file` to write the script
-3. Execute it — prefer a language-server snippet tool if available (see language references), otherwise use `run_in_terminal`
-4. This prevents terminal buffer overflow and Pty failures
-
 ## Why This Matters
 
 - **Faster execution**: Tools are optimized for VS Code integration

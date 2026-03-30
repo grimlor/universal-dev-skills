@@ -33,8 +33,5 @@ verification after edits.
 
 ## Python Snippet Execution
 
-For any Python script (≤ 10 lines or > 10 lines), prefer Pylance `RunCodeSnippet`
-over shell `python -c` or `run_in_terminal`. Snippet execution avoids quoting
-issues and runs against the configured workspace Python environment.
-
-If `RunCodeSnippet` is unavailable or fails, fall back to `run_in_terminal`.
+Use Pylance `RunCodeSnippet` for Python execution. It avoids quoting issues
+and runs against the configured workspace Python environment.
