@@ -1,6 +1,6 @@
 ---
 name: bdd-testing
-description: "BDD test conventions for this repository. Use when writing, modifying, or reviewing test files, including creating tests for new features and adding coverage specs."
+description: "BDD test conventions for this repository. Use when writing, modifying, or reviewing test files, including creating tests for new features and adding coverage specs. ALSO use when running coverage checks, reporting coverage results, or auditing code coverage — this skill defines the 100% coverage requirement and remediation procedure."
 ---
 
 # BDD Testing — How to Write Tests
@@ -367,10 +367,38 @@ rule referenced by name in the production code.
 ## Coverage = Complete Specification
 
 100% coverage means every line of production code has a spec justifying it.
+**100% is the only passing score.** Any value below 100% — including 99% — is a
+specification gap that must be remediated before the task is complete.
+
 After all spec tests pass, run the language-appropriate coverage command from the
 language reference file.
 
 Every uncovered line triggers the question: *"Which requirement is this line serving?"*
+
+### Coverage check procedure (REQUIRED)
+
+When asked to run, check, or report coverage — or when coverage results appear
+during any workflow — apply these steps **in order**:
+
+1. **Run coverage.** Use the language-appropriate coverage command.
+2. **If 100% statement AND branch coverage: report and stop.** The system is
+   fully specified.
+3. **If below 100%: this is a blocking failure.** Do not summarize and move on.
+   Instead:
+   a. Identify every uncovered line and partial branch.
+   b. For each, determine the disposition: **write the spec** (real requirement),
+      or **remove the code** (dead code / over-engineering).
+   c. Implement the disposition immediately — write the missing specs or remove
+      the unjustified code.
+   d. Re-run coverage to confirm 100%.
+   e. Repeat until 100% is achieved.
+
+**Do not report sub-100% coverage as acceptable.** Do not describe uncovered lines
+as "backfill candidates", "pre-existing gaps", "low-priority", or "known issues".
+There are no categories of acceptable incompleteness. Every uncovered line is a
+current obligation, regardless of when it was introduced.
+
+### What surfaces at coverage time
 
 Three categories of requirements surface only at coverage time — they are real
 requirements, not optional extras:
