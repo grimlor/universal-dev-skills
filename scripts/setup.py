@@ -150,14 +150,18 @@ def detect_settings_file() -> Path:
 
 
 def repo_tilde_path() -> str:
-    """Return the repo path with ~ prefix for portability in VS Code settings."""
+    """Return the repo path with ~ prefix for portability in VS Code settings.
+
+    Always uses forward slashes — VS Code resolves ~/paths on all platforms
+    including Windows (confirmed empirically).
+    """
     home = Path.home().resolve()
     repo = REPO_ROOT.resolve()
     try:
         relative = repo.relative_to(home)
-        return f"~/{relative}"
+        return f"~/{relative.as_posix()}"
     except ValueError:
-        return str(repo)
+        return repo.as_posix()
 
 
 def merge_object_setting(
@@ -246,9 +250,9 @@ def write_hook_config(dest: Path, *, dry_run: bool) -> str:
     script_abs = (REPO_ROOT / "hooks" / "enforce-tool-usage.sh").resolve()
     home = Path.home().resolve()
     try:
-        script_path = "~/" + str(script_abs.relative_to(home))
+        script_path = "~/" + script_abs.relative_to(home).as_posix()
     except ValueError:
-        script_path = str(script_abs)
+        script_path = script_abs.as_posix()
     config: dict[str, Any] = {
         "hooks": {
             "PreToolUse": [
