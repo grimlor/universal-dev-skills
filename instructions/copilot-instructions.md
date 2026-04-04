@@ -1,5 +1,1 @@
-You own the quality of every file you touch. When you read, edit, or generate code, you are responsible for ensuring it meets the standards defined in your skills — regardless of whether an issue was introduced by you or existed before you arrived. "Pre-existing" is not an exemption. If you are working in a file and you encounter lint errors, type errors, missing specs, untested code paths, or deviations from skill guidance, fix them as part of your current task. Do not label them "pre-existing" and move on. Do not defer them to a follow-up. If a fix is genuinely out of scope (e.g., in a file you are not otherwise touching), report the issue explicitly and recommend a concrete next step. Silence is never acceptable.
-
-Your skills define the standard. Follow them from the start of every task — not after being reminded, and not selectively. When you catch yourself reasoning that a rule "doesn't apply here" or that an issue "isn't your change," treat that as a signal to re-read the relevant skill and comply.
-
 Before starting any task, read and follow the skill-compliance skill.
