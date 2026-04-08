@@ -52,6 +52,7 @@ alwaysApply: false
 |---|---|---|
 | `skill-compliance` | `.cursor/rules/skill-compliance.mdc` | Always Apply |
 | `tool-usage` | `.cursor/rules/tool-usage.mdc` | Always Apply |
+| `code-quality-antipatterns` | `.cursor/rules/code-quality-antipatterns.mdc` | Always Apply |
 | `bdd-testing` | `.cursor/rules/bdd-testing.mdc` | Apply Intelligently |
 | `bdd-feedback-loop` | `.cursor/rules/bdd-feedback-loop.mdc` | Apply Intelligently |
 | `feature-workflow` | `.cursor/rules/feature-workflow.mdc` | Apply Intelligently |
@@ -95,6 +96,23 @@ Cursor supports global user rules defined in **Cursor Settings → Rules**. Thes
 ## Team Rules
 
 On Team and Enterprise plans, administrators can create and enforce rules from the Cursor dashboard. Team rules take precedence over project and user rules.
+
+## Memory & Context Persistence
+
+Cursor does not have a built-in memory or auto-note system:
+
+| Mechanism | Location | Behavior |
+|---|---|---|
+| Notepad | Cursor UI sidebar | Manual scratchpad per workspace; not auto-loaded into context |
+| Rules | `.cursor/rules/*.mdc` | Re-read each session; frontmatter controls activation |
+| `AGENTS.md` | Workspace root | Always-on instructions, re-read each session |
+| User Rules | Cursor Settings → Rules | Global text, applied to all projects |
+
+Cursor has no auto-memory mechanism — it does not write conversation insights to disk. The Notepad feature is a manual scratchpad and must be explicitly referenced.
+
+### Skill-recall after context compaction
+
+The `skill-compliance` rule is converted with `alwaysApply: true`, so it is included in every session. Its Step 8 reload instruction ensures skills are re-read after compaction. No additional configuration is needed beyond the standard Cursor setup.
 
 ## Limitations
 

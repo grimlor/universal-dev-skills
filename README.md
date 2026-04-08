@@ -60,8 +60,9 @@ These skills work with multiple AI coding agents. The skill content (Markdown + 
 | **Cursor** | Via rules conversion | Native support | [Setup guide](docs/cursor.md) |
 | **Windsurf** | Native support | Native support | [Setup guide](docs/windsurf.md) |
 | **Claude Code** | Native support | Via CLAUDE.md | [Setup guide](docs/claude-code.md) |
+| **OpenCode** | Native support | Native support | [Setup guide](docs/opencode.md) |
 
-**AGENTS.md** is the one format recognized by all five agents. If you need a single-file approach that works everywhere, start there.
+**AGENTS.md** is the one format recognized by all six agents. If you need a single-file approach that works everywhere, start there.
 
 ## Quick Start
 
@@ -78,6 +79,7 @@ python3 scripts/setup.py --target vscode       # VS Code / GitHub Copilot
 python3 scripts/setup.py --target copilot-cli   # GitHub Copilot CLI
 python3 scripts/setup.py --target claude        # Claude Code
 python3 scripts/setup.py --target windsurf      # Windsurf
+python3 scripts/setup.py --target opencode      # OpenCode
 python3 scripts/setup.py --target cursor \       # Cursor (per-workspace)
   --workspace /path/to/your-project
 python3 scripts/setup.py --target all           # all of the above (except cursor)
@@ -87,7 +89,7 @@ Use `--dry-run` to preview changes without writing anything. Run `--help` for fu
 
 The Cursor target converts SKILL.md files to `.cursor/rules/*.mdc` and requires `--workspace` to specify the project directory. The `all` target includes Cursor only when `--workspace` is provided.
 
-For manual setup, see the per-agent guides: [VS Code/Copilot](docs/vscode-copilot.md) · [Cursor](docs/cursor.md) · [Windsurf](docs/windsurf.md) · [Claude Code](docs/claude-code.md)
+For manual setup, see the per-agent guides: [VS Code/Copilot](docs/vscode-copilot.md) · [Cursor](docs/cursor.md) · [Windsurf](docs/windsurf.md) · [Claude Code](docs/claude-code.md) · [OpenCode](docs/opencode.md)
 
 ### Option 2 — Copy into a repository
 

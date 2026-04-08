@@ -111,6 +111,8 @@ At minimum, the following rules apply:
 
 - `tool-usage` — applies whenever you use any tool or terminal command
 - `plan-updates` — applies whenever progress or status needs to persist across sessions
+- `code-quality-antipatterns` — applies whenever writing, editing, or reviewing code
+  (any task where suppressions might be added or encountered)
 
 Then add task-specific skills:
 
@@ -171,7 +173,45 @@ for this session. Follow the decision tree in the `plan-updates` skill.
 If an established `.copilot/plan.md` already exists for the work, use it as the
 canonical async tracker rather than duplicating state in another file.
 
-### Step 8 — Proceed
+### Step 8 — Write Skill Summary to Session Memory
+
+After loading all skills and posting the confirmation (Step 6), write a
+session memory file at `/memories/session/active-skills.md` summarizing
+the active skills and their most critical rules. This file must be
+concise — one line per skill, 2–3 key rules each.
+
+**Format:**
+
+```markdown
+# Active Skills — <task summary>
+
+If you cannot recall the full rules for a skill listed below, re-read its
+SKILL.md before proceeding. This summary is a recall trigger, not a substitute.
+
+- **skill-name**: rule 1, rule 2, rule 3
+- **skill-name**: rule 1, rule 2
+```
+
+**Example:**
+
+```markdown
+# Active Skills — implement login handler tests
+
+- **bdd-testing**: 100% coverage required, no bare assertions, G/W/T docstring + body comments on every method
+- **code-quality-antipatterns**: NO pragmas without user approval, fix > suppress, no test-only params on production APIs
+- **tool-usage**: read_file over cat, no terminal for file edits
+- **python-code-standards**: pyright strict, ruff with D rules
+```
+
+**Why:** Session memory filenames are listed in every prompt — even after
+context compaction drops the full skill text. When session memory exists,
+the agent can re-read it cheaply to recall which skills are active and
+what the critical rules are, then reload full skills as needed.
+
+If the task changes and different skills become relevant, update the file
+rather than creating a new one.
+
+### Step 9 — Proceed
 
 After posting the confirmation, begin the task using the procedures
 defined in the loaded skills.
@@ -180,7 +220,7 @@ If at any point during the task you realize an additional skill applies
 that you did not load, stop, read it, and post an amended confirmation
 before continuing.
 
-### Step 9 — Protect Skills from Context Loss
+### Step 10 — Protect Skills from Context Loss
 
 Skill content loaded via file reads lives in conversation history. When
 the context window fills, the system compresses older messages into

@@ -92,6 +92,27 @@ VS Code reads Claude-format files alongside its native formats:
 
 This means you can use Claude-format paths and have them work in both Claude Code and VS Code/Copilot.
 
+## Memory & Context Persistence
+
+Claude Code has built-in memory that survives context compaction:
+
+| Mechanism | Location | Behavior |
+|---|---|---|
+| `CLAUDE.md` | Workspace root, `.claude/`, or `~/.claude/` | Re-read from disk after every `/compact` — most reliable anchor |
+| Auto memory | `~/.claude/projects/<proj>/memory/MEMORY.md` | First 200 lines auto-loaded; Claude writes insights here automatically |
+| Local variant | `CLAUDE.local.md` | Same as `CLAUDE.md` but gitignored — for personal preferences |
+| Rules | `.claude/rules/*.md` | Re-read from disk each session |
+
+### Skill-recall after context compaction
+
+`CLAUDE.md` is re-read from disk after `/compact`, making it the most reliable place for the skill-compliance instruction. The setup script creates `~/.claude/CLAUDE.md` with:
+
+```
+Before starting any task, read and follow the skill-compliance skill.
+```
+
+This ensures the skill chain is re-established even after aggressive compaction.
+
 ## Limitations
 
 - **Different entry point** — Claude Code uses `CLAUDE.md` rather than `copilot-instructions.md` or `AGENTS.md`. If you need both, create both files.

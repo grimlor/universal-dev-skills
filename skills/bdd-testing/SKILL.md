@@ -55,32 +55,8 @@ This means:
   dependencies (e.g., URL parsers, math, config validation) can be tested directly
   with no mocks at all — they have no I/O to mock and no layers to compose.
 
-```python
-# ✅ System specification — all layers run for real, only subprocess is mocked
-def test_cached_context_produces_correct_repo_info(self, tmp_path):
-    # Given: a real .git directory, subprocess returns a valid remote URL
-    (tmp_path / ".git").mkdir()
-    mock_git = MagicMock(returncode=0, stdout="https://github.com/Org/Repo\n")
-    with patch("myapp.discovery.subprocess.run", return_value=mock_git):
-        RepoContext.set(str(tmp_path))  # Layer 2 calls Layer 1 for real
-
-    # When: Layer 3 entry point is called — exercises Layer 2 caching for real
-    ctx = ProjectContext.from_repo()
-
-    # Then: result reflects the full system's behavior
-    assert ctx.organization == "Org"
-
-# ❌ Unit testing — mocks our own code, hides integration bugs
-def test_cached_context_produces_correct_repo_info(self):
-    fake_info = {"name": "Repo", "organization": "Org", ...}
-    with patch("myapp.project.RepoContext.get", return_value=fake_info):
-        ctx = ProjectContext.from_repo()
-    assert ctx.organization == "Org"  # proves nothing — you wrote both sides
-```
-
-The second test is a tautology: you hand-craft a dict and then verify you can read it
-back. It cannot catch mismatches between what `RepoContext.get()` actually returns
-and what `from_repo()` expects — which is exactly the class of bug that matters.
+See `references/test-patterns.md` → *Mocking Rules* and *Tautology Tests* for
+full examples of correct vs. tautological system specs.
 
 ### What counts as an I/O boundary?
 
@@ -119,24 +95,9 @@ from it directly. Each method then specifies one of those scenarios in full.
 ## Test Organization
 
 Tests are organized by **consumer requirement**, not by code structure or persona.
-
-```python
-# ✅ Grouped by requirement
-class TestPluginRegistration:
-class TestErrorCategorization:
-class TestScoreCalculation:
-
-# ❌ Grouped by code structure
-class TestProcessorModule:
-class TestValidatorModule:
-
-# ❌ Grouped by persona
-class TestDeveloperFeatures:
-```
-
-A single test file may contain multiple requirement classes. Group related requirements
-in one file when they exercise the same module. The file-level docstring should explain
-which BDD spec classes it covers.
+Group by what the system promises (`TestPluginRegistration`, `TestScoreCalculation`),
+not by module name or persona. A single file may contain multiple requirement classes
+when they exercise the same module.
 
 ---
 
@@ -165,23 +126,7 @@ intent to concrete lines. Both are required; neither substitutes for the other.
 
 ## Class-Level Docstrings — REQUIREMENT / WHO / WHAT / WHY
 
-Every test class MUST have a structured docstring:
-
-```python
-class TestAdapterRegistration:
-    """
-    REQUIREMENT: Adapters self-register and are discoverable by name.
-
-    WHO: The pipeline runner loading adapters from configuration
-    WHAT: (1) a registered adapter is retrievable by its board name string
-          (2) an unregistered name raises ValueError identifying the missing name
-          (3) all registered boards are enumerable via list_registered()
-          (4) duplicate registration replaces silently (last write wins)
-          (5) register() returns the original class unchanged (decorator idiom)
-    WHY: The runner must not know concrete adapter classes — IoC requires
-         that the name is the only coupling between config and implementation
-    """
-```
+Every test class MUST have a structured docstring with these four fields:
 
 | Field | Purpose | Question It Answers |
 |-------|---------|---------------------|
@@ -191,41 +136,20 @@ class TestAdapterRegistration:
 | **WHY** | Business/operational justification | What goes wrong if it's missing? |
 
 **WHAT must enumerate, not summarize.** Write WHAT as a numbered list of claims —
-one per testable scenario. Prose like "adapters are retrievable and errors are clear"
-describes a capability; it does not generate a test inventory. Numbered clauses do:
-the test author reads WHAT top-to-bottom and implements exactly those scenarios;
-coverage review reads them bottom-up to verify completeness. A test method that
-cannot trace to any WHAT clause is speculative or WHAT is incomplete. A WHAT clause
-with no implementing test method is a coverage gap.
+one per testable scenario. A test method that cannot trace to any WHAT clause is
+speculative or WHAT is incomplete. A WHAT clause with no implementing test method
+is a coverage gap.
 
-The WHAT field is the bridge between the user story and the test methods. Each clause
-in WHAT should correspond to one or more test methods. If a test method cannot be
-traced to a clause in WHAT, either the test is speculative or WHAT is incomplete.
+See `references/test-patterns.md` → *Mock Boundary Contract — Full Examples* for
+complete class docstring examples.
 
 ---
 
 ## Mock Boundary Contract (REQUIRED per class)
 
 Every test class must include a MOCK BOUNDARY declaration immediately after the
-WHO/WHAT/WHY block. This is not optional annotation — it is the contract that
-prevents the most common violations.
+WHO/WHAT/WHY block. The three lines answer:
 
-```python
-class TestSemanticScoring:
-    """
-    REQUIREMENT: ...
-    WHO: ...
-    WHAT: ...
-    WHY: ...
-
-    MOCK BOUNDARY:
-        Mock:  mock_client fixture (external API — the only I/O boundary)
-        Real:  Scorer instance, database via store fixture, tmp_path filesystem
-        Never: Construct Result directly — always obtain via scorer.score(item)
-    """
-```
-
-The three lines answer:
 - **Mock** — what is patched and which fixture to use
 - **Real** — what runs for real (computation, filesystem, embedded DB)
 - **Never** — what must not be constructed or mocked directly
@@ -243,124 +167,41 @@ Every test method MUST have a Given / When / Then docstring.
 precondition is the default state established by conftest fixtures and adds no
 distinguishing information. Even then, the `# Given:` body comment is always present.
 
-```python
-# Given required — the non-trivial precondition is the point of the test
-def test_extraction_error_on_one_listing_does_not_abort_others(self):
-    """
-    Given a batch where one listing raises an extraction error
-    When the runner processes the batch
-    Then the remaining listings are scored and returned
-    """
-
-# Given included — explicit setup in the test body
-def test_registered_adapter_is_retrievable_by_board_name(self):
-    """
-    Given an adapter registered under a known name
-    When a registered name is requested from the registry
-    Then the correct adapter class is returned
-    """
-```
-
-Do not mix user-story ("As a … I want … So that …") and scenario ("Given / When /
-Then") formats. Use scenario format only.
+Use scenario format only — never user-story format ("As a … I want …").
+See `references/test-patterns.md` → *The Three-Part Contract* for full examples.
 
 ---
 
 ## Method Naming
 
-Names read as behavior statements, not implementation descriptions:
-
-```python
-# ✅ Behavior-focused
-def test_registered_adapter_is_retrievable_by_board_name(self): ...
-def test_operations_team_gets_clear_errors_for_missing_config(self): ...
-def test_parser_normalizes_hourly_to_annual(self): ...
-
-# ❌ Implementation-focused
-def test_get_adapter_returns_class(self): ...
-def test_config_validation_raises_exception(self): ...
-def test_multiply_by_2080(self): ...
-```
+Names read as **behavior statements**, not implementation descriptions.
+`test_parser_normalizes_hourly_to_annual` ✅ — `test_multiply_by_2080` ❌.
 
 ---
 
 ## Test Body Structure — Given / When / Then (REQUIRED)
 
-Every test method body MUST use Given / When / Then comments to delineate
-the three phases.
-
-```python
-def test_registered_adapter_is_retrievable_by_board_name(self):
-    """
-    When a registered name is requested from the registry
-    Then the correct adapter class is returned
-    """
-    # Given: an adapter registered under a known name
-    registry = AdapterRegistry()
-    registry.register("postgres", PostgresAdapter)
-
-    # When: the name is looked up
-    adapter_cls = registry.get("postgres")
-
-    # Then: the correct adapter class is returned
-    assert adapter_cls is PostgresAdapter, (
-        f"Expected PostgresAdapter, got {adapter_cls}"
-    )
-```
+Every test method body MUST use `# Given:`, `# When:`, `# Then:` comments to
+delineate setup, action, and assertion phases. See `references/test-patterns.md`
+for full examples.
 
 ---
 
 ## Assertion Quality (REQUIRED on every assertion)
 
-Every assertion MUST include a diagnostic message. Bare assertions are prohibited.
-
-```python
-# ✅ Shows expected vs actual
-assert result.score == pytest.approx(0.74, abs=0.05), (
-    f"score out of range. Expected ~0.74, got {result.score:.4f}. "
-    f"Full result: {result}"
-)
-
-# ✅ Loop assertions include the failing item
-for i, chunk in enumerate(chunks):
-    assert len(chunk) <= MAX_EMBED_CHARS, (
-        f"Chunk {i} exceeds max length. "
-        f"Expected <= {MAX_EMBED_CHARS}, got {len(chunk)}: ...{chunk[-60:]!r}"
-    )
-
-# ❌ Bare assertion — failure is opaque
-assert result.is_valid
-assert len(items) == 3
-```
+Every assertion MUST include a diagnostic message. Bare assertions (`assert x`,
+`assert len(items) == 3`) are prohibited. Messages must show expected vs. actual
+and enough context to diagnose without a debugger. See `references/test-patterns.md`
+→ *Assertion Quality* for examples.
 
 ---
 
 ## Test Data
 
-Test data should be representative — close enough to real-world values that
-failures mean something. Placeholder strings like `"t"` for title or `"f"` for
-full_text produce opaque failures and hide bugs where the implementation uses
-the field content.
-
-Magic numbers are acceptable when their meaning is stated:
-
-```python
-# ✅ Magic number explained in comment
-expected_chunks = 3  # resume has 3 sections: Experience, Skills, Education
-
-# ✅ Magic number explained in assertion message
-assert len(results) == 3, (
-    "Expected 3 results (Bronze/Silver/Gold tier) "
-    f"but got {len(results)}: {[r.title for r in results]}"
-)
-
-# ❌ Unexplained magic number
-assert result == 0.7
-assert len(chunks) == 4
-```
-
-Extract constants only when a value appears multiple times or encodes a business
-rule referenced by name in the production code.
+Test data should be **representative** — close enough to real-world values that
+failures mean something. Placeholder strings like `"t"` for title produce opaque
+failures. Magic numbers are acceptable when their meaning is stated in a comment
+or assertion message. See `references/test-patterns.md` → *Test Data* for examples.
 
 ---
 
@@ -422,62 +263,28 @@ Before writing any test for a module, read the relevant `src/` files to discover
 the real public API: method signatures, return types, constructor parameters,
 and which names are public vs. private (`_` prefix).
 
-**This is the only permitted reason to read `src/` during test writing.**
-
-```python
-# ✅ Correct use of src/ knowledge — discovered service.process() returns Result
-result = service.process(item)
-assert result.score > 0.5, (...)
-
-# ❌ Wrong — used src/ to find an internal function to mock
-with patch("mypackage.internal._compute_chunks") as mock_chunks:
-    ...
-```
-
-If a failure condition cannot be induced through public API inputs alone, that is
-a signal the condition may be dead code — flag it in the deviation log rather
-than patching around it.
+**This is the only permitted reason to read `src/` during test writing.** Do not
+use `src/` knowledge to find internal functions to mock. If a failure condition
+cannot be induced through public API inputs alone, flag it as potential dead code.
 
 ---
 
 ## Public APIs Only — No Private Imports
 
-These are **system specs**, not traditional unit tests. The internal
-implementation is a black box — we specify *what* the system does, not
-*how* it does it. Tests must exercise internal logic **through the public
-API**, not by importing private names directly.
+Tests must exercise internal logic **through the public API**, not by importing
+private (`_`-prefixed) names directly. When a private function "seems worth
+testing directly":
 
-```python
-# ❌ Testing private internals — breaks the black-box boundary
-from mypackage.pipeline.processor import _parse_header
+1. **Default — test it through the public API.** Find the public entry point
+   that exercises the private logic.
+2. **Override, don't import.** Overriding a private *variable* or injecting a
+   dependency is acceptable; importing private *functions* is not.
+3. **Promote only when production code needs it.** Test convenience alone is
+   never a reason to promote.
 
-# ✅ Exercise _parse_header indirectly through the public API
-from mypackage.pipeline.processor import load_files
-```
-
-**When a private function "seems worth testing directly":**
-
-1. **Default action — test it through the public API.** Find the public
-   entry point that exercises the private logic and write specs against
-   that. If a failure condition cannot be induced through public inputs
-   alone, flag it in the deviation log rather than patching around it.
-
-2. **Override, don't import.** When a test must force a specific condition
-   (e.g., simulating a failure), it is acceptable to override a private
-   *variable* or inject a dependency — but importing private *functions*
-   to call them directly is not.
-
-3. **Promote only when another production module needs it.** A private
-   function is promoted to the public API only when a non-test module has
-   a legitimate use for it. Test convenience alone is never a reason to
-   promote.
-
-### Pragmas for existing private imports
-
-When modifying test files that already import private names, do not use
-file-level suppression pragmas for static-analysis warnings. Use narrowly scoped,
-line-level suppressions only when removal is not yet possible, and record why.
-See language-specific details in the reference files.
+See `references/test-patterns.md` → *No Private-Function Imports* for examples.
+For suppression rules when legacy private imports exist, see the
+`code-quality-antipatterns` skill.
 
 ---
 
@@ -512,7 +319,7 @@ an unhandled failure. For every feature, the spec must cover:
 
 For detailed implementation examples including mock boundary contracts, tautology
 anti-patterns, assertion quality, and test data:
-- `.github/skills/bdd-testing/references/test-patterns.md`
+- `references/test-patterns.md`
 
 Language-specific references:
 - `skills/bdd-testing/references/python.md`

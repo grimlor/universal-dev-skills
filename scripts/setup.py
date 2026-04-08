@@ -395,22 +395,48 @@ def setup_vscode(*, dry_run: bool) -> None:
 
 
 def setup_claude(*, dry_run: bool) -> None:
-    """Symlink skills into ~/.claude/skills/ for Claude Code."""
+    """Symlink skills into ~/.claude/skills/ and create CLAUDE.md for Claude Code."""
     print()
     print("Claude Code")
     print("─" * 40)
 
-    skills_dir = Path.home() / ".claude" / "skills"
+    claude_dir = Path.home() / ".claude"
+    skills_dir = claude_dir / "skills"
+    claude_md = claude_dir / "CLAUDE.md"
+
     print(f"Skills:   {skills_dir}")
+    print(f"Entry:    {claude_md}")
     print()
 
+    # Skills
+    print("Skills:")
     actions = ensure_symlinks(skills_dir, [REPO_ROOT / "skills"], dry_run=dry_run)
     for action in actions:
         print(action)
     print()
 
+    # Global CLAUDE.md — create if missing, never overwrite
+    print("Global CLAUDE.md:")
+    claude_content = (
+        "Before starting any task, read and follow the skill-compliance skill.\n"
+    )
+    if claude_md.exists():
+        existing = claude_md.read_text(encoding="utf-8")
+        if "skill-compliance" in existing:
+            print(f"  ✓ {claude_md.name} (already contains skill-compliance)")
+        else:
+            print(f"  ! {claude_md.name} exists but missing skill-compliance")
+            print("    Add this line: Before starting any task, read and follow"
+                  " the skill-compliance skill.")
+    else:
+        if not dry_run:
+            claude_md.parent.mkdir(parents=True, exist_ok=True)
+            claude_md.write_text(claude_content, encoding="utf-8")
+        print(f"  + {claude_md.name}")
+    print()
+
     if not dry_run:
-        print(f"✓ Skills linked in {skills_dir}")
+        print(f"✓ Claude Code configured in {claude_dir}")
 
 
 # ── Target: Windsurf ────────────────────────────────────────────────────
@@ -433,6 +459,17 @@ def setup_windsurf(*, dry_run: bool) -> None:
 
     if not dry_run:
         print(f"✓ Skills linked in {skills_dir}")
+
+    # Windsurf rules are workspace-specific — print a reminder
+    print()
+    print("Note: Windsurf uses workspace-level rules (.windsurf/rules/).")
+    print("Create this file in each workspace for skill-recall:")
+    print()
+    print("  .windsurf/rules/skill-compliance.md")
+    print("  ---")
+    print("  trigger: always_on")
+    print("  ---")
+    print("  Before starting any task, read and follow the skill-compliance skill.")
 
 
 # ── Target: Copilot CLI ─────────────────────────────────────────────────
@@ -490,6 +527,7 @@ def setup_copilot_cli(*, dry_run: bool) -> None:
 CURSOR_ACTIVATION: dict[str, str | bool | None] = {
     "skill-compliance": True,
     "tool-usage": True,
+    "code-quality-antipatterns": True,
     "python-code-standards": "**/*.py",
     "typescript-code-standards": "**/*.ts,**/*.tsx",
     "java-code-standards": "**/*.java",
@@ -574,6 +612,54 @@ def setup_cursor(*, dry_run: bool, workspace: Path) -> None:
         print(f"✓ Cursor rules written to {rules_dir}")
 
 
+# ── Target: OpenCode ─────────────────────────────────────────────────────
+
+
+def setup_opencode(*, dry_run: bool) -> None:
+    """Symlink skills and create global AGENTS.md for OpenCode."""
+    print()
+    print("OpenCode")
+    print("─" * 40)
+
+    config_dir = Path.home() / ".config" / "opencode"
+    skills_dir = config_dir / "skills"
+    agents_md = config_dir / "AGENTS.md"
+
+    print(f"Config:   {config_dir}")
+    print(f"Skills:   {skills_dir}")
+    print()
+
+    # Skills — symlink each skill directory
+    print("Skills:")
+    actions = ensure_symlinks(skills_dir, [REPO_ROOT / "skills"], dry_run=dry_run)
+    for action in actions:
+        print(action)
+    print()
+
+    # Global AGENTS.md — create if missing, never overwrite
+    print("Global AGENTS.md:")
+    agents_content = (
+        "Before starting any task, read and follow the skill-compliance skill.\n"
+    )
+    if agents_md.exists():
+        existing = agents_md.read_text(encoding="utf-8")
+        if "skill-compliance" in existing:
+            print(f"  ✓ {agents_md.name} (already contains skill-compliance)")
+        else:
+            print(f"  ! {agents_md.name} exists but missing skill-compliance")
+            print("    Add this line: Before starting any task, read and follow"
+                  " the skill-compliance skill.")
+    else:
+        if not dry_run:
+            agents_md.parent.mkdir(parents=True, exist_ok=True)
+            agents_md.write_text(agents_content, encoding="utf-8")
+        print(f"  + {agents_md.name}")
+    print()
+
+    if not dry_run:
+        print(f"✓ OpenCode configured in {config_dir}")
+
+
 # ── CLI entry point ─────────────────────────────────────────────────────
 
 USAGE = """\
@@ -583,7 +669,8 @@ Configure AI coding agents to use universal-dev-skills.
 
 options:
   --target TARGET    Agent architecture to configure (required)
-                     Choices: vscode, claude, windsurf, copilot-cli, cursor, all
+                     Choices: vscode, claude, windsurf, copilot-cli,
+                              cursor, opencode, all
   --workspace PATH   Target workspace directory (required for cursor)
   --dry-run          Show what would change without writing anything
   --help, -h         Show this message and exit
@@ -595,6 +682,7 @@ TARGETS: dict[str, Callable[..., None]] = {
     "windsurf": setup_windsurf,
     "copilot-cli": setup_copilot_cli,
     "cursor": setup_cursor,
+    "opencode": setup_opencode,
 }
 
 

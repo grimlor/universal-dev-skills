@@ -107,6 +107,26 @@ The `instructions/copilot-instructions.md` file contains a single line that dire
 
 This chain — entry point → skill-compliance → relevant skills — is what makes the system self-enforcing rather than advisory.
 
+## Memory & Context Persistence
+
+VS Code Copilot has the richest memory system of any supported platform:
+
+| Scope | Location | Loaded | Survives Compaction? |
+|---|---|---|---|
+| User memory | `/memories/` (memory tool) | First 200 lines auto-loaded every turn | Yes — persists across all workspaces and conversations |
+| Session memory | `/memories/session/` (memory tool) | Filenames listed every turn; content on demand | Until conversation ends |
+| Repository memory | `/memories/repo/` (memory tool) | Create-only; stored locally in workspace | Yes — persists across conversations in the same workspace |
+
+The memory tool is a VS Code extension feature (`github.copilot-chat`) — it is not filesystem-accessible and is not available in Copilot CLI or VS Code Cloud.
+
+### Skill-recall after context compaction
+
+Three layers ensure skills are re-read after compaction:
+
+1. **User memory note** (`/memories/session-memory-protocol.md`) — auto-loaded every turn, instructs the agent to check session memory and reload skills if in doubt.
+2. **`copilot-instructions.md` trigger** — always-on instruction that checks for session memory files.
+3. **Skill-compliance Step 8** — writes active skill summaries to session memory with an unconditional reload instruction.
+
 ## Relevant VS Code Settings
 
 | Setting | Purpose |

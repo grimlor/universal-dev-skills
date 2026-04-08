@@ -101,6 +101,33 @@ Before starting any task, read and follow the skill-compliance skill.
 | Always-on instructions | `.github/copilot-instructions.md` | Root `AGENTS.md` or `trigger: always_on` rule |
 | AGENTS.md | Supported | Supported (same scoping behavior) |
 
+## Memory & Context Persistence
+
+Windsurf automatically persists conversation insights:
+
+| Mechanism | Location | Behavior |
+|---|---|---|
+| Auto memories | `~/.codeium/windsurf/memories/` | Workspace-scoped, machine-local; Cascade writes insights automatically |
+| Global rules | `~/.codeium/windsurf/memories/global_rules.md` | User-defined, applied to all workspaces |
+| Workspace rules | `.windsurf/rules/*.md` | Re-read each session; supports `trigger` frontmatter |
+| `AGENTS.md` | Workspace root | Always-on instructions, re-read each session |
+
+Auto memories are workspace-scoped and machine-local — they do not sync across devices or get committed to version control.
+
+### Skill-recall after context compaction
+
+Create an `always_on` rule in each workspace:
+
+```markdown
+---
+trigger: always_on
+---
+
+Before starting any task, read and follow the skill-compliance skill.
+```
+
+Save as `.windsurf/rules/skill-compliance.md`. This is re-read every session, ensuring the skill chain is re-established after compaction. The setup script prints a reminder to create this file.
+
 ## Limitations
 
 - **No external directory setting** — Unlike VS Code, you cannot add arbitrary paths for skill discovery. Use the global directory or workspace copy.
