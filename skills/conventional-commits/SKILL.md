@@ -1,6 +1,7 @@
 ---
 name: conventional-commits
-description: "Commit message format rules. Use whenever staging, committing, or describing changes — including when the user asks to commit, when preparing a PR, or when writing a changelog entry."
+description: "Commit message format rules. Use whenever staging, committing, or describing changes — including when the user asks to commit, when preparing a PR, or when writing a changelog entry.
+NOTE: Never commit autonomously. Always prepare a message and ask for user approval before committing."
 ---
 
 # Conventional Commits — Message Format
@@ -150,9 +151,9 @@ lifecycle hook. All startup handlers have been migrated to
    other types are recorded in the changelog but don't change the version.
 5. **Use `!` or `BREAKING CHANGE:` for breaking changes.** Both are equivalent;
    `!` is shorter for simple cases.
-6. **Always show the user the diff and proposed commit message before committing.**
-   Present the staged diff (using the method specified by `tool-usage`) and the
-   draft message, then wait for explicit user approval. Do not commit autonomously.
+6. **Always show the user the proposed commit message before committing.**
+   Present the draft message and offer to show the diff, then wait for explicit 
+   user approval. Do not commit autonomously.
 
 ---
 
