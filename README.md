@@ -23,6 +23,7 @@ These skills define processes and decision rules. They apply regardless of langu
 | **feature-workflow** | Spec-before-code development — 5-phase lifecycle from planning to status update |
 | **conventional-commits** | Commit message format following Conventional Commits v1.0.0 |
 | **plan-updates** | Progress tracking in project plan and BDD specification artifacts |
+| **code-quality-antipatterns** | Suppression pragma policy — prevents autonomous type-ignore, noqa, pragma no-cover (cross-cutting) |
 
 ### Language Standards Skills
 
@@ -113,6 +114,35 @@ cp -r skills/ /path/to/your-repo/.windsurf/skills/
 
 Skills can be bundled inside an MCP server package and auto-installed into workspaces on server startup. See the [VS Code/Copilot setup guide](docs/vscode-copilot.md#mcp-package-distribution) for the pattern.
 
+## Updating
+
+If you cloned the repo and ran the setup script (Option 1), pull the latest changes:
+
+```bash
+cd ~/universal-dev-skills
+git pull
+```
+
+Whether `git pull` is sufficient depends on how your agent was set up:
+
+| Agent | `git pull` sufficient? | Notes |
+|-------|------------------------|-------|
+| **VS Code / Copilot** | ✅ Yes | Symlinks point at repo; changes flow through automatically |
+| **Copilot CLI** | ✅ Yes | Symlinks point at repo |
+| **Claude Code** | ✅ Skills only | New entry points (e.g., `CLAUDE.md`) require re-running setup |
+| **Windsurf** | ✅ Skills only | Workspace rules (`.windsurf/rules/`) are manual per-workspace |
+| **OpenCode** | ✅ Skills only | New entry points (e.g., `AGENTS.md`) require re-running setup |
+| **Cursor** | ❌ Re-run setup | Rules are copied and converted, not symlinked |
+
+For agents that need a re-run, use the same command as initial setup:
+
+```bash
+python3 scripts/setup.py --target <agent>         # re-run for your agent
+python3 scripts/setup.py --target <agent> --dry-run  # preview first
+```
+
+The setup script is idempotent — it will skip existing symlinks and only create missing files.
+
 ## Repo Structure
 
 ```
@@ -130,6 +160,7 @@ universal-dev-skills/
 │   ├── feature-workflow/            # Spec-before-code lifecycle
 │   ├── conventional-commits/        # Commit message format
 │   ├── plan-updates/                # Progress tracking
+│   ├── code-quality-antipatterns/   # Suppression pragma policy (cross-cutting)
 │   ├── python-code-standards/       # Ruff + Pyright + pytest config
 │   ├── typescript-code-standards/   # ESLint + tsc + Jest config
 │   ├── java-code-standards/         # Checkstyle + SpotBugs + Gradle config
@@ -138,7 +169,7 @@ universal-dev-skills/
 │   ├── enforce-tool-usage.json      #   Hook configuration (VS Code / Copilot CLI)
 │   └── enforce-tool-usage.sh        #   Shell script matching blocked commands
 ├── scripts/                         # Setup automation
-│   └── setup.py                     #   Multi-target installer (vscode, claude, windsurf, copilot-cli, cursor)
+│   └── setup.py                     #   Multi-target installer (vscode, claude, windsurf, copilot-cli, cursor, opencode)
 ├── agents/                          # Custom agent definitions — one folder per platform
 │   └── vscode/
 │       └── dev.agent.md
