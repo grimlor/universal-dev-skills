@@ -163,15 +163,44 @@ Projects may run pre-commit hooks (or equivalent staged-file checks) before a
 commit is accepted. This means **commits can fail at the hook stage** until
 staged files satisfy the configured quality gates.
 
-**Consequence for commit messages:** when the pre-commit hooks fail and you
-fix the violations, the staged changes are now different from what was
-originally staged. Re-stage the fixed files and re-run the commit — the
-message you prepared should be reused as-is. Do not generate a new message
-just because the hook failed and was retried. Use the tool specified by
-`tool-usage` for staging operations.
+### Auto-formatting and re-staging
 
-**Activating hooks** depends on the project's toolchain. Python projects using
-the canonical setup use:
+Many pre-commit hooks **reformat staged files in place** (e.g., Ruff, Black,
+Prettier, google-java-format). When this happens:
+
+1. The hook modifies the working-tree copy of the file.
+2. The commit is rejected because the staged content no longer matches.
+3. **Re-stage the modified files** and commit again with the same message.
+
+This is the normal workflow — not an error. Do not generate a new commit
+message just because the hook failed on the first attempt. Reuse the message
+you already prepared.
+
+### Formatting a file on demand (the "hack" pattern)
+
+To get a file formatted by the project's pre-commit hooks without making a
+real change:
+
+1. Make a trivial edit to the file (e.g., add a blank line) to get a change to commit.
+2. Stage the file.
+3. Attempt a commit — the hooks will reformat it.
+4. Re-stage the reformatted file and commit (or reset the commit if the only
+   purpose was formatting).
+
+This is useful when a file predates the hooks or was edited outside the
+project's toolchain.
+
+### Persistent failures after re-staging
+
+If the commit still fails after re-staging the auto-formatted output, the
+remaining violations are **not auto-fixable**. These are typically lint errors
+or type-checking failures that require manual intervention. Read the hook
+output, fix each reported issue, re-stage, and retry.
+
+### Activating hooks
+
+Activation depends on the project's toolchain. Python projects using the
+canonical setup use:
 
 ```bash
 uv run pre-commit install
