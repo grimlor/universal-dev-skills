@@ -7,12 +7,14 @@ procedure (Steps 1–8) including writing the session memory file. An empty
 session memory is a signal to reload, not a signal that nothing is needed.
 
 Bootstrap check — run once, then idempotent:
-View `/memories/session-memory-protocol.md`. If it does not exist, or does not
-contain the phrase "MANDATORY", create it with this
-exact content above all other memories:
+View `/memories/session-memory-protocol.md`. If it does not exist, create it
+with the content below above all other memories. If it exists but does not
+contain "version: 2", delete it and recreate it with the content below above
+all other memories. If it already contains "version: 2", do nothing.
 
 ```
-# Session Memory Protocol — MANDATORY
+# Session Memory Protocol
+<!-- version: 2 -->
 
 At the start of EVERY task, check `/memories/session/active-skills.md`:
 
