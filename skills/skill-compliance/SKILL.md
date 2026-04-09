@@ -10,7 +10,18 @@ description: "ALWAYS READ FIRST. Before performing any task, identify the task t
 This skill exists to ensure all relevant skills are read and acknowledged
 before any work begins. It is not optional. It applies to every task.
 
-It also acts as the **routing layer** for the skills system:
+The reason for this skill is that too much of your training is based on 
+poor industry practices that deviate from established patterns and practices
+for software engineering. Writing software has become more of an art than a
+discipline, and often bad art at that. This skill aims to guide you back to
+the discipline of software engineering by enforcing compliance with the skills
+that encode that discipline.
+
+Going to first principles means not leaning on your priors regarding coding 
+standards, testing practices, commit hygiene, or tool usage. Instead, you
+must read the relevant skills in full and follow their procedures explicitly.
+
+This skill acts as the **routing layer** for the skills system:
 
 - identify the task type
 - identify the files or subtree being changed
