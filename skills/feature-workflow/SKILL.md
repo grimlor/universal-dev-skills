@@ -107,6 +107,35 @@ Gaps discovered during any phase:
 
 Do not silently fill gaps with undocumented behavior.
 
+### Phase 1.5 — Code Quality Baseline
+
+**Goal:** "Are the files we're about to change already clean?"
+
+Legacy codebases often contain files with pre-existing lint errors, type errors,
+or formatting drift. Mixing quality fixes into a feature PR obscures the
+functional change and makes review harder. This phase isolates cleanup work into
+a separate PR so the feature PR shows only the functional delta.
+
+1. **Identify existing files** that the spec (Phase 1) indicates will be modified.
+   New files created by the feature are exempt — they will be written to standard
+   from the start.
+2. **Run lint and type-check** on those files using the project's configured
+   toolchain (see the relevant language-specific standards skill).
+3. **If all files are clean** — proceed to Phase 2.
+4. **If violations exist:**
+   a. Create a branch (e.g., `quality/<feature-name>`) and fix the violations.
+   b. Commit the fixes and open a PR for review.
+   c. Create the **feature branch off the quality branch** (e.g.,
+      `feat/<feature-name>` branched from `quality/<feature-name>`).
+   d. Open a **draft PR** from the feature branch targeting the quality branch.
+      This ensures the draft PR diff shows only the functional changes, not
+      formatting and typing noise.
+   e. Proceed to Phase 2 on the feature branch.
+
+This gate only applies to **existing files** identified by the spec. Files
+discovered later during implementation are handled by the late-discovery clause
+in Phase 3.
+
 ### Phase 2 — BDD Test Specification
 
 **Goal:** "How do we know it works?"
@@ -128,6 +157,16 @@ Do not silently fill gaps with undocumented behavior.
    (error handling patterns, factory methods, async patterns, etc.).
 3. **Do not add behavior that isn't specified by a test.** If you discover a need
    during implementation, go back to Phase 2 and add the spec first.
+4. **Late-discovery quality gate.** If implementation requires modifying existing
+   files that were **not** identified in Phase 1 and those files have quality
+   violations:
+   a. Commit any in-progress work on the feature branch.
+   b. Switch to the quality branch (from Phase 1.5 — create one if Phase 1.5
+      was skipped because all originally-identified files were clean).
+   c. Fix the violations in the newly-discovered files and commit.
+   d. Switch back to the feature branch and merge in the quality branch changes.
+   e. Continue implementation. The draft PR continues to show only functional
+      changes.
 
 ### Phase 4 — Coverage Verification
 
@@ -180,4 +219,4 @@ Three categories routinely surface only at coverage time:
 - `plan-updates` governs progress tracking — used during Phase 5
 - `tool-usage` is cross-cutting — applies at every phase
 
-The flow: **spec gate → human review → tests → implementation → gaps → spec update → continue**
+The flow: **spec gate → human review → quality baseline → tests → implementation → gaps → spec update → continue**

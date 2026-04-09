@@ -43,8 +43,15 @@ you arrived.
 
 **"Pre-existing" is not an exemption.** If you are working in a file and you
 encounter lint errors, type errors, missing specs, untested code paths, or
-deviations from skill guidance, fix them as part of your current task. Do not
-label them "pre-existing" and move on. Do not defer them to a follow-up.
+deviations from skill guidance, they must be fixed — but **how** they are fixed
+depends on context:
+
+- **During a feature workflow:** quality fixes on existing files go into a
+  separate quality branch and PR so the feature PR shows only the functional
+  delta. See Phase 1.5 and the late-discovery clause in Phase 3 of
+  `feature-workflow`.
+- **Outside a feature workflow** (standalone fix, one-off task): fix violations
+  inline as part of your current task. Do not defer them to a follow-up.
 
 If a fix is genuinely out of scope (e.g., in a file you are not otherwise
 touching), report the issue explicitly and recommend a concrete next step.
