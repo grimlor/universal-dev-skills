@@ -86,6 +86,11 @@ if echo "$STRIPPED" | grep -qE '\bls\b'; then
   deny "Use the list_dir tool instead of ls in the terminal. See the tool-usage skill."
 fi
 
+# --- Privilege escalation and permission changes: never allowed ---
+if echo "$STRIPPED" | grep -qE '\b(sudo|su|doas|chmod|chown|chgrp|setfacl)\b'; then
+  deny "Do not use privilege escalation or permission/ownership commands (sudo, su, doas, chmod, chown, chgrp, setfacl) in the terminal. These should be managed outside the agent."
+fi
+
 # --- Test runners: use runTests tool (supports coverage) ---
 if echo "$STRIPPED" | grep -qE '\b(npx jest|jest|yarn jest|pnpm jest)\b'; then
   deny "Use the runTests tool instead of jest in the terminal. See the tool-usage skill."
