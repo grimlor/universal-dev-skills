@@ -46,7 +46,7 @@ Use specialized VS Code tools instead of terminal commands. This is not a prefer
 | Git push | GitKraken `git_push` | `git push` in terminal |
 | Git blame | GitKraken `git_blame` | `git blame` in terminal |
 | Git stash | GitKraken `git_stash` | `git stash` in terminal |
-| Run language snippets | Language-server snippet tools when available | ad-hoc shell one-liners when a structured tool exists |
+| Run language snippets | Show script to user; ask them to enable snippet tool (see below) | ad-hoc shell one-liners; running scripts without user review |
 
 **Running tests via terminal is not permitted.** The `runTests` tool handles test environment setup, path configuration, output formatting, and coverage reporting. Any session step that would otherwise run `pytest`, `jest`, `dotnet test`, etc. in the terminal must use `runTests` instead — no exceptions, including quick sanity checks and coverage runs.
 
@@ -98,11 +98,17 @@ General test runs are not on this list. They have a tool equivalent — `runTest
 
 ## Script Handling
 
-When language-server snippet tools are available, prefer them over shell
-one-liners for quick scripts because they avoid quoting issues and run against
-the configured workspace environment.
+Language-server snippet tools (e.g. Pylance `RunCodeSnippet`) are **disabled
+by default** for security. When the agent needs to run a script:
 
-For Python-specific `RunCodeSnippet` guidance, see `references/python.md`.
+1. **Show the full script** to the user in a code block.
+2. **Ask the user to enable** the snippet tool and approve your running it.
+3. **Do not** run Python (or other language runtimes) directly in the terminal.
+
+This ensures the user reviews every script before execution, preventing
+jailbreak attacks through dynamically generated code.
+
+For Python-specific details, see `references/python.md`.
 
 ## Why This Matters
 

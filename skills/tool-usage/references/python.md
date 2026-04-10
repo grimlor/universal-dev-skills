@@ -33,5 +33,12 @@ verification after edits.
 
 ## Python Snippet Execution
 
-Use Pylance `RunCodeSnippet` for Python execution. It avoids quoting issues
-and runs against the configured workspace Python environment.
+Pylance `RunCodeSnippet` is **disabled by default** for security. When the
+agent needs to run a Python script:
+
+1. **Show the full script** to the user in a fenced code block.
+2. **Ask the user to enable** the `RunCodeSnippet` tool and get the approval to run it.
+3. **Do not** run `python` directly in the terminal as a workaround.
+
+This prevents jailbreak attacks through dynamically generated code while
+still allowing legitimate script execution under user supervision.

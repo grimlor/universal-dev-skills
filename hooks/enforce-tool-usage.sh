@@ -124,9 +124,9 @@ if echo "$STRIPPED" | grep -qE '\bpython[0-9.]* -m unittest\b'; then
   deny "Use the runTests tool instead of python -m unittest in the terminal. See the tool-usage skill."
 fi
 
-# --- Python execution: use Pylance RunCodeSnippet ---
+# --- Python execution: show script to user and ask them to enable RunCodeSnippet ---
 if echo "$STRIPPED" | grep -qE '\bpython[0-9.]*\b'; then
-  deny "Use Pylance RunCodeSnippet instead of running Python in the terminal. See the tool-usage skill (references/python.md)."
+  deny "Do not run Python in the terminal. Show the script to the user and ask them to enable the Pylance RunCodeSnippet tool and approve running it. The tool is disabled by default for security. See the tool-usage skill (references/python.md)."
 fi
 
 # Command is allowed
