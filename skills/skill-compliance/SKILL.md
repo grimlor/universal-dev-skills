@@ -138,6 +138,9 @@ Then add task-specific skills:
 - `bdd-testing` — whenever tests are being written, modified, or reviewed
 - `bdd-feedback-loop` — whenever implementing tests from a spec document
 - `conventional-commits` — whenever staging, committing, or preparing PR titles
+- `code-quality-audit` — when auditing files for structural quality violations
+  (mock boundaries, test-only APIs, suppression pragmas, BDD conventions), or
+  during Phase 1.5 of the feature workflow
 
 Then add language-specific standards skills or references for the active language
 and subtree. Examples:

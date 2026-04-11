@@ -112,17 +112,23 @@ Do not silently fill gaps with undocumented behavior.
 **Goal:** "Are the files we're about to change already clean?"
 
 Legacy codebases often contain files with pre-existing lint errors, type errors,
-or formatting drift. Mixing quality fixes into a feature PR obscures the
-functional change and makes review harder. This phase isolates cleanup work into
-a separate PR so the feature PR shows only the functional delta.
+formatting drift, and structural quality violations. Mixing quality fixes into a
+feature PR obscures the functional change and makes review harder. This phase
+isolates cleanup work into a separate PR so the feature PR shows only the
+functional delta.
 
 1. **Identify existing files** that the spec (Phase 1) indicates will be modified.
    New files created by the feature are exempt — they will be written to standard
    from the start.
-2. **Run lint and type-check** on those files using the project's configured
-   toolchain (see the relevant language-specific standards skill).
-3. **If all files are clean** — proceed to Phase 2.
-4. **If violations exist:**
+2. **Run the mechanical checks** — lint and type-check on those files using the
+   project's configured toolchain (see the relevant language-specific standards
+   skill).
+3. **Run the structural audit** — follow the `code-quality-audit` skill procedure
+   (Steps 2–5) scoped to the identified files. This catches violations that
+   linters miss: mock boundary violations in test files, test-only production API
+   pollution, unjustified suppression pragmas, and BDD convention drift.
+4. **If all files are clean** — proceed to Phase 2.
+5. **If violations exist:**
    a. Create a branch (e.g., `quality/<feature-name>`) and fix the violations.
    b. Commit the fixes and open a PR for review.
    c. Create the **feature branch off the quality branch** (e.g.,
@@ -214,9 +220,11 @@ Three categories routinely surface only at coverage time:
 ## Relationship to Other Skills
 
 - `feature-workflow` (this skill) governs the full lifecycle — spec through plan update
+- `code-quality-audit` governs the structural inspection in Phase 1.5 — mock boundaries,
+  test-only APIs, suppression pragmas, BDD conventions
 - `bdd-testing` governs test quality — referenced from Phase 2 and the `bdd-feedback-loop`
 - `bdd-feedback-loop` governs per-module test implementation — used during Phase 2
 - `plan-updates` governs progress tracking — used during Phase 5
 - `tool-usage` is cross-cutting — applies at every phase
 
-The flow: **spec gate → human review → quality baseline → tests → implementation → gaps → spec update → continue**
+The flow: **spec gate → human review → quality baseline (mechanical + structural) → tests → implementation → gaps → spec update → continue**

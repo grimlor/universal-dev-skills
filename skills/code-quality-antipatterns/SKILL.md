@@ -216,5 +216,8 @@ file, the odd one out with an injected `settings` parameter is the antipattern.
 - **`bdd-testing`** defines the coverage requirement (100%) and the disposition
   for uncovered lines (spec or remove). This skill extends that principle: a
   `# pragma: no cover` counts as an uncovered line unless approved.
+- **`code-quality-audit`** operationalizes the rules in this skill into a
+  systematic inspection procedure with structured output. This skill defines
+  *what is correct*; the audit skill defines *how to inspect for it*.
 - **`skill-compliance`** routes to this skill via the "cross-cutting" rule — it
   applies alongside whatever task-specific skills are active.
