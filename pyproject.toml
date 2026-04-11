@@ -1,0 +1,86 @@
+[project]
+name = "universal-dev-skills"
+version = "0.1.0"
+description = "Skills, hooks, and tooling for consistent AI-assisted development."
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+dev = [
+    "pyright>=1.1,<2",
+    "pre-commit>=4,<5",
+    "pytest>=8,<9",
+    "pytest-cov>=6,<7",
+    "ruff>=0.8,<1",
+    "taskipy>=1.14,<2",
+]
+
+[tool.taskipy.tasks]
+lint   = "uv run ruff check --fix hooks/ tests/"
+format = "uv run ruff format hooks/ tests/"
+type   = "uv run pyright hooks/ tests/"
+test   = "uv run pytest tests/ -v"
+cov    = "uv run pytest tests/ --cov=hooks --cov-report=term-missing"
+check  = "task format && task lint && task type && task test"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 99
+src = ["hooks", "tests"]
+
+[tool.ruff.lint]
+preview = true
+explicit-preview-rules = true
+select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "N",
+    "UP",
+    "B",
+    "SIM",
+    "TCH",
+    "RUF",
+    "D",
+    "PLC0415",
+    "PLC2701",
+]
+ignore = [
+    "E501",
+    "D212",
+    "D203",
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["hooks"]
+combine-as-imports = true
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+    "PLC0415",
+    "PLC2701",
+    "D205",
+    "D400",
+    "D415",
+    "D401",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.pyright]
+pythonVersion = "3.11"
+typeCheckingMode = "strict"
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["hooks"]

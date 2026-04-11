@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Rewrite WHAT sections in test class docstrings using Copilot CLI.
+"""
+Rewrite WHAT sections in test class docstrings using Copilot CLI.
 
 For each test class, extracts the GWT docstrings from all test methods,
 then asks Copilot to produce accurate, numbered WHAT clauses — one per
@@ -90,7 +91,8 @@ def get_class_docstring_node(class_node: ast.ClassDef) -> ast.Constant | None:
 
 
 def extract_what_block(docstring: str) -> tuple[int, int] | None:
-    """Return (start_line, end_line) of WHAT: section within the docstring.
+    """
+    Return (start_line, end_line) of WHAT: section within the docstring.
 
     Line numbers are relative to the docstring content (0-indexed).
     Returns None if no WHAT section found.
@@ -122,9 +124,7 @@ def extract_test_methods(
         docstring = ast.get_docstring(node, clean=True) or ""
 
         first_assert = ""
-        for i in range(
-            node.lineno - 1, min((node.end_lineno or node.lineno), len(source_lines))
-        ):
+        for i in range(node.lineno - 1, min((node.end_lineno or node.lineno), len(source_lines))):
             stripped = source_lines[i].strip()
             if stripped.startswith("assert "):
                 first_assert = stripped[:120]
@@ -205,9 +205,7 @@ def call_copilot(prompt: str) -> str:
     except subprocess.TimeoutExpired as e:
         raise RuntimeError(f"copilot timed out after {COPILOT_TIMEOUT}s") from e
     except FileNotFoundError as e:
-        raise RuntimeError(
-            "copilot not found in PATH -- is Copilot CLI installed?"
-        ) from e
+        raise RuntimeError("copilot not found in PATH -- is Copilot CLI installed?") from e
 
 
 # ---------------------------------------------------------------------------
@@ -216,7 +214,8 @@ def call_copilot(prompt: str) -> str:
 
 
 def parse_what_clauses(response: str, expected: int) -> list[str] | None:
-    """Parse numbered clauses from Copilot response.
+    """
+    Parse numbered clauses from Copilot response.
 
     Returns list of full clause strings like '(1) clause text', or None
     if parsing fails or clause count doesn't match expected.
@@ -370,11 +369,10 @@ def process_class(
 
 
 def main() -> None:
+    """Parse arguments and run the WHAT-clause rewriter."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--apply", action="store_true", help="Write changes to files")
-    parser.add_argument(
-        "--filter", default="", help="Only process files matching this substring"
-    )
+    parser.add_argument("--filter", default="", help="Only process files matching this substring")
     parser.add_argument(
         "--class",
         dest="class_filter",
@@ -403,12 +401,12 @@ def main() -> None:
         sys.exit(0)
 
     mode = "APPLYING" if args.apply else "DRY RUN"
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print(f"rewrite_what_clauses.py  --  {mode}")
     print(f"Repo:  {repo_root}")
     print(f"Tests: {tests_dir}")
     print(f"Files: {len(test_files)}")
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")
 
     total_classes = 0
     rewritten = 0
@@ -462,14 +460,14 @@ def main() -> None:
             path.write_text(current_source, encoding="utf-8")
             print(f"  wrote {path.name}")
 
-    print(f"\n{'='*60}")
+    print(f"\n{'=' * 60}")
     print("SUMMARY")
     print(f"  Classes processed: {total_classes}")
     print(f"  Rewritten:         {rewritten}")
     print(f"  Errors:            {errors}")
     if not args.apply:
         print("\n  Run with --apply to write changes.")
-    print(f"{'='*60}\n")
+    print(f"{'=' * 60}\n")
 
 
 if __name__ == "__main__":

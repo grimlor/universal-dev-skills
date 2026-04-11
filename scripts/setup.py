@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """
-setup.py
-
-Configures AI coding agents to use universal-dev-skills.
+Configure AI coding agents to use universal-dev-skills.
 
 Supported targets:
   vscode      — Merges settings into VS Code User settings.json
@@ -30,10 +28,14 @@ import os
 import platform
 import re
 import shutil
+import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 # ── Resolve the repo root ────────────────────────────────────────────────
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -98,8 +100,6 @@ def detect_settings_file() -> Path:
     if wsl:
         # WSL — try to find Windows VS Code User settings
         try:
-            import subprocess
-
             appdata = (
                 subprocess.check_output(
                     ["cmd.exe", "/C", "echo %APPDATA%"], stderr=subprocess.DEVNULL
@@ -130,14 +130,7 @@ def detect_settings_file() -> Path:
 
     system = platform.system()
     if system == "Darwin":
-        return (
-            Path.home()
-            / "Library"
-            / "Application Support"
-            / "Code"
-            / "User"
-            / "settings.json"
-        )
+        return Path.home() / "Library" / "Application Support" / "Code" / "User" / "settings.json"
     if system == "Linux":
         config = os.environ.get("XDG_CONFIG_HOME", str(Path.home() / ".config"))
         return Path(config) / "Code" / "User" / "settings.json"
@@ -150,7 +143,8 @@ def detect_settings_file() -> Path:
 
 
 def repo_tilde_path() -> str:
-    """Return the repo path with ~ prefix for portability in VS Code settings.
+    """
+    Return the repo path with ~ prefix for portability in VS Code settings.
 
     Always uses forward slashes — VS Code resolves ~/paths on all platforms
     including Windows (confirmed empirically).
@@ -164,9 +158,7 @@ def repo_tilde_path() -> str:
         return repo.as_posix()
 
 
-def merge_object_setting(
-    settings: dict[str, Any], key: str, entries: list[str]
-) -> list[str]:
+def merge_object_setting(settings: dict[str, Any], key: str, entries: list[str]) -> list[str]:
     """Merge entries into an object-valued setting. Returns list of actions taken."""
     actions: list[str] = []
     if key not in settings:
@@ -185,10 +177,9 @@ def merge_object_setting(
 # ── Symlink helpers ──────────────────────────────────────────────────────
 
 
-def ensure_symlinks(
-    target_dir: Path, source_dirs: list[Path], *, dry_run: bool
-) -> list[str]:
-    """Create symlinks in target_dir pointing to each source directory.
+def ensure_symlinks(target_dir: Path, source_dirs: list[Path], *, dry_run: bool) -> list[str]:
+    """
+    Create symlinks in target_dir pointing to each source directory.
 
     Each subdirectory of each source_dir gets a symlink like:
         target_dir/<name> -> source_dirs[i]/<name>
@@ -212,9 +203,7 @@ def ensure_symlinks(
                 if existing == child.resolve():
                     actions.append(f"  ✓ {link.name} → {child} (already linked)")
                 else:
-                    actions.append(
-                        f"  ! {link.name} → {existing} (different target, skipped)"
-                    )
+                    actions.append(f"  ! {link.name} → {existing} (different target, skipped)")
             elif link.exists():
                 actions.append(f"  ! {link.name} exists (not a symlink, skipped)")
             else:
@@ -242,7 +231,8 @@ def ensure_file_symlink(link: Path, target: Path, *, dry_run: bool) -> str:
 
 
 def write_hook_config(dest: Path, *, dry_run: bool) -> str:
-    """Write enforce-tool-usage.json with an absolute path to the shell script.
+    """
+    Write enforce-tool-usage.json with an absolute path to the shell script.
 
     The JSON must contain an absolute path because VS Code resolves relative
     paths from the workspace root, not from the JSON file's directory.
@@ -347,9 +337,7 @@ def setup_vscode(*, dry_run: bool) -> None:
     # Hooks — generate config with absolute path to the shell script
     # (VS Code resolves relative paths from the workspace root, not the JSON dir)
     managed_hooks_dir = Path.home() / ".vscode-copilot" / "hooks"
-    hook_action = write_hook_config(
-        managed_hooks_dir / "enforce-tool-usage.json", dry_run=dry_run
-    )
+    hook_action = write_hook_config(managed_hooks_dir / "enforce-tool-usage.json", dry_run=dry_run)
     all_actions.append(hook_action)
     managed_hooks_tilde = "~/.vscode-copilot/hooks"
     all_actions += merge_object_setting(
@@ -417,17 +405,17 @@ def setup_claude(*, dry_run: bool) -> None:
 
     # Global CLAUDE.md — create if missing, never overwrite
     print("Global CLAUDE.md:")
-    claude_content = (
-        "Before starting any task, read and follow the skill-compliance skill.\n"
-    )
+    claude_content = "Before starting any task, read and follow the skill-compliance skill.\n"
     if claude_md.exists():
         existing = claude_md.read_text(encoding="utf-8")
         if "skill-compliance" in existing:
             print(f"  ✓ {claude_md.name} (already contains skill-compliance)")
         else:
             print(f"  ! {claude_md.name} exists but missing skill-compliance")
-            print("    Add this line: Before starting any task, read and follow"
-                  " the skill-compliance skill.")
+            print(
+                "    Add this line: Before starting any task, read and follow"
+                " the skill-compliance skill."
+            )
     else:
         if not dry_run:
             claude_md.parent.mkdir(parents=True, exist_ok=True)
@@ -546,7 +534,7 @@ def convert_skill_to_cursor_rule(skill_dir: Path) -> str:
 
     end = text.index("---", 3)
     frontmatter = text[3:end].strip()
-    body = text[end + 3:].lstrip("\n")
+    body = text[end + 3 :].lstrip("\n")
 
     # Parse description from frontmatter
     description = ""
@@ -638,17 +626,17 @@ def setup_opencode(*, dry_run: bool) -> None:
 
     # Global AGENTS.md — create if missing, never overwrite
     print("Global AGENTS.md:")
-    agents_content = (
-        "Before starting any task, read and follow the skill-compliance skill.\n"
-    )
+    agents_content = "Before starting any task, read and follow the skill-compliance skill.\n"
     if agents_md.exists():
         existing = agents_md.read_text(encoding="utf-8")
         if "skill-compliance" in existing:
             print(f"  ✓ {agents_md.name} (already contains skill-compliance)")
         else:
             print(f"  ! {agents_md.name} exists but missing skill-compliance")
-            print("    Add this line: Before starting any task, read and follow"
-                  " the skill-compliance skill.")
+            print(
+                "    Add this line: Before starting any task, read and follow"
+                " the skill-compliance skill."
+            )
     else:
         if not dry_run:
             agents_md.parent.mkdir(parents=True, exist_ok=True)
@@ -687,6 +675,7 @@ TARGETS: dict[str, Callable[..., None]] = {
 
 
 def main() -> None:
+    """Parse CLI arguments and run the requested setup target."""
     if "--help" in sys.argv or "-h" in sys.argv:
         print(USAGE)
         sys.exit(0)

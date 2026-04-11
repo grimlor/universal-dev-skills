@@ -4,6 +4,12 @@
 # Python
 __pycache__/
 *.pyc
+.coverage
+.pytest_cache/
+
+# Environment
+.envrc
+.venv/
 
 # Copilot scripts (generated, not tracked)
 .copilot/scripts/
