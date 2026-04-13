@@ -657,11 +657,11 @@ class TestClassifyCategories:
             f"Expected test_runners. Got: {result['category']}"
         )
 
-    def test_denies_bun_test(self, config: dict[str, Any]) -> None:
+    def test_allows_bun_test(self, config: dict[str, Any]) -> None:
         """
-        Given bun test (pattern match),
+        Given bun test (allowed subcommand — runTests gives different results),
         When classify is called,
-        Then it returns the test_runners category.
+        Then it returns None (allowed).
         """
         # Given:
         cmd = "bun test"
@@ -670,16 +670,28 @@ class TestClassifyCategories:
         result = classify(cmd, config)
 
         # Then:
-        assert result is not None, "bun test should be denied"
-        assert result["category"] == "test_runners", (
-            f"Expected test_runners. Got: {result['category']}"
-        )
+        assert result is None, f"bun test should be allowed. Got: {result}"
+
+    def test_allows_bun_test_coverage(self, config: dict[str, Any]) -> None:
+        """
+        Given bun test --coverage (allowed — test is an allowed subcommand),
+        When classify is called,
+        Then it returns None (allowed).
+        """
+        # Given:
+        cmd = "bun test --coverage"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is None, f"bun test --coverage should be allowed. Got: {result}"
 
     def test_denies_bun_run_test(self, config: dict[str, Any]) -> None:
         """
-        Given bun run test (pattern match),
+        Given bun run test (run is not an allowed subcommand),
         When classify is called,
-        Then it returns the test_runners category.
+        Then it returns the bun_interpreter category.
         """
         # Given:
         cmd = "bun run test"
@@ -689,8 +701,8 @@ class TestClassifyCategories:
 
         # Then:
         assert result is not None, "bun run test should be denied"
-        assert result["category"] == "test_runners", (
-            f"Expected test_runners. Got: {result['category']}"
+        assert result["category"] == "bun_interpreter", (
+            f"Expected bun_interpreter. Got: {result['category']}"
         )
 
     def test_denies_bunx_jest(self, config: dict[str, Any]) -> None:
@@ -740,24 +752,6 @@ class TestClassifyCategories:
 
         # Then:
         assert result is None, f"bun add should be allowed. Got: {result}"
-
-    def test_denies_bun_test_coverage(self, config: dict[str, Any]) -> None:
-        """
-        Given bun test --coverage (no terminal exception),
-        When classify is called,
-        Then it returns the test_runners category.
-        """
-        # Given:
-        cmd = "bun test --coverage"
-
-        # When:
-        result = classify(cmd, config)
-
-        # Then:
-        assert result is not None, "bun test --coverage should be denied"
-        assert result["category"] == "test_runners", (
-            f"Expected test_runners. Got: {result['category']}"
-        )
 
     # -- package_exec category (npx / bunx / pnpm exec / yarn dlx) --
 

@@ -30,7 +30,6 @@
         "\\bgradle\\s+test\\b",
         "\\bmvn\\s+(?:test|verify)\\b",
         "\\b(?:npm|yarn|pnpm)(?:\\s+run)?\\s+test\\b",
-        "\\bbun(?:\\s+run)?\\s+test\\b",
         "\\b(?:npx|yarn|pnpm|bunx)\\s+(?:exec\\s+)?(?:jest|vitest|mocha)\\b"
       ],
       "guidance": "Use the runTests tool instead of running tests in the terminal. See the tool-usage skill."
@@ -75,7 +74,7 @@
         "install", "i", "add", "remove", "rm", "update",
         "link", "unlink", "pm", "build", "init", "create",
         "upgrade", "completions", "outdated", "patch",
-        "publish", "pack",
+        "publish", "pack", "test",
         "--version", "--help", "-v", "-h"
       ],
       "guidance": "Bun can execute arbitrary scripts. Use bun only for package management (install, add, build, etc.). For running code or scripts, show the script to the user. See the tool-usage skill."
