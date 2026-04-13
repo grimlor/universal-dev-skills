@@ -1576,6 +1576,7 @@ class TestMain:
         # Then:
         assert result == {}, f"Non-dict tool_input should produce empty JSON. Got: {result}"
 
+    @pytest.mark.filterwarnings("ignore::RuntimeWarning")
     def test_main_guard_invokes_main(self, capsys: pytest.CaptureFixture[str]) -> None:
         """
         Given the module is run as __main__,
