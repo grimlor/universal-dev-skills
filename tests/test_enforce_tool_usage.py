@@ -657,6 +657,340 @@ class TestClassifyCategories:
             f"Expected test_runners. Got: {result['category']}"
         )
 
+    def test_denies_bun_test(self, config: dict[str, Any]) -> None:
+        """
+        Given bun test (pattern match),
+        When classify is called,
+        Then it returns the test_runners category.
+        """
+        # Given:
+        cmd = "bun test"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is not None, "bun test should be denied"
+        assert result["category"] == "test_runners", (
+            f"Expected test_runners. Got: {result['category']}"
+        )
+
+    def test_denies_bun_run_test(self, config: dict[str, Any]) -> None:
+        """
+        Given bun run test (pattern match),
+        When classify is called,
+        Then it returns the test_runners category.
+        """
+        # Given:
+        cmd = "bun run test"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is not None, "bun run test should be denied"
+        assert result["category"] == "test_runners", (
+            f"Expected test_runners. Got: {result['category']}"
+        )
+
+    def test_denies_bunx_jest(self, config: dict[str, Any]) -> None:
+        """
+        Given bunx jest (pattern match),
+        When classify is called,
+        Then it returns the test_runners category.
+        """
+        # Given:
+        cmd = "bunx jest"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is not None, "bunx jest should be denied"
+        assert result["category"] == "test_runners", (
+            f"Expected test_runners. Got: {result['category']}"
+        )
+
+    def test_allows_bun_install(self, config: dict[str, Any]) -> None:
+        """
+        Given bun install (package management),
+        When classify is called,
+        Then it returns None (allowed).
+        """
+        # Given:
+        cmd = "bun install"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is None, f"bun install should be allowed. Got: {result}"
+
+    def test_allows_bun_add(self, config: dict[str, Any]) -> None:
+        """
+        Given bun add (package management),
+        When classify is called,
+        Then it returns None (allowed).
+        """
+        # Given:
+        cmd = "bun add typescript"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is None, f"bun add should be allowed. Got: {result}"
+
+    def test_denies_bun_test_coverage(self, config: dict[str, Any]) -> None:
+        """
+        Given bun test --coverage (no terminal exception),
+        When classify is called,
+        Then it returns the test_runners category.
+        """
+        # Given:
+        cmd = "bun test --coverage"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is not None, "bun test --coverage should be denied"
+        assert result["category"] == "test_runners", (
+            f"Expected test_runners. Got: {result['category']}"
+        )
+
+    # -- package_exec category (npx / bunx / pnpm exec / yarn dlx) --
+
+    def test_denies_npx(self, config: dict[str, Any]) -> None:
+        """
+        Given npx running an arbitrary package,
+        When classify is called,
+        Then it returns the package_exec category.
+        """
+        # Given:
+        cmd = "npx eslint ."
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is not None, "npx should be denied"
+        assert result["category"] == "package_exec", (
+            f"Expected package_exec. Got: {result['category']}"
+        )
+
+    def test_denies_bunx(self, config: dict[str, Any]) -> None:
+        """
+        Given bunx running an arbitrary package,
+        When classify is called,
+        Then it returns the package_exec category.
+        """
+        # Given:
+        cmd = "bunx prettier ."
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is not None, "bunx should be denied"
+        assert result["category"] == "package_exec", (
+            f"Expected package_exec. Got: {result['category']}"
+        )
+
+    def test_denies_pnpm_exec(self, config: dict[str, Any]) -> None:
+        """
+        Given pnpm exec (pattern match),
+        When classify is called,
+        Then it returns the package_exec category.
+        """
+        # Given:
+        cmd = "pnpm exec tsx file.ts"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is not None, "pnpm exec should be denied"
+        assert result["category"] == "package_exec", (
+            f"Expected package_exec. Got: {result['category']}"
+        )
+
+    def test_denies_yarn_dlx(self, config: dict[str, Any]) -> None:
+        """
+        Given yarn dlx (pattern match),
+        When classify is called,
+        Then it returns the package_exec category.
+        """
+        # Given:
+        cmd = "yarn dlx tsx file.ts"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is not None, "yarn dlx should be denied"
+        assert result["category"] == "package_exec", (
+            f"Expected package_exec. Got: {result['category']}"
+        )
+
+    # -- bun_interpreter category (allowed_subcommands) --
+
+    def test_denies_bun_eval_flag(self, config: dict[str, Any]) -> None:
+        """
+        Given bun -e (inline eval),
+        When classify is called,
+        Then it returns the bun_interpreter category.
+        """
+        # Given:
+        cmd = "bun -e console.log(1)"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is not None, "bun -e should be denied"
+        assert result["category"] == "bun_interpreter", (
+            f"Expected bun_interpreter. Got: {result['category']}"
+        )
+
+    def test_denies_bun_file_execution(self, config: dict[str, Any]) -> None:
+        """
+        Given bun executing a TypeScript file directly,
+        When classify is called,
+        Then it returns the bun_interpreter category.
+        """
+        # Given:
+        cmd = "bun script.ts"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is not None, "bun script.ts should be denied"
+        assert result["category"] == "bun_interpreter", (
+            f"Expected bun_interpreter. Got: {result['category']}"
+        )
+
+    def test_denies_bun_repl(self, config: dict[str, Any]) -> None:
+        """
+        Given bun repl (interactive REPL),
+        When classify is called,
+        Then it returns the bun_interpreter category.
+        """
+        # Given:
+        cmd = "bun repl"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is not None, "bun repl should be denied"
+        assert result["category"] == "bun_interpreter", (
+            f"Expected bun_interpreter. Got: {result['category']}"
+        )
+
+    def test_denies_bun_x_subcommand(self, config: dict[str, Any]) -> None:
+        """
+        Given bun x (bunx alias) running an arbitrary package,
+        When classify is called,
+        Then it returns the bun_interpreter category.
+        """
+        # Given:
+        cmd = "bun x tsx file.ts"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is not None, "bun x should be denied"
+        assert result["category"] == "bun_interpreter", (
+            f"Expected bun_interpreter. Got: {result['category']}"
+        )
+
+    def test_allows_bun_build(self, config: dict[str, Any]) -> None:
+        """
+        Given bun build (safe subcommand),
+        When classify is called,
+        Then it returns None (allowed).
+        """
+        # Given:
+        cmd = "bun build src/index.ts --outfile=dist/index.js"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is None, f"bun build should be allowed. Got: {result}"
+
+    def test_denies_bun_run_script(self, config: dict[str, Any]) -> None:
+        """
+        Given bun run with a named script (can execute arbitrary code),
+        When classify is called,
+        Then it returns the bun_interpreter category.
+        """
+        # Given:
+        cmd = "bun run lint"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is not None, "bun run lint should be denied"
+        assert result["category"] == "bun_interpreter", (
+            f"Expected bun_interpreter. Got: {result['category']}"
+        )
+
+    def test_denies_bun_run_file(self, config: dict[str, Any]) -> None:
+        """
+        Given bun run executing a file directly,
+        When classify is called,
+        Then it returns the bun_interpreter category.
+        """
+        # Given:
+        cmd = "bun run script.ts"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is not None, "bun run script.ts should be denied"
+        assert result["category"] == "bun_interpreter", (
+            f"Expected bun_interpreter. Got: {result['category']}"
+        )
+
+    def test_denies_bun_dev(self, config: dict[str, Any]) -> None:
+        """
+        Given bun dev (hot-reload file execution),
+        When classify is called,
+        Then it returns the bun_interpreter category.
+        """
+        # Given:
+        cmd = "bun dev"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is not None, "bun dev should be denied"
+        assert result["category"] == "bun_interpreter", (
+            f"Expected bun_interpreter. Got: {result['category']}"
+        )
+
+    def test_allows_bare_bun(self, config: dict[str, Any]) -> None:
+        """
+        Given bare bun with no arguments,
+        When classify is called,
+        Then it returns None (allowed via bare-command pass-through).
+        """
+        # Given:
+        cmd = "bun"
+
+        # When:
+        result = classify(cmd, config)
+
+        # Then:
+        assert result is None, f"bare bun should be allowed. Got: {result}"
+
     def test_denies_cat(self, config: dict[str, Any]) -> None:
         """
         Given a cat command (file reading),

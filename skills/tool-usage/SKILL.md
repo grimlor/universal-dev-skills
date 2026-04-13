@@ -96,19 +96,28 @@ The git operations in the tool-first table above (status, commit, branch, push, 
 
 General test runs are not on this list. They have a tool equivalent — `runTests` — and that tool must be used. Similarly, when snippet tools are available for a language, they should be preferred over ad-hoc terminal one-liners.
 
+**Bun coverage note:** The `runTests` tool response for Bun contains only
+pass/fail summaries — no coverage data in the payload. However, when
+`bunfig.toml` has `coverage = true` and an lcov reporter, `runTests` triggers
+coverage and writes `coverage/lcov.info`. The agent workflow is:
+`runTests` → `read_file coverage/lcov.info`. If `bunfig.toml` does not exist
+(e.g. contributed projects), create one locally — it does not need to be
+committed. See `references/typescript.md` for details.
+
 ## Script Handling
 
-Language-server snippet tools (e.g. Pylance `RunCodeSnippet`) are **disabled
-by default** for security. When the agent needs to run a script:
+Some language servers expose snippet-execution tools (e.g. Pylance
+`RunCodeSnippet` for Python). These are **disabled by default** for security.
+When the agent needs to run a script:
 
 1. **Show the full script** to the user in a code block.
 2. **Ask the user to enable** the snippet tool and approve your running it.
-3. **Do not** run Python (or other language runtimes) directly in the terminal.
+3. **Do not** run language runtimes directly in the terminal as a workaround.
 
 This ensures the user reviews every script before execution, preventing
 jailbreak attacks through dynamically generated code.
 
-For Python-specific details, see `references/python.md`.
+For language-specific snippet details, see the relevant reference file.
 
 ## Why This Matters
 

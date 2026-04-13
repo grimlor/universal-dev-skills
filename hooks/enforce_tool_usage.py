@@ -27,6 +27,7 @@ class Category(TypedDict, total=False):
     patterns: list[str]
     commands: list[str]
     subcommands: list[str]
+    allowed_subcommands: list[str]
     match: str
 
 
@@ -140,7 +141,7 @@ def check_category(segment: str, category: Category) -> bool:
         if re.search(pat, segment):
             return True
 
-    # 2. Subcommand matching
+    # 2. Subcommand matching (deny specific subcommands)
     if "subcommands" in category:
         subcommands = set(category["subcommands"])
         for cmd in commands:
@@ -149,6 +150,16 @@ def check_category(segment: str, category: Category) -> bool:
                     if re.search(rf"\b{re.escape(cmd)}\s+{re.escape(sub)}\b", segment):
                         return True
         # Subcommand categories only match via subcommands — don't fall through
+        return False
+
+    # 2b. Allowed-subcommand matching (deny-by-default for multi-purpose tools)
+    if "allowed_subcommands" in category:
+        allowed_subs = set(category["allowed_subcommands"])
+        if _matches_cmd(lead, commands):
+            match = re.search(rf"\b{re.escape(lead)}\b\s+(\S+)", segment)
+            if match:
+                return match.group(1) not in allowed_subs
+            return False  # bare command (no arguments)
         return False
 
     # 3. Command list

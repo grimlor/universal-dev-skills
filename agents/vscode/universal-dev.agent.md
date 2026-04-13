@@ -31,6 +31,7 @@ install any that are missing.
 | ESLint | `dbaeumer.vscode-eslint` |
 | Jest | `Orta.vscode-jest` |
 | Pretty TypeScript Errors | `yoavbls.pretty-ts-errors` |
+| Bun | `oven.bun-vscode` |
 
 ### Java
 

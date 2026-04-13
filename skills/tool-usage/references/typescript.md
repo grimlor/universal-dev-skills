@@ -10,6 +10,7 @@ TypeScript-specific details for applying `tool-usage`.
 | ESLint | `dbaeumer.vscode-eslint` | Inline lint diagnostics from project config |
 | Jest | `Orta.vscode-jest` | Inline test status, watch mode, debug integration, coverage gutters |
 | Pretty TypeScript Errors | `yoavbls.pretty-ts-errors` | Human-readable formatting of complex TS errors |
+| Bun | `oven.bun-vscode` | Bun runtime integration — debugging, `bun.lock` support, Bun-based test discovery |
 
 The built-in TypeScript language service runs automatically and provides type
 checking, IntelliSense, and refactoring support. The nightly extension is
@@ -89,13 +90,52 @@ creating `eslint.config.mjs` and deleting legacy config files, run
 
 ## TypeScript Snippet Execution
 
-For quick TypeScript snippets, there is no `RunCodeSnippet` equivalent to
-Pylance's Python snippet runner. Use `run_in_terminal` with `npx tsx` for
-ad-hoc TypeScript execution when available:
+There is no language-server snippet tool for TypeScript (unlike Python's
+Pylance `RunCodeSnippet`). Direct interpreter invocations (`npx tsx`,
+`bun -e`, `bun <file.ts>`) are blocked by the hook — they bypass user review.
 
-```bash
-npx tsx -e "console.log('hello')"
-```
+For ad-hoc TypeScript execution, follow the Script Handling rules from the
+core `tool-usage` skill:
 
-For scripts longer than 10 lines, follow the standard script-file fallback
-from the core `tool-usage` skill: write to `.copilot/scripts/`, then execute.
+1. Write the script to `.copilot/scripts/<name>.ts`.
+2. Show it to the user in a code block.
+3. Ask the user to approve running it.
+
+## Bun Runtime Notes
+
+Bun is an alternative JavaScript/TypeScript runtime that can replace Node.js,
+npm, and Jest in projects that adopt it. The Bun VS Code extension
+(`oven.bun-vscode`) provides debugging support and `bun.lock` file handling.
+
+**When to use Bun CLI commands:**
+
+| Task | Command | Notes |
+|------|---------|-------|
+| Install dependencies | `bun install` | Equivalent to `npm install` |
+| Add a package | `bun add <pkg>` | Equivalent to `npm install <pkg>` |
+
+**Bun's built-in test runner** (`bun test`) is subject to the same rule as
+Jest, Vitest, and Mocha: use the `runTests` tool rather than running tests in
+the terminal.
+
+**Bun coverage via `runTests`:** The `runTests` tool's response payload
+contains only a pass/fail summary — no coverage table, no file-level
+breakdown. However, when `bunfig.toml` has `coverage = true` and
+`coverageReporter = ["text", "lcov"]`, `runTests` **does** trigger Bun's
+coverage engine under the hood. The lcov file is written to
+`coverage/lcov.info` (relative to the repo root) on every run.
+
+**Agent workflow for Bun coverage:**
+
+1. Use `runTests` to execute tests (standard rule — no terminal needed).
+2. Read `coverage/lcov.info` via `read_file` to get file-level coverage data.
+3. The lcov file is regenerated on each `runTests` invocation, so it always
+   reflects the most recent run.
+
+This requires `bunfig.toml` with the lcov reporter configured. If
+`bunfig.toml` does not exist (e.g. contributed projects), create one locally
+with coverage settings — it does not need to be committed.
+
+Detect a Bun-based project by the presence of `bun.lock` or `bun.lockb` in the
+project root. When present, prefer `bun` over `npm` for package management.
+`bun run`, `npx`, and `bunx` are all blocked — they can execute arbitrary code.

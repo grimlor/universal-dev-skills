@@ -82,6 +82,19 @@ For team/open-source projects, use whatever lock file is present:
 | `yarn.lock` | yarn |
 | `bun.lock` or `bun.lockb` | bun |
 
+When the project uses Bun (detected by `bun.lock` or `bun.lockb`), use `bun`
+equivalents for package management commands:
+
+| npm command | Bun equivalent |
+|---|---|
+| `npm install` | `bun install` |
+| `npm install <pkg>` | `bun add <pkg>` |
+| `npm install -D <pkg>` | `bun add -d <pkg>` |
+
+`bun run`, `npx`, and `bunx` are all blocked by the hook — they can execute
+arbitrary code. Direct file execution (`bun <file.ts>`, `bun dev`) is also
+blocked. Write scripts to files and ask the user to approve running them.
+
 ---
 
 ## Canonical `tsconfig.json`
@@ -307,6 +320,38 @@ For contributed or forked projects, match the upstream's threshold.
 
 ---
 
+## Canonical `bunfig.toml` (Bun Projects)
+
+When using Bun as the test runner instead of Jest, configure coverage and
+thresholds in `bunfig.toml` rather than a Jest config file.
+
+```toml
+[test]
+coverage = true
+coverageThreshold = { lines = 1.0, functions = 1.0, statements = 1.0 }
+coverageSkipTestFiles = true
+coverageReporter = ["text", "lcov"]
+```
+
+**Key settings:**
+
+| Setting | Value | Rationale |
+|---|---|---|
+| `coverage` | `true` | Enables coverage on every `bun test` run, including via `runTests` |
+| `coverageThreshold` | `1.0` for all metrics | 100% coverage requirement for personal projects |
+| `coverageSkipTestFiles` | `true` | Excludes test files from the coverage report |
+| `coverageReporter` | `["text", "lcov"]` | Console output for humans, lcov for CI and editor integration |
+
+**Important: `bunfig.toml` is discovered by walking up parent directories.**
+A single config at the repo root covers all packages in a monorepo. With
+`coverage = true`, every `bun test` invocation — including via `runTests` —
+produces coverage output automatically.
+
+For contributed or team projects, create `bunfig.toml` locally with coverage
+settings — it does not need to be committed.
+
+---
+
 ## Canonical `package.json` Scripts
 
 ```json
@@ -347,6 +392,26 @@ Run `npm run check` before pushing to ensure all three pass.
 - `typecheck` — compiler check without emit
 - `check` — full quality gate (lint + type-check + test)
 - `prepare` — Husky hook installation (runs automatically on `npm install`)
+
+### Bun-based project scripts
+
+When using Bun instead of npm + Jest, define scripts in `package.json`.\nNote that `bun run` is blocked by the hook — the agent cannot invoke these\nscripts directly. Use `runTests` for test execution and rely on pre-commit\nhooks or ask the user to run quality gate scripts manually.
+
+```json
+{
+  "scripts": {
+    "build": "bun build src/<entry>.ts --outfile=dist/<output>.js --target=browser",
+    "build:watch": "bun build src/<entry>.ts --outfile=dist/<output>.js --target=browser --watch",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "test:coverage": "bun test --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "check": "eslint . && tsc --noEmit && bun test"
+  }
+}
+```
 
 ---
 
