@@ -140,6 +140,10 @@ one per testable scenario. A test method that cannot trace to any WHAT clause is
 speculative or WHAT is incomplete. A WHAT clause with no implementing test method
 is a coverage gap.
 
+**WHAT count = test count.** Every WHAT clause maps to exactly one test method and
+every test method traces to exactly one WHAT clause. If the counts diverge, either
+WHAT is missing a clause or the test suite has speculative/undocumented tests.
+
 See `references/test-patterns.md` → *Mock Boundary Contract — Full Examples* for
 complete class docstring examples.
 
