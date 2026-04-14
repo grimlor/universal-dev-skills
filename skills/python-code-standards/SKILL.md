@@ -16,20 +16,20 @@ Whenever:
 
 ---
 
-## Scope — Personal vs. Team Projects
+## Scope -- Personal vs. Team Projects
 
 **This standard applies in full only to projects where you control the toolchain**
 (personal projects, greenfield repos, repos where you are the sole or primary author).
 
 ### How to determine if you control the toolchain
 
-Use these signals — AI models vary in capability, so explicit heuristics here are
+Use these signals -- AI models vary in capability, so explicit heuristics here are
 more reliable than expecting a model to infer context from the workspace alone:
 
 1. **GitHub owner is `grimlor`** → personal repo → full standard applies.
 2. **Forked repo** (different owner, contributor commits from `grimlor`) → apply
    the higher bar of your personal standard and the upstream's standard to your
-   contributions. Don't rewrite the upstream's existing configs — the upstream
+   contributions. Don't rewrite the upstream's existing configs -- the upstream
    project's conventions (type checker, lint rules, coverage thresholds) are
    theirs to own.
 3. **Repo lives under a work org path or an ADO workspace** → team repo → follow
@@ -50,16 +50,16 @@ full standard.
 this standard. Forked project configs reflect the original author's choices, not
 necessarily yours.
 
-At work, team repos may follow different conventions — and that's expected. The key
+At work, team repos may follow different conventions -- and that's expected. The key
 differences to watch for in shared codebases:
 
 - **Type checker:** team repos may use `mypy` instead of `pyright`. Do not replace
-  mypy with pyright unilaterally — see [Pyright vs. mypy](#pyright-vs-mypy) below.
+  mypy with pyright unilaterally -- see [Pyright vs. mypy](#pyright-vs-mypy) below.
 - **Ruff config:** teams may not have ruff at all, or may have a narrower `select`
   list. You can still run ruff locally with `--config` pointing to your personal
   settings, but don't commit a config the team hasn't agreed to.
 - **Pre-commit hooks:** a team repo may have its own hook setup. Don't overwrite it
-  with the personal standard — extend or adapt to what's already there.
+  with the personal standard -- extend or adapt to what's already there.
 - **Docstring rules (D):** pydocstyle is strict. Enabling it on a legacy codebase
   generates hundreds of violations. Only add `"D"` to `select` in repos where you
   intend to fix all violations immediately.
@@ -74,7 +74,7 @@ bar is lower.
 ## Pyright vs. mypy
 
 **Prefer pyright for all projects you control.** For team projects, use whatever the
-team uses — do not replace mypy with pyright unilaterally.
+team uses -- do not replace mypy with pyright unilaterally.
 
 ### Why pyright, not mypy
 
@@ -88,15 +88,15 @@ type-checking engine. Running mypy in the same project creates a **two-checker s
   chasing false positives in the other
 
 Using pyright for both the CLI check and the editor gives a **single consistent
-type surface** — what the editor shows is exactly what `uv run pyright` reports,
+type surface** -- what the editor shows is exactly what `uv run pyright` reports,
 and vice versa.
 
 ### If a team repo uses mypy
 
-- Keep mypy — don't change the team's CI
+- Keep mypy -- don't change the team's CI
 - Pylance will still type-check in the editor using pyright internally; editor
   errors won't match `mypy` output exactly, and that's acceptable
-- Do not add a `[tool.pyright]` section to a repo that uses mypy — having both
+- Do not add a `[tool.pyright]` section to a repo that uses mypy -- having both
   configured creates confusion about which is authoritative
 - If you add new code to a mypy repo, write it to satisfy mypy's rules (which are
   stricter in some areas, looser in others)
@@ -185,8 +185,8 @@ combine-as-imports = true
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = [
-    "PLC0415",  # import-outside-top-level — tests may import inside functions
-    "PLC2701",  # import-private-name — testing internal state is intentional
+    "PLC0415",  # import-outside-top-level -- tests may import inside functions
+    "PLC2701",  # import-private-name -- testing internal state is intentional
     "D205",     # BDD Given/When/Then blocks aren't summary+body
     "D400",     # BDD steps don't end with periods
     "D415",     # same as D400
@@ -204,7 +204,7 @@ conflicts with `D203`. The ignored rule in each conflicting pair is the less-com
 one; the enforced rule is the project default.
 
 **Additional per-file-ignores:** Some projects need extra ignores for specific
-subdirectories. Example — MCP tool files that require runtime imports:
+subdirectories. Example -- MCP tool files that require runtime imports:
 
 ```toml
 "src/<package>/tools/*.py" = [
@@ -275,7 +275,7 @@ uv run pre-commit install
 
 ## Docstring Standards (pydocstyle / D rules)
 
-All public symbols must have docstrings — classes, functions, methods, and packages.
+All public symbols must have docstrings -- classes, functions, methods, and packages.
 The `D` ruleset enforces this. Key requirements:
 
 | Rule enforced | Meaning |
@@ -294,37 +294,37 @@ The `D` ruleset enforces this. Key requirements:
 
 ### Common Fix Patterns
 
-**D104 — empty `__init__.py`:**
+**D104 -- empty `__init__.py`:**
 ```python
 """Test suite for <package>."""
 ```
 
-**D107 — `__init__` method with class-level docstring:**
+**D107 -- `__init__` method with class-level docstring:**
 ```python
 def __init__(self, credential: TokenCredential | None = None) -> None:
     """Initialize with an optional credential; defaults to DefaultAzureCredential."""
 ```
 
-**D105 — `__post_init__`:**
+**D105 -- `__post_init__`:**
 ```python
 def __post_init__(self) -> None:
     """Initialize computed fields after dataclass construction."""
 ```
 
-**D401 — imperative mood (ruff can't auto-fix all cases):**
+**D401 -- imperative mood (ruff can't auto-fix all cases):**
 ```python
 # ❌  "Convenience wrapper for RepositoryContext.set."
 # ✅  "Delegate to RepositoryContext.set."
 # ✅  "Return the current workflow state."
 ```
 
-**D400/D415 — missing terminal punctuation:**
+**D400/D415 -- missing terminal punctuation:**
 ```python
 # ❌  """Common utilities for demo-assistant-mcp"""
 # ✅  """Common utilities for demo-assistant-mcp."""
 ```
 
-**D205 — blank line between summary and body (multi-line docstrings that start
+**D205 -- blank line between summary and body (multi-line docstrings that start
 immediately with text on the first line after `"""`):**
 ```python
 # ❌
@@ -344,10 +344,10 @@ Advances the current_step pointer …
 ## Workflow for Applying Standards to an Existing Project
 
 **For personal projects:** apply the full standard below.
-**For team projects:** see [Scope](#scope--personal-vs-team-projects) first — only
+**For team projects:** see [Scope](#scope--personal-vs-team-projects) first -- only
 apply what the team has agreed to, or what doesn't affect shared config.
 
-1. **Update `pyproject.toml`** — add/replace `[tool.ruff]`, `[tool.ruff.lint]`,
+1. **Update `pyproject.toml`** -- add/replace `[tool.ruff]`, `[tool.ruff.lint]`,
    `[tool.ruff.lint.isort]`, `[tool.ruff.lint.per-file-ignores]`, `[tool.ruff.format]`,
    `[tool.pyright]`, and taskipy tasks per the canonical config above.
 
@@ -355,12 +355,12 @@ apply what the team has agreed to, or what doesn't affect shared config.
 
 3. **Run lint with auto-fix:** `uv run task lint` (or `uv run ruff check --fix src/ tests/`)
 
-4. **Fix remaining issues manually** — ruff reports unfixable violations with file +
+4. **Fix remaining issues manually** -- ruff reports unfixable violations with file +
    line. Common unfixable rules: `D401` (imperative mood), `D107`/`D105`/`D102`
    (missing docstrings).
 
 5. **Verify clean:** `uv run ruff check src/ tests/` should print `All checks passed!`
 
-6. **Run type check:** `uv run task type` — fix any Pyright errors introduced.
+6. **Run type check:** `uv run task type` -- fix any Pyright errors introduced.
 
 7. **Commit:** `chore(lint): add pydocstyle rules and fix docstring issues`

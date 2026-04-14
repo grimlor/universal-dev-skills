@@ -1,10 +1,10 @@
 ---
 name: conventional-commits
-description: "Commit message format rules. Use whenever staging, committing, or describing changes — including when the user asks to commit, when preparing a PR, or when writing a changelog entry.
+description: "Commit message format rules. Use whenever staging, committing, or describing changes -- including when the user asks to commit, when preparing a PR, or when writing a changelog entry.
 NOTE: Never commit autonomously. Always prepare a message and ask for user approval before committing."
 ---
 
-# Conventional Commits — Message Format
+# Conventional Commits -- Message Format
 
 ## When This Skill Applies
 
@@ -13,7 +13,7 @@ for a changelog. This includes interactive commits, automated commits, and
 squash-merge titles.
 
 This skill defines **message format only**. For how to execute git operations
-(staging, committing, pushing), follow `tool-usage` — it determines whether to
+(staging, committing, pushing), follow `tool-usage` -- it determines whether to
 use GitKraken MCP tools, GitHub MCP tools, or terminal commands based on what
 is available.
 
@@ -73,12 +73,12 @@ ci(release): add semantic-release workflow
 ```
 
 Define scopes based on your project's module structure. Good scopes are
-short, stable names that map to subsystems or directories — e.g., `api`,
+short, stable names that map to subsystems or directories -- e.g., `api`,
 `auth`, `models`, `cli`, `config`, `deps`, `release`.
 
 ### Description (required)
 
-- Imperative mood: "add", "fix", "remove" — not "added", "fixes", "removed"
+- Imperative mood: "add", "fix", "remove" -- not "added", "fixes", "removed"
 - Lowercase first letter (after the colon)
 - No period at the end
 - No more than 72 characters total for the first line
@@ -89,9 +89,9 @@ Explain *what* and *why*, not *how*. Wrap at 72 characters.
 
 ### Footer (optional)
 
-- `BREAKING CHANGE: <description>` — triggers major bump
-- `Refs: #123` — links to an issue
-- `Co-authored-by: Name <email>` — attribution
+- `BREAKING CHANGE: <description>` -- triggers major bump
+- `Refs: #123` -- links to an issue
+- `Co-authored-by: Name <email>` -- attribution
 
 ---
 
@@ -172,7 +172,7 @@ Prettier, google-java-format). When this happens:
 2. The commit is rejected because the staged content no longer matches.
 3. **Re-stage the modified files** and commit again with the same message.
 
-This is the normal workflow — not an error. Do not generate a new commit
+This is the normal workflow -- not an error. Do not generate a new commit
 message just because the hook failed on the first attempt. Reuse the message
 you already prepared.
 
@@ -183,7 +183,7 @@ real change:
 
 1. Make a trivial edit to the file (e.g., add a blank line) to get a change to commit.
 2. Stage the file.
-3. Attempt a commit — the hooks will reformat it.
+3. Attempt a commit -- the hooks will reformat it.
 4. Re-stage the reformatted file and commit (or reset the commit if the only
    purpose was formatting).
 
@@ -216,5 +216,5 @@ skill for your active stack (for example, `python-code-standards`).
 Semantic release tools (e.g., `semantic-release`, `python-semantic-release`,
 `release-please`) read commit messages to determine version bumps
 automatically. Without consistent conventional commits, the automation cannot
-determine whether a change is a feature, fix, or breaking change — and either
+determine whether a change is a feature, fix, or breaking change -- and either
 bumps incorrectly or not at all.

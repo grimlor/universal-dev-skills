@@ -20,7 +20,7 @@ Whenever:
 
 ---
 
-## Scope — Personal vs. Team Projects
+## Scope -- Personal vs. Team Projects
 
 **This standard applies in full only to projects where you control the toolchain**
 (personal projects, greenfield repos, repos where you are the sole or primary
@@ -31,7 +31,7 @@ author).
 1. **GitHub owner is `grimlor`** → personal repo → full standard applies.
 2. **Forked repo** (different owner, contributor commits from `grimlor`) → apply
    the higher bar of your personal standard and the upstream's standard to your
-   contributions. Don't rewrite the upstream's existing configs — the upstream
+   contributions. Don't rewrite the upstream's existing configs -- the upstream
    project's conventions (analyzer rules, test framework, project structure) are
    theirs to own.
 3. **Repo lives under a work org path or an ADO workspace** → team repo → follow
@@ -51,7 +51,7 @@ this standard. Forked project configs reflect the original author's choices, not
 necessarily yours.
 
 At work or in open-source contributions, team repos may follow different
-conventions — and that's expected. Key differences to watch for:
+conventions -- and that's expected. Key differences to watch for:
 
 - **Target framework:** teams may target different .NET versions. Match theirs.
 - **Test framework:** teams may use NUnit or MSTest instead of xUnit. Don't
@@ -108,14 +108,14 @@ Place at the solution root. These properties apply to all projects in the soluti
 ```
 
 **Why `TreatWarningsAsErrors`:** Same principle as Java's `-Werror` and
-TypeScript's `strict: true` — catch problems at compile time, not in production.
+TypeScript's `strict: true` -- catch problems at compile time, not in production.
 
 **Why `AnalysisLevel=latest-all`:** Enables common Roslyn style, design, and
 security analyzers at their strictest level. This is the C# equivalent of
 enabling all Checkstyle + SpotBugs rules.
 
 **Why `Nullable=enable`:** Nullable reference types are C#'s most impactful
-type-safety feature — the equivalent of TypeScript's `strictNullChecks`. Enabling
+type-safety feature -- the equivalent of TypeScript's `strictNullChecks`. Enabling
 it catches null-related bugs at compile time.
 
 ---
@@ -195,7 +195,7 @@ indent_size = 2
 
 ## XML Documentation Standard
 
-All public symbols must have XML documentation comments — classes, interfaces,
+All public symbols must have XML documentation comments -- classes, interfaces,
 methods, properties, and constructors. The `CS1591` warning (enforced via
 `.editorconfig`) catches missing documentation.
 
@@ -268,7 +268,7 @@ public interface IStorageAdapter
 }
 ```
 
-**Tests do not require XML documentation** — the test method names and
+**Tests do not require XML documentation** -- the test method names and
 `[Fact]`/`[Theory]` attributes serve as the specification.
 
 ---
@@ -337,7 +337,7 @@ Create a script or `Makefile` target that runs the full gate:
 
 ```bash
 #!/bin/bash
-# scripts/check.sh — full quality gate
+# scripts/check.sh -- full quality gate
 set -euo pipefail
 
 dotnet format --verify-no-changes
@@ -390,7 +390,7 @@ dotnet husky add pre-commit -c "dotnet format --verify-no-changes && dotnet buil
 
 Running the full quality gate (including tests) in a pre-commit hook is viable
 for small projects but may be too slow for large solutions. At minimum, format
-and compile — reserve the full gate for CI or a manual pre-push check.
+and compile -- reserve the full gate for CI or a manual pre-push check.
 
 ---
 
@@ -412,14 +412,14 @@ and compile — reserve the full gate for CI or a manual pre-push check.
 #pragma warning disable CS8618
 
 // ✅ Specific with reason and restore
-#pragma warning disable CS8618 // Non-nullable field — initialized by DI framework
+#pragma warning disable CS8618 // Non-nullable field -- initialized by DI framework
 private readonly ILogger _logger;
 #pragma warning restore CS8618
 ```
 
 ### `[SuppressMessage]`
 
-Same rules — narrow scope, specific diagnostic, always include a justification:
+Same rules -- narrow scope, specific diagnostic, always include a justification:
 
 ```csharp
 [SuppressMessage(
@@ -445,7 +445,7 @@ common warnings without reaching for `#pragma warning disable`.
 // ❌ Silences all null warnings on this expression
 var name = user!.Name!;
 
-// ✅ Guard clause — compiler flow analysis eliminates the warning
+// ✅ Guard clause -- compiler flow analysis eliminates the warning
 if (user is null) throw new ArgumentNullException(nameof(user));
 var name = user.Name;
 
@@ -492,7 +492,7 @@ if (result != null)
     Process(result);
 }
 
-// ✅ Pattern matching — cleaner and compiler-aware
+// ✅ Pattern matching -- cleaner and compiler-aware
 if (result is { } validResult)
 {
     Process(validResult);
@@ -518,7 +518,7 @@ public class Config
     public int Timeout { get; set; }
 }
 
-// ✅ Required members — compiler enforces initialization
+// ✅ Required members -- compiler enforces initialization
 public class Config
 {
     public required string ApiUrl { get; init; }
@@ -537,7 +537,7 @@ public class Config
     // constructor, equality, hashCode, toString...
 }
 
-// ✅ Record — immutable by default, no boilerplate
+// ✅ Record -- immutable by default, no boilerplate
 public record Config(string ApiUrl, int Timeout);
 ```
 
@@ -548,12 +548,12 @@ public record Config(string ApiUrl, int Timeout);
 Standard NuGet packages for a new C#/.NET project:
 
 **Test project:**
-- `Microsoft.NET.Test.Sdk` — test runner infrastructure
-- `xunit` — test framework
-- `xunit.runner.visualstudio` — VS Code/VS test discovery
-- `FluentAssertions` — fluent assertion library
-- `Moq` — mocking framework
-- `coverlet.collector` — code coverage collection
+- `Microsoft.NET.Test.Sdk` -- test runner infrastructure
+- `xunit` -- test framework
+- `xunit.runner.visualstudio` -- VS Code/VS test discovery
+- `FluentAssertions` -- fluent assertion library
+- `Moq` -- mocking framework
+- `coverlet.collector` -- code coverage collection
 
 **Analyzers (referenced from main project or `Directory.Build.props`):**
 
@@ -575,7 +575,7 @@ reference for consistent behavior across machines.
 ## Workflow for Applying Standards to an Existing Project
 
 **For personal projects:** apply the full standard below.
-**For team projects:** see [Scope](#scope--personal-vs-team-projects) first — only
+**For team projects:** see [Scope](#scope--personal-vs-team-projects) first -- only
 apply what the team has agreed to, or what doesn't affect shared config.
 
 1. **Create `Directory.Build.props`** at the solution root with the canonical
@@ -583,24 +583,24 @@ apply what the team has agreed to, or what doesn't affect shared config.
 
 2. **Create `.editorconfig`** at the solution root with the canonical style rules.
 
-3. **Enable documentation generation** — add `<GenerateDocumentationFile>` to
+3. **Enable documentation generation** -- add `<GenerateDocumentationFile>` to
    each project's `.csproj`.
 
-4. **Set up test project** — configure xUnit, FluentAssertions, Moq, and Coverlet
+4. **Set up test project** -- configure xUnit, FluentAssertions, Moq, and Coverlet
    per the canonical test project config.
 
 5. **Run formatter:** `dotnet format`
 
 6. **Run build with analysis:** `dotnet build --warnaserrors`
 
-7. **Fix nullable warnings** — apply the fix patterns above. Start at leaf types
+7. **Fix nullable warnings** -- apply the fix patterns above. Start at leaf types
    (models, DTOs) and work upward to services and controllers.
 
-8. **Fix remaining analyzer warnings** — `dotnet format analyzers` can auto-fix
+8. **Fix remaining analyzer warnings** -- `dotnet format analyzers` can auto-fix
    some; the rest require manual fixes guided by the diagnostic IDs.
 
 9. **Verify clean:** `scripts/check.sh` should pass with no warnings.
 
-10. **Set up pre-commit hooks** — configure pre-commit or Husky.Net.
+10. **Set up pre-commit hooks** -- configure pre-commit or Husky.Net.
 
 11. **Commit:** `chore(build): add Roslyn analyzers, nullable references, and strict warnings`

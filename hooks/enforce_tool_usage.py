@@ -149,7 +149,7 @@ def check_category(segment: str, category: Category) -> bool:
                 for sub in subcommands:
                     if re.search(rf"\b{re.escape(cmd)}\s+{re.escape(sub)}\b", segment):
                         return True
-        # Subcommand categories only match via subcommands — don't fall through
+        # Subcommand categories only match via subcommands -- don't fall through
         return False
 
     # 2b. Allowed-subcommand matching (deny-by-default for multi-purpose tools)
@@ -195,7 +195,7 @@ def classify(cmd: str, config: dict[str, Any]) -> dict[str, str] | None:
                     "guidance": category["guidance"],
                 }
 
-        # No category matched — check the allowlist
+        # No category matched -- check the allowlist
         lead = leading_command(segment)
         if not lead:
             continue
@@ -245,7 +245,7 @@ def deny_response(reason: str) -> dict[str, Any]:
 def main() -> None:
     """Entry point: read hook input from stdin and emit a JSON decision."""
     if len(sys.argv) < 2:
-        # No config path — allow (fail open for safety during misconfiguration)
+        # No config path -- allow (fail open for safety during misconfiguration)
         print(json.dumps({}))
         sys.exit(0)
 
@@ -253,7 +253,7 @@ def main() -> None:
     try:
         config = load_config(config_path)
     except (OSError, json.JSONDecodeError) as exc:
-        # Config unreadable — fail open with a warning on stderr
+        # Config unreadable -- fail open with a warning on stderr
         print(json.dumps({}))
         print(f"enforce-tool-usage: config error: {exc}", file=sys.stderr)
         sys.exit(0)

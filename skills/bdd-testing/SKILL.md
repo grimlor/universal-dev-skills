@@ -1,9 +1,9 @@
 ---
 name: bdd-testing
-description: "BDD test conventions for this repository. Use when writing, modifying, or reviewing test files, including creating tests for new features and adding coverage specs. ALSO use when running coverage checks, reporting coverage results, or auditing code coverage — this skill defines the 100% coverage requirement and remediation procedure."
+description: "BDD test conventions for this repository. Use when writing, modifying, or reviewing test files, including creating tests for new features and adding coverage specs. ALSO use when running coverage checks, reporting coverage results, or auditing code coverage -- this skill defines the 100% coverage requirement and remediation procedure."
 ---
 
-# BDD Testing — How to Write Tests
+# BDD Testing -- How to Write Tests
 
 ## When This Skill Applies
 
@@ -33,12 +33,12 @@ examples and commands, use:
 
 ---
 
-## Foundational Principle — System Specification, Not Unit Testing
+## Foundational Principle -- System Specification, Not Unit Testing
 
 We are not testing units in isolation. We are **specifying a system**.
 
 The system under test is the full call chain from the public entry point down to the
-I/O boundary. Every layer of the system runs for real — Layer 3 composes Layer 2,
+I/O boundary. Every layer of the system runs for real -- Layer 3 composes Layer 2,
 which composes Layer 1, all the way down to the process/network/hardware edge. The
 only mock is at that edge.
 
@@ -46,14 +46,14 @@ This means:
 
 - **Inter-layer interactions are the point.** If Layer 3 calls Layer 2 which calls
   Layer 1, all three run for real. Mocking Layer 1 from a Layer 3 test would hide
-  integration defects — the very bugs that matter most.
+  integration defects -- the very bugs that matter most.
 - **The mock boundary is where the system ends**, not where a module ends. A function
   in our codebase is part of the system regardless of which module or layer it lives
   in. `subprocess.run` is not part of our system. `discover_repositories` is, even
   though it calls `subprocess.run`.
 - **The exception is foundational pure functions.** Functions with no system
   dependencies (e.g., URL parsers, math, config validation) can be tested directly
-  with no mocks at all — they have no I/O to mock and no layers to compose.
+  with no mocks at all -- they have no I/O to mock and no layers to compose.
 
 See `references/test-patterns.md` → *Mocking Rules* and *Tautology Tests* for
 full examples of correct vs. tautological system specs.
@@ -64,10 +64,10 @@ The boundary is where the **system** ends and the **environment** begins:
 
 | I/O boundary (mock these) | Part of the system (never mock) |
 |---|---|
-| `subprocess.run` — spawns a process | `discover_repositories` — our function that calls subprocess |
-| `requests.get` — HTTP call | `fetch_details` — our function that calls requests |
-| `Connection.query` — database wire call | `RepoContext.get` — our caching logic over discovery |
-| `os.getcwd` — process-level state | `os.path.exists` with `tmp_path` — use real filesystem instead |
+| `subprocess.run` -- spawns a process | `discover_repositories` -- our function that calls subprocess |
+| `requests.get` -- HTTP call | `fetch_details` -- our function that calls requests |
+| `Connection.query` -- database wire call | `RepoContext.get` -- our caching logic over discovery |
+| `os.getcwd` -- process-level state | `os.path.exists` with `tmp_path` -- use real filesystem instead |
 
 If you find yourself mocking a function in your own codebase, stop. Trace the call
 chain to the actual I/O operation and mock that instead. Use `tmp_path` for real
@@ -87,7 +87,7 @@ BDD in this repo has three levels. Each level answers a different question:
 | **Test body** | Given / When / Then comments | How is the scenario implemented in code? |
 
 The class captures the user story. The WHAT field enumerates which scenarios are needed
-to prove it — if WHAT is well-written, the list of required test methods should follow
+to prove it -- if WHAT is well-written, the list of required test methods should follow
 from it directly. Each method then specifies one of those scenarios in full.
 
 ---
@@ -107,24 +107,24 @@ Every test method requires all three of the following. None substitutes for the 
 
 | Part | Purpose | Serves |
 |---|---|---|
-| **Method name** | The claim — behavior stated as a fact | Scanability; test output |
-| **Given / When / Then docstring** | The scenario — explicit conditions and observable outcome | Precision; review; spec traceability |
-| **Given / When / Then body comments** | The structure — setup, action, assertion delineated | Readability; maintenance |
+| **Method name** | The claim -- behavior stated as a fact | Scanability; test output |
+| **Given / When / Then docstring** | The scenario -- explicit conditions and observable outcome | Precision; review; spec traceability |
+| **Given / When / Then body comments** | The structure -- setup, action, assertion delineated | Readability; maintenance |
 
 A good name without a docstring leaves the scenario ambiguous. A docstring without
 body comments buries the structure in undifferentiated code. All three are required
 on every test method.
 
 Note that the method docstring and the body comments serve different purposes even
-though they share the Given/When/Then form. The docstring is the *specification* —
+though they share the Given/When/Then form. The docstring is the *specification* --
 legible in isolation in test output, spec reports, and code review. The body comments
-are the *structure* — they delineate setup, action, and assertion for the reader
+are the *structure* -- they delineate setup, action, and assertion for the reader
 inside the code. The docstring captures semantic intent; the body comments map that
 intent to concrete lines. Both are required; neither substitutes for the other.
 
 ---
 
-## Class-Level Docstrings — REQUIREMENT / WHO / WHAT / WHY
+## Class-Level Docstrings -- REQUIREMENT / WHO / WHAT / WHY
 
 Every test class MUST have a structured docstring with these four fields:
 
@@ -135,7 +135,7 @@ Every test class MUST have a structured docstring with these four fields:
 | **WHAT** | Enumerated testable behaviors | What observable behavior proves it? |
 | **WHY** | Business/operational justification | What goes wrong if it's missing? |
 
-**WHAT must enumerate, not summarize.** Write WHAT as a numbered list of claims —
+**WHAT must enumerate, not summarize.** Write WHAT as a numbered list of claims --
 one per testable scenario. A test method that cannot trace to any WHAT clause is
 speculative or WHAT is incomplete. A WHAT clause with no implementing test method
 is a coverage gap.
@@ -144,7 +144,7 @@ is a coverage gap.
 every test method traces to exactly one WHAT clause. If the counts diverge, either
 WHAT is missing a clause or the test suite has speculative/undocumented tests.
 
-See `references/test-patterns.md` → *Mock Boundary Contract — Full Examples* for
+See `references/test-patterns.md` → *Mock Boundary Contract -- Full Examples* for
 complete class docstring examples.
 
 ---
@@ -154,16 +154,16 @@ complete class docstring examples.
 Every test class must include a MOCK BOUNDARY declaration immediately after the
 WHO/WHAT/WHY block. The three lines answer:
 
-- **Mock** — what is patched and which fixture to use
-- **Real** — what runs for real (computation, filesystem, embedded DB)
-- **Never** — what must not be constructed or mocked directly
+- **Mock** -- what is patched and which fixture to use
+- **Real** -- what runs for real (computation, filesystem, embedded DB)
+- **Never** -- what must not be constructed or mocked directly
 
-If a test class has no I/O, the Mock line reads `Mock: nothing — this class tests
+If a test class has no I/O, the Mock line reads `Mock: nothing -- this class tests
 pure computation`. This is still required so the intent is explicit.
 
 ---
 
-## Method-Level Docstrings — Given / When / Then (REQUIRED)
+## Method-Level Docstrings -- Given / When / Then (REQUIRED)
 
 Every test method MUST have a Given / When / Then docstring.
 
@@ -171,7 +171,7 @@ Every test method MUST have a Given / When / Then docstring.
 precondition is the default state established by conftest fixtures and adds no
 distinguishing information. Even then, the `# Given:` body comment is always present.
 
-Use scenario format only — never user-story format ("As a … I want …").
+Use scenario format only -- never user-story format ("As a … I want …").
 See `references/test-patterns.md` → *The Three-Part Contract* for full examples.
 
 ---
@@ -179,11 +179,11 @@ See `references/test-patterns.md` → *The Three-Part Contract* for full example
 ## Method Naming
 
 Names read as **behavior statements**, not implementation descriptions.
-`test_parser_normalizes_hourly_to_annual` ✅ — `test_multiply_by_2080` ❌.
+`test_parser_normalizes_hourly_to_annual` ✅ -- `test_multiply_by_2080` ❌.
 
 ---
 
-## Test Body Structure — Given / When / Then (REQUIRED)
+## Test Body Structure -- Given / When / Then (REQUIRED)
 
 Every test method body MUST use `# Given:`, `# When:`, `# Then:` comments to
 delineate setup, action, and assertion phases. See `references/test-patterns.md`
@@ -202,7 +202,7 @@ and enough context to diagnose without a debugger. See `references/test-patterns
 
 ## Test Data
 
-Test data should be **representative** — close enough to real-world values that
+Test data should be **representative** -- close enough to real-world values that
 failures mean something. Placeholder strings like `"t"` for title produce opaque
 failures. Magic numbers are acceptable when their meaning is stated in a comment
 or assertion message. See `references/test-patterns.md` → *Test Data* for examples.
@@ -212,7 +212,7 @@ or assertion message. See `references/test-patterns.md` → *Test Data* for exam
 ## Coverage = Complete Specification
 
 100% coverage means every line of production code has a spec justifying it.
-**100% is the only passing score.** Any value below 100% — including 99% — is a
+**100% is the only passing score.** Any value below 100% -- including 99% -- is a
 specification gap that must be remediated before the task is complete.
 
 After all spec tests pass, run the language-appropriate coverage command from the
@@ -222,8 +222,8 @@ Every uncovered line triggers the question: *"Which requirement is this line ser
 
 ### Coverage check procedure (REQUIRED)
 
-When asked to run, check, or report coverage — or when coverage results appear
-during any workflow — apply these steps **in order**:
+When asked to run, check, or report coverage -- or when coverage results appear
+during any workflow -- apply these steps **in order**:
 
 1. **Run coverage.** Use the language-appropriate coverage command.
 2. **If 100% statement AND branch coverage: report and stop.** The system is
@@ -233,7 +233,7 @@ during any workflow — apply these steps **in order**:
    a. Identify every uncovered line and partial branch.
    b. For each, determine the disposition: **write the spec** (real requirement),
       or **remove the code** (dead code / over-engineering).
-   c. Implement the disposition immediately — write the missing specs or remove
+   c. Implement the disposition immediately -- write the missing specs or remove
       the unjustified code.
    d. Re-run coverage to confirm 100%.
    e. Repeat until 100% is achieved.
@@ -245,23 +245,23 @@ current obligation, regardless of when it was introduced.
 
 ### What surfaces at coverage time
 
-Three categories of requirements surface only at coverage time — they are real
+Three categories of requirements surface only at coverage time -- they are real
 requirements, not optional extras:
 
 | Category | Description | Example |
 |---|---|---|
-| **Defensive guard code** | Protects against misuse — empty input, wrong types, boundary values | `if not full_text.strip(): raise ValidationError(...)` |
+| **Defensive guard code** | Protects against misuse -- empty input, wrong types, boundary values | `if not full_text.strip(): raise ValidationError(...)` |
 | **Graceful degradation** | Soft failures the system absorbs rather than raising | Missing `history` collection returns empty list, not error |
 | **Conditional formatting** | Display logic that varies by state | Warning line only appears when `is_flagged=True` |
 
-**"Pre-existing" is not a category.** Whether a line existed before your changes is irrelevant — if it is uncovered after your work, it is uncovered. The only valid dispositions are: real requirement (write the spec), dead code (remove it), or over-engineering (remove it). "It was already there" is not a disposition.
+**"Pre-existing" is not a category.** Whether a line existed before your changes is irrelevant -- if it is uncovered after your work, it is uncovered. The only valid dispositions are: real requirement (write the spec), dead code (remove it), or over-engineering (remove it). "It was already there" is not a disposition.
 
 For each uncovered line: keep it and write the spec, or remove it if it has no
 justifying requirement.
 
 ---
 
-## Reading `src/` — Public API Discovery Only
+## Reading `src/` -- Public API Discovery Only
 
 Before writing any test for a module, read the relevant `src/` files to discover
 the real public API: method signatures, return types, constructor parameters,
@@ -273,13 +273,13 @@ cannot be induced through public API inputs alone, flag it as potential dead cod
 
 ---
 
-## Public APIs Only — No Private Imports
+## Public APIs Only -- No Private Imports
 
 Tests must exercise internal logic **through the public API**, not by importing
 private (`_`-prefixed) names directly. When a private function "seems worth
 testing directly":
 
-1. **Default — test it through the public API.** Find the public entry point
+1. **Default -- test it through the public API.** Find the public entry point
    that exercises the private logic.
 2. **Override, don't import.** Overriding a private *variable* or injecting a
    dependency is acceptable; importing private *functions* is not.
@@ -292,7 +292,7 @@ For suppression rules when legacy private imports exist, see the
 
 ---
 
-## Error Testing — Messages, Not Just Types
+## Error Testing -- Messages, Not Just Types
 
 When testing error paths, verify message content, not just that an exception was raised:
 
@@ -332,4 +332,4 @@ Language-specific references:
 - `skills/bdd-testing/references/csharp.md`
 
 For maintenance scripts (WHAT clause rewriting, audits):
-- `skills/bdd-testing/scripts/` — see each script's `--help` for usage
+- `skills/bdd-testing/scripts/` -- see each script's `--help` for usage

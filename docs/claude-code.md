@@ -1,4 +1,4 @@
-# Setup — Claude Code
+# Setup -- Claude Code
 
 Claude Code supports skills via `.claude/skills/`, instructions via `.claude/rules/`, and its own `CLAUDE.md` for always-on instructions. VS Code also reads Claude-format files when `chat.useClaudeMdFile` is enabled, so these formats work in both environments.
 
@@ -13,14 +13,14 @@ Claude Code supports skills via `.claude/skills/`, instructions via `.claude/rul
 
 ## Quick Start
 
-### Option A — Copy skills into workspace
+### Option A -- Copy skills into workspace
 
 ```bash
 mkdir -p /path/to/your-repo/.claude/skills
 cp -r skills/ /path/to/your-repo/.claude/skills/
 ```
 
-### Option B — User-level skills
+### Option B -- User-level skills
 
 Claude Code reads user-level skills from `~/.claude/skills/`:
 
@@ -30,7 +30,7 @@ for skill in ~/universal-dev-skills/skills/*/; do
 done
 ```
 
-### Option C — CLAUDE.md as entry point
+### Option C -- CLAUDE.md as entry point
 
 Create a `CLAUDE.md` in your project root as the always-on instruction equivalent:
 
@@ -98,9 +98,9 @@ Claude Code has built-in memory that survives context compaction:
 
 | Mechanism | Location | Behavior |
 |---|---|---|
-| `CLAUDE.md` | Workspace root, `.claude/`, or `~/.claude/` | Re-read from disk after every `/compact` — most reliable anchor |
+| `CLAUDE.md` | Workspace root, `.claude/`, or `~/.claude/` | Re-read from disk after every `/compact` -- most reliable anchor |
 | Auto memory | `~/.claude/projects/<proj>/memory/MEMORY.md` | First 200 lines auto-loaded; Claude writes insights here automatically |
-| Local variant | `CLAUDE.local.md` | Same as `CLAUDE.md` but gitignored — for personal preferences |
+| Local variant | `CLAUDE.local.md` | Same as `CLAUDE.md` but gitignored -- for personal preferences |
 | Rules | `.claude/rules/*.md` | Re-read from disk each session |
 
 ### Skill-recall after context compaction
@@ -115,12 +115,12 @@ This ensures the skill chain is re-established even after aggressive compaction.
 
 ## Limitations
 
-- **Different entry point** — Claude Code uses `CLAUDE.md` rather than `copilot-instructions.md` or `AGENTS.md`. If you need both, create both files.
-- **`paths` vs `applyTo`** — Claude rules use `paths` (array of globs) for file scoping; VS Code uses `applyTo` (single glob string). VS Code handles both formats, but Claude Code only reads `paths`.
-- **Tool naming** — Claude Code uses its own tool names (`Read`, `Grep`, `Bash`, etc.) rather than VS Code tool identifiers. VS Code maps these automatically, but the reverse is not guaranteed.
+- **Different entry point** -- Claude Code uses `CLAUDE.md` rather than `copilot-instructions.md` or `AGENTS.md`. If you need both, create both files.
+- **`paths` vs `applyTo`** -- Claude rules use `paths` (array of globs) for file scoping; VS Code uses `applyTo` (single glob string). VS Code handles both formats, but Claude Code only reads `paths`.
+- **Tool naming** -- Claude Code uses its own tool names (`Read`, `Grep`, `Bash`, etc.) rather than VS Code tool identifiers. VS Code maps these automatically, but the reverse is not guaranteed.
 
 ## Skill Applicability Notes
 
 The `tool-usage` skill is VS Code-specific. It references VS Code tools (`get_errors`, `runTests`, `replace_string_in_file`, Pylance, Ruff extensions, etc.) that do not exist in the Claude Code environment. Claude Code uses its own tool set (`Read`, `Write`, `Bash`, `Grep`, `Glob`, etc.).
 
-When using these skills with Claude Code, the `tool-usage` skill should be **excluded** during the skill-compliance step. The underlying principles — prefer structured tools over raw shell commands, validate after edits, run type checks and linters — still apply, but the specific tool mappings do not transfer. Adapt the verification steps to use Claude Code's `Bash` tool with `pyright`, `pytest`, and your project's linter directly.
+When using these skills with Claude Code, the `tool-usage` skill should be **excluded** during the skill-compliance step. The underlying principles -- prefer structured tools over raw shell commands, validate after edits, run type checks and linters -- still apply, but the specific tool mappings do not transfer. Adapt the verification steps to use Claude Code's `Bash` tool with `pyright`, `pytest`, and your project's linter directly.

@@ -1,9 +1,9 @@
 ---
 name: bdd-feedback-loop
-description: "Feedback loop procedure for implementing BDD test modules. Use when implementing a spec doc — covering one test module from spec to type-checker-clean, self-audited output."
+description: "Feedback loop procedure for implementing BDD test modules. Use when implementing a spec doc -- covering one test module from spec to type-checker-clean, self-audited output."
 ---
 
-# BDD Feedback Loop — Test Implementation Procedure
+# BDD Feedback Loop -- Test Implementation Procedure
 
 ## When This Skill Applies
 
@@ -36,7 +36,7 @@ and command details, use the reference matching your active language:
 
 ## The Loop (Per Module)
 
-### Step 1 — Read the Spec Doc
+### Step 1 -- Read the Spec Doc
 
 Read the module's spec doc in full before writing any code.
 
@@ -47,18 +47,18 @@ The spec is the authoritative source of truth. It defines:
 - The scenario signatures (Given / When / Then) for each test method
 
 Do not invent test classes or scenarios not present in the spec. Do not silently
-correct what appears to be a spec error — flag it in the deviation log (Step 6)
+correct what appears to be a spec error -- flag it in the deviation log (Step 6)
 and implement what the spec says.
 
 ---
 
-### Step 2 — Discover the Public API
+### Step 2 -- Discover the Public API
 
 Read the relevant `src/` files for the module under test. Extract:
 - Public method signatures (name, parameters, return type)
 - Public class constructors (required and optional parameters)
 - Public names (no `_` prefix)
-- Return types — specifically whether methods return dataclasses, primitives,
+- Return types -- specifically whether methods return dataclasses, primitives,
   or raise exceptions
 
 **This is the only permitted reason to read `src/` during test implementation.**
@@ -79,18 +79,18 @@ test file, for traceability. Use your language's comment syntax:
 
 ---
 
-### Step 3 — Implement the Tests
+### Step 3 -- Implement the Tests
 
 Implement each test class and method exactly as specified in the spec doc.
 
 **File creation is always incremental. Do not attempt to write the entire test
-file in a single tool call — doing so will cause a timeout and produce no output.**
+file in a single tool call -- doing so will cause a timeout and produce no output.**
 
 The required sequence for every module:
 1. Create the file with the header (module docstring, API surface comment,
    imports, and any shared helpers) using `create_file`. No test classes yet.
 2. Add one test class at a time using `replace_string_in_file`.
-   A single tool call must contain exactly one test class — no more.
+   A single tool call must contain exactly one test class -- no more.
 3. Repeat step 2 until all test classes from the spec are in the file.
 
 For each class:
@@ -112,7 +112,7 @@ as expected.
 
 ---
 
-### Step 4 — Run Type Checks
+### Step 4 -- Run Type Checks
 
 After implementing each test file:
 
@@ -124,7 +124,7 @@ Use language-specific commands from the relevant reference file.
 For each reported error from either step, attempt to resolve it. If an error
 cannot be resolved after three attempts, log it as a deviation (Step 6) and
 continue to the next error. Once all errors have been iterated, if any remain
-unresolved, do not proceed to the next module — the module is blocked pending
+unresolved, do not proceed to the next module -- the module is blocked pending
 human review.
 
 Common issues to fix:
@@ -136,15 +136,15 @@ Common issues to fix:
 
 ---
 
-### Step 5 — Self-Audit Against BDD Principles
+### Step 5 -- Self-Audit Against BDD Principles
 
 Read the completed test file and work through each checklist item below. For each
 violation found, attempt to resolve it. If a violation cannot be resolved after
 three attempts, log it as a deviation (Step 6) and continue to the next item.
 Once all items have been iterated, if any violations remain unresolved, do not
-proceed to the next module — the module is blocked pending human review.
+proceed to the next module -- the module is blocked pending human review.
 
-**Tautology check — the most important:**
+**Tautology check -- the most important:**
 For every test method, ask: *if I deleted the module under test entirely, would
 this test still pass?* If yes, it is a tautology. The When step must invoke
 production code. The Then step must assert on what that production code returned.
@@ -161,7 +161,7 @@ and language-specific testing conventions from the references).
 
 ---
 
-### Step 6 — Log Deviations
+### Step 6 -- Log Deviations
 
 After Steps 4 and 5, record every item that could not be resolved. A deviation is
 anything that prevented full compliance with the spec or with the BDD principles.
@@ -169,17 +169,17 @@ anything that prevented full compliance with the spec or with the BDD principles
 Append to the module's deviation log section in the orchestration doc:
 
 ```
-## Deviations — test_processor.py
+## Deviations -- test_processor.py
 
 ### [DEVIATION] TestScoringBehavior.test_negative_signals_penalize_score
 Could not induce negative_score > 0.3 through public API alone. The production
 code path requires at least 3 documents in the negative_signals collection, but
 the store fixture only seeds 1. The test currently seeds manually via
-store.add() — this bypasses the indexer but is the only path available.
+store.add() -- this bypasses the indexer but is the only path available.
 Recommendation: add a multi-document fixture to conftest, or expose a
 batch-seed method on DataStore.
 
-### [DEVIATION] TestScoreComputation — entire class
+### [DEVIATION] TestScoreComputation -- entire class
 compute_score() is not exposed as a public method on Processor. It appears
 to be internal. All computation tests currently call the private method
 _compute_score() directly, violating the public API rule.
@@ -194,7 +194,7 @@ A deviation log entry must include:
 - A concrete recommendation for resolution
 
 Vague entries ("couldn't make it work") are not acceptable. The log is the
-handoff artifact — it must give the next person enough context to act without
+handoff artifact -- it must give the next person enough context to act without
 re-investigation.
 
 ---
@@ -208,17 +208,17 @@ uncovered line, determine whether it is:
 - Dead code that should be removed (remove it and log the change as a deviation)
 - Over-engineering that should be removed (remove it and log the change as a deviation)
 
-Whether a line existed before your changes is irrelevant — if it is uncovered after your work, it is uncovered. The only valid dispositions are: real requirement (write the spec), dead code (remove it), or over-engineering (remove it). "It was already there" is not a disposition.
+Whether a line existed before your changes is irrelevant -- if it is uncovered after your work, it is uncovered. The only valid dispositions are: real requirement (write the spec), dead code (remove it), or over-engineering (remove it). "It was already there" is not a disposition.
 
 **Explicit steps to document uncovered lines:**
-1. Triage all uncovered lines — assign each a disposition
-2. For every "real requirement" disposition: update the BDD spec doc with the new scenario — do not write any tests yet
+1. Triage all uncovered lines -- assign each a disposition
+2. For every "real requirement" disposition: update the BDD spec doc with the new scenario -- do not write any tests yet
 3. Present the spec additions to the human for review and wait for explicit approval
 4. Only after approval: write the tests to match the new scenarios
 
 ---
 
-### Step 8 — Proceed to Next Module
+### Step 8 -- Proceed to Next Module
 
 If Steps 4, 5, and 7 are all clean (or all remaining issues are logged in Step 6),
 the module is complete. Proceed to the next module in the orchestration doc.
@@ -227,8 +227,8 @@ If any unresolved failures exist that were not logged, stop and complete Step 6
 before proceeding.
 
 **Logged deviations do not authorize proceeding.** A deviation that cannot be
-resolved after three attempts — including coverage gaps that cannot be closed,
-spec errors, or mock boundary conflicts — requires a human decision before the
+resolved after three attempts -- including coverage gaps that cannot be closed,
+spec errors, or mock boundary conflicts -- requires a human decision before the
 module is considered complete. Do not advance to the next module. Present the
 unresolved deviations and wait.
 
@@ -242,12 +242,12 @@ updating the orchestration doc.
 The spec doc is an input to this loop, not an output. If the spec appears to be
 wrong:
 
-- **Minor wording issues** — correct silently
-- **A scenario that seems incomplete** — implement what is written, note the gap
+- **Minor wording issues** -- correct silently
+- **A scenario that seems incomplete** -- implement what is written, note the gap
   in the deviation log
-- **A scenario that is impossible to implement** — implement the closest compliant
+- **A scenario that is impossible to implement** -- implement the closest compliant
   approximation, log the deviation with full explanation
-- **A genuine error in a REQUIREMENT or MOCK BOUNDARY** — do not silently correct
+- **A genuine error in a REQUIREMENT or MOCK BOUNDARY** -- do not silently correct
   it; log the deviation and stop work on that class until the spec is updated
 
 The spec encodes domain knowledge and behavioral contracts that were authored with
@@ -265,12 +265,12 @@ own subsection. Use this format:
 ## Deviation Log
 
 ### test_scorer.py
-- [DEVIATION] TestSemanticScoring.test_culture_score_... — <one-line summary>
+- [DEVIATION] TestSemanticScoring.test_culture_score_... -- <one-line summary>
   <explanation and recommendation>
 
 ### test_config.py
 - [CLEAN] No deviations.
 ```
 
-Mark clean modules explicitly. A missing entry is ambiguous — it could mean clean
+Mark clean modules explicitly. A missing entry is ambiguous -- it could mean clean
 or could mean the loop was not completed.

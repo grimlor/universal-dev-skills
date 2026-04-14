@@ -3,11 +3,11 @@
 Rewrite WHAT sections in test class docstrings using Copilot CLI.
 
 For each test class, extracts the GWT docstrings from all test methods,
-then asks Copilot to produce accurate, numbered WHAT clauses — one per
-test method — and patches the result back into the file.
+then asks Copilot to produce accurate, numbered WHAT clauses -- one per
+test method -- and patches the result back into the file.
 
 Usage:
-    # Dry run (default) — prints proposed rewrites, touches nothing
+    # Dry run (default) -- prints proposed rewrites, touches nothing
     python rewrite_what_clauses.py
 
     # Apply rewrites to files

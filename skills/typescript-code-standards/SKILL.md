@@ -16,7 +16,7 @@ Whenever:
 
 ---
 
-## Scope — Personal vs. Team Projects
+## Scope -- Personal vs. Team Projects
 
 **This standard applies in full only to projects where you control the toolchain**
 (personal projects, greenfield repos, repos where you are the sole or primary
@@ -27,7 +27,7 @@ author).
 1. **GitHub owner is `grimlor`** → personal repo → full standard applies.
 2. **Forked repo** (different owner, contributor commits from `grimlor`) → apply
    the higher bar of your personal standard and the upstream's standard to your
-   contributions. Don't rewrite the upstream's existing configs — the upstream
+   contributions. Don't rewrite the upstream's existing configs -- the upstream
    project's conventions (coverage thresholds, lint rules, formatting) are
    theirs to own.
 3. **Repo lives under a work org path or an ADO workspace** → team repo → follow
@@ -49,12 +49,12 @@ this standard. Forked project configs reflect the original author's choices, not
 necessarily yours.
 
 At work or in open-source contributions, team repos may follow different
-conventions — and that's expected. Key differences to watch for:
+conventions -- and that's expected. Key differences to watch for:
 
 - **ESLint format:** team repos may use legacy `.eslintrc.*` instead of flat
   config. Don't rewrite to flat config unilaterally.
 - **Formatter:** teams may use Prettier, Biome, or ESLint formatting rules. Match
-  what's configured — don't introduce a different formatter.
+  what's configured -- don't introduce a different formatter.
 - **Package manager:** team repos may use pnpm, yarn, or bun. Use whatever
   `package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`, or `bun.lock` indicates.
 - **Test framework:** some teams use Vitest instead of Jest. Adapt to what's there.
@@ -91,7 +91,7 @@ equivalents for package management commands:
 | `npm install <pkg>` | `bun add <pkg>` |
 | `npm install -D <pkg>` | `bun add -d <pkg>` |
 
-`bun run`, `npx`, and `bunx` are all blocked by the hook — they can execute
+`bun run`, `npx`, and `bunx` are all blocked by the hook -- they can execute
 arbitrary code. Direct file execution (`bun <file.ts>`, `bun dev`) is also
 blocked. Write scripts to files and ask the user to approve running them.
 
@@ -315,7 +315,7 @@ export default {
 
 **Coverage threshold:** 100% across all metrics for personal projects. This
 aligns with the `bdd-testing` skill's principle that coverage equals complete
-specification — every line of production code must have a spec justifying it.
+specification -- every line of production code must have a spec justifying it.
 For contributed or forked projects, match the upstream's threshold.
 
 ---
@@ -344,11 +344,11 @@ coverageReporter = ["text", "lcov"]
 
 **Important: `bunfig.toml` is discovered by walking up parent directories.**
 A single config at the repo root covers all packages in a monorepo. With
-`coverage = true`, every `bun test` invocation — including via `runTests` —
+`coverage = true`, every `bun test` invocation -- including via `runTests` --
 produces coverage output automatically.
 
 For contributed or team projects, create `bunfig.toml` locally with coverage
-settings — it does not need to be committed.
+settings -- it does not need to be committed.
 
 ---
 
@@ -385,17 +385,17 @@ Run `npm run check` before pushing to ensure all three pass.
 - Library CJS: `--format=cjs --outfile=dist/index.cjs`
 
 **Script naming conventions:**
-- `test` — run tests (no coverage)
-- `test:coverage` — run tests with coverage report
-- `lint` — check only (CI-safe)
-- `lint:fix` — check and auto-fix
-- `typecheck` — compiler check without emit
-- `check` — full quality gate (lint + type-check + test)
-- `prepare` — Husky hook installation (runs automatically on `npm install`)
+- `test` -- run tests (no coverage)
+- `test:coverage` -- run tests with coverage report
+- `lint` -- check only (CI-safe)
+- `lint:fix` -- check and auto-fix
+- `typecheck` -- compiler check without emit
+- `check` -- full quality gate (lint + type-check + test)
+- `prepare` -- Husky hook installation (runs automatically on `npm install`)
 
 ### Bun-based project scripts
 
-When using Bun instead of npm + Jest, define scripts in `package.json`.\nNote that `bun run` is blocked by the hook — the agent cannot invoke these\nscripts directly. Use `runTests` for test execution and rely on pre-commit\nhooks or ask the user to run quality gate scripts manually.
+When using Bun instead of npm + Jest, define scripts in `package.json`.\nNote that `bun run` is blocked by the hook -- the agent cannot invoke these\nscripts directly. Use `runTests` for test execution and rely on pre-commit\nhooks or ask the user to run quality gate scripts manually.
 
 ```json
 {
@@ -450,7 +450,7 @@ Defined in `package.json` (see scripts section above):
 This runs ESLint with auto-fix on all staged TypeScript and JavaScript files,
 then runs `tsc --noEmit` on the full project. While `tsc` cannot check individual
 files in isolation, running it in the pre-commit hook ensures type errors don't
-slip through. The cost is a full type-check on each commit — acceptable for
+slip through. The cost is a full type-check on each commit -- acceptable for
 the projects in this workspace, which are small enough that `tsc` completes in
 seconds.
 
@@ -460,7 +460,7 @@ seconds.
 
 ### `@ts-ignore` / `@ts-expect-error`
 
-- **Prefer `@ts-expect-error` over `@ts-ignore`** — `@ts-expect-error` fails when
+- **Prefer `@ts-expect-error` over `@ts-ignore`** -- `@ts-expect-error` fails when
   the suppressed error is fixed, preventing stale suppressions.
 - Always include a reason comment on the same line.
 - File-level `@ts-nocheck` is never acceptable in source code.
@@ -477,7 +477,7 @@ const result = legacyApi.call();
 
 ### ESLint disable comments
 
-- Narrow inline disables only — never `eslint-disable` for a whole file.
+- Narrow inline disables only -- never `eslint-disable` for a whole file.
 - Always specify the rule being disabled.
 - Always include a reason.
 
@@ -529,7 +529,7 @@ Add platform-specific types as needed:
 
 ## JSDoc Documentation Standard
 
-All exported symbols in `src/` must have JSDoc comments — functions, classes,
+All exported symbols in `src/` must have JSDoc comments -- functions, classes,
 methods, interfaces, and type aliases. The `eslint-plugin-jsdoc` rules enforce
 this. Key requirements:
 
@@ -586,7 +586,7 @@ export class TabManager {
 }
 ```
 
-**Tests do not require JSDoc** — the BDD Given/When/Then `describe`/`it` strings
+**Tests do not require JSDoc** -- the BDD Given/When/Then `describe`/`it` strings
 serve as the specification. JSDoc on test helpers is optional.
 
 ---
@@ -615,10 +615,10 @@ const name = user.profile?.name ?? 'Anonymous';
 ### Discriminated unions
 
 ```typescript
-// ❌ Loose union — no way to narrow
+// ❌ Loose union -- no way to narrow
 type Result = { data: string } | { error: string };
 
-// ✅ Discriminated union — exhaustive narrowing
+// ✅ Discriminated union -- exhaustive narrowing
 type Result =
   | { kind: 'success'; data: string }
   | { kind: 'error'; error: string };
@@ -653,10 +653,10 @@ function init(config: Readonly<Config>): void { /* ... */ }
 ### Type assertion vs. type guard
 
 ```typescript
-// ❌ Assertion — bypasses the type checker, no runtime safety
+// ❌ Assertion -- bypasses the type checker, no runtime safety
 const el = document.getElementById('app') as HTMLDivElement;
 
-// ✅ Type guard — runtime check, compiler knows the narrowing
+// ✅ Type guard -- runtime check, compiler knows the narrowing
 const el = document.getElementById('app');
 if (!(el instanceof HTMLDivElement)) {
   throw new Error('Expected #app to be a div');
@@ -699,36 +699,36 @@ element.addEventListener('click', (event) => {
 ## Workflow for Applying Standards to an Existing Project
 
 **For personal projects:** apply the full standard below.
-**For team projects:** see [Scope](#scope--personal-vs-team-projects) first — only
+**For team projects:** see [Scope](#scope--personal-vs-team-projects) first -- only
 apply what the team has agreed to, or what doesn't affect shared config.
 
-1. **Update `tsconfig.json`** — add/replace compiler options per the canonical
+1. **Update `tsconfig.json`** -- add/replace compiler options per the canonical
    config. Create `tsconfig.test.json` if using Jest with ts-jest.
 
-2. **Set up ESLint** — create `eslint.config.mjs` with the canonical flat config
+2. **Set up ESLint** -- create `eslint.config.mjs` with the canonical flat config
    (including `eslint-plugin-jsdoc` and `eslint-plugin-import`).
    Remove any legacy `.eslintrc.*` files.
 
-3. **Set up Jest** — create `jest.config.js` with the canonical config. Adjust
+3. **Set up Jest** -- create `jest.config.js` with the canonical config. Adjust
    `testEnvironment` for the project type.
 
-4. **Update `package.json` scripts** — add the standard script names
+4. **Update `package.json` scripts** -- add the standard script names
    (`lint`, `lint:fix`, `typecheck`, `check`, `test`, `test:coverage`, `build`).
 
-5. **Set up Husky + lint-staged** — run `npx husky init`, configure `.husky/pre-commit`
+5. **Set up Husky + lint-staged** -- run `npx husky init`, configure `.husky/pre-commit`
    (lint-staged + `tsc --noEmit`) and `lint-staged` in `package.json`.
 
 6. **Run lint with auto-fix:** `npm run lint:fix`
 
-7. **Fix remaining issues manually** — ESLint reports unfixable violations with
+7. **Fix remaining issues manually** -- ESLint reports unfixable violations with
    file + line. Common unfixable: missing JSDoc, `no-explicit-any` in source code,
    import ordering.
 
 8. **Verify clean:** `npm run lint` should report no errors.
 
-9. **Run type check:** `npm run typecheck` — fix any TypeScript errors using the
+9. **Run type check:** `npm run typecheck` -- fix any TypeScript errors using the
    [common strict-mode patterns](#common-strict-mode-fix-patterns) above.
 
-10. **Run full gate:** `npm run check` — lint, type-check, and tests must all pass.
+10. **Run full gate:** `npm run check` -- lint, type-check, and tests must all pass.
 
 11. **Commit:** `chore(lint): add ESLint flat config, JSDoc rules, and TypeScript strict mode`

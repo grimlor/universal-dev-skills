@@ -1,13 +1,13 @@
 ---
 name: feature-workflow
-description: "Spec-before-code feature development workflow. Use when the user requests a new feature, enhancement, or non-trivial change — anything that adds or modifies behavior, including requests phrased as add, implement, build, create, refactor, or start implementation."
+description: "Spec-before-code feature development workflow. Use when the user requests a new feature, enhancement, or non-trivial change -- anything that adds or modifies behavior, including requests phrased as add, implement, build, create, refactor, or start implementation."
 ---
 
-# Feature Workflow — Spec Before Code
+# Feature Workflow -- Spec Before Code
 
 ## When This Skill Applies
 
-Whenever the user requests a new feature, enhancement, or non-trivial change — anything
+Whenever the user requests a new feature, enhancement, or non-trivial change -- anything
 that adds or modifies behavior. This includes requests phrased as "add …", "implement …",
 "build …", "create …", "refactor …", "I need …", or "Start implementation".
 
@@ -23,7 +23,7 @@ This skill does **NOT** apply to:
 
 AI agents default to writing code immediately. This produces rework, scope creep,
 and implementations that solve *a* problem but not *the user's* problem. The user's
-established workflow requires specification before implementation — every time.
+established workflow requires specification before implementation -- every time.
 
 ---
 
@@ -32,7 +32,7 @@ established workflow requires specification before implementation — every time
 Every feature request MUST proceed through these phases in order.
 **Do not skip phases. Do not combine phases. Do not start implementation before tests exist.**
 
-### Phase 1 — Spec Gate (Planning)
+### Phase 1 -- Spec Gate (Planning)
 
 **Goal:** "Are we building the right thing?" and "Does a reviewed spec exist?"
 
@@ -55,17 +55,17 @@ Before writing any implementation code, answer these three questions:
    If the spec was just created, stop and wait for human sign-off before
    proceeding to implementation.
 
-**If the answer to any of these is no — stop. Create or complete the spec first.**
+**If the answer to any of these is no -- stop. Create or complete the spec first.**
 
 #### If No Spec Exists
 
-1. **Ask clarifying questions** — Do not assume. Identify ambiguity and resolve it.
+1. **Ask clarifying questions** -- Do not assume. Identify ambiguity and resolve it.
 2. **Write user stories or scenarios** that describe the feature from the consumer's
-   perspective (user, downstream module, AI agent — whoever benefits).
+   perspective (user, downstream module, AI agent -- whoever benefits).
 3. **Create the spec** using this structure:
 
    ```markdown
-   # Spec — <Feature Name>
+   # Spec -- <Feature Name>
 
    ## Overview
    One paragraph: what this feature does and why it exists.
@@ -107,7 +107,7 @@ Gaps discovered during any phase:
 
 Do not silently fill gaps with undocumented behavior.
 
-### Phase 1.5 — Code Quality Baseline
+### Phase 1.5 -- Code Quality Baseline
 
 **Goal:** "Are the files we're about to change already clean?"
 
@@ -118,16 +118,16 @@ isolates cleanup work into a separate PR so the feature PR shows only the
 functional delta.
 
 1. **Identify existing files** that the spec (Phase 1) indicates will be modified.
-   New files created by the feature are exempt — they will be written to standard
+   New files created by the feature are exempt -- they will be written to standard
    from the start.
-2. **Run the mechanical checks** — lint and type-check on those files using the
+2. **Run the mechanical checks** -- lint and type-check on those files using the
    project's configured toolchain (see the relevant language-specific standards
    skill).
-3. **Run the structural audit** — follow the `code-quality-audit` skill procedure
+3. **Run the structural audit** -- follow the `code-quality-audit` skill procedure
    (Steps 2–5) scoped to the identified files. This catches violations that
    linters miss: mock boundary violations in test files, test-only production API
    pollution, unjustified suppression pragmas, and BDD convention drift.
-4. **If all files are clean** — proceed to Phase 2.
+4. **If all files are clean** -- proceed to Phase 2.
 5. **If violations exist:**
    a. Create a branch (e.g., `quality/<feature-name>`) and fix the violations.
    b. Commit the fixes and open a PR for review.
@@ -142,24 +142,24 @@ This gate only applies to **existing files** identified by the spec. Files
 discovered later during implementation are handled by the late-discovery clause
 in Phase 3.
 
-### Phase 2 — BDD Test Specification
+### Phase 2 -- BDD Test Specification
 
 **Goal:** "How do we know it works?"
 
 1. **Create test classes** from the specs written in Phase 1.
-2. **Follow BDD testing principles** — see the `bdd-testing` skill for conventions.
-3. **Tests must fail** — Run the tests to confirm they fail. Refer to tool-usage skill. 
+2. **Follow BDD testing principles** -- see the `bdd-testing` skill for conventions.
+3. **Tests must fail** -- Run the tests to confirm they fail. Refer to tool-usage skill. 
    If they pass, either the behavior already exists or the tests aren't testing anything.
-4. **Include failure-mode specs** — An unspecified failure is an unhandled failure.
+4. **Include failure-mode specs** -- An unspecified failure is an unhandled failure.
    Test error paths, edge cases, and boundary conditions.
 
-### Phase 3 — Implementation
+### Phase 3 -- Implementation
 
 **Goal:** "Build it."
 
-1. **Write code to make the failing tests pass.** The tests are the specification —
+1. **Write code to make the failing tests pass.** The tests are the specification --
    implementation is done when all tests pass.
-2. **Follow existing code patterns** — Check existing modules for conventions
+2. **Follow existing code patterns** -- Check existing modules for conventions
    (error handling patterns, factory methods, async patterns, etc.).
 3. **Do not add behavior that isn't specified by a test.** If you discover a need
    during implementation, go back to Phase 2 and add the spec first.
@@ -167,14 +167,14 @@ in Phase 3.
    files that were **not** identified in Phase 1 and those files have quality
    violations:
    a. Commit any in-progress work on the feature branch.
-   b. Switch to the quality branch (from Phase 1.5 — create one if Phase 1.5
+   b. Switch to the quality branch (from Phase 1.5 -- create one if Phase 1.5
       was skipped because all originally-identified files were clean).
    c. Fix the violations in the newly-discovered files and commit.
    d. Switch back to the feature branch and merge in the quality branch changes.
    e. Continue implementation. The draft PR continues to show only functional
       changes.
 
-### Phase 4 — Coverage Verification
+### Phase 4 -- Coverage Verification
 
 **Goal:** "Is the specification complete?"
 
@@ -183,21 +183,21 @@ in Phase 3.
    - Is this a real requirement? → Write the spec, then keep the code.
    - Is this dead code? → Remove it.
    - Is this over-engineering? → Remove it and simplify.
-3. **Target: 100% coverage.** Not as a vanity metric — as proof that every line of
+3. **Target: 100% coverage.** Not as a vanity metric -- as proof that every line of
    code has a specification justifying its existence.
 
 Three categories routinely surface only at coverage time:
-- **Defensive guard code** — misuse protection
-- **Graceful degradation paths** — soft failures the system absorbs
-- **Conditional formatting branches** — display logic that varies by state
+- **Defensive guard code** -- misuse protection
+- **Graceful degradation paths** -- soft failures the system absorbs
+- **Conditional formatting branches** -- display logic that varies by state
 
-**"Pre-existing" is not a category.** Whether a line existed before your changes is irrelevant — if it is uncovered after your work, it is uncovered. The only valid dispositions are: real requirement (write the spec), dead code (remove it), or over-engineering (remove it). "It was already there" is not a disposition.
+**"Pre-existing" is not a category.** Whether a line existed before your changes is irrelevant -- if it is uncovered after your work, it is uncovered. The only valid dispositions are: real requirement (write the spec), dead code (remove it), or over-engineering (remove it). "It was already there" is not a disposition.
 
-### Phase 5 — Plan Status Update
+### Phase 5 -- Plan Status Update
 
 **Goal:** "Record what was done."
 
-1. **Update the project's plan document** — check off completed items, add new
+1. **Update the project's plan document** -- check off completed items, add new
    line items if scope expanded.
 2. **Update BDD Specifications** if any specs were added or modified during
    implementation (Phase 3 discoveries).
@@ -212,19 +212,19 @@ Three categories routinely surface only at coverage time:
   user says "Start implementation" and there are no specs yet, Phase 1 is the
   starting point. If specs exist but tests don't, Phase 2 is the starting point.
 - **Present each phase's output to the user** before moving to the next phase.
-- **Use the todo list** to track progress through phases — this gives the user
+- **Use the todo list** to track progress through phases -- this gives the user
   visibility into where you are in the workflow.
 
 ---
 
 ## Relationship to Other Skills
 
-- `feature-workflow` (this skill) governs the full lifecycle — spec through plan update
-- `code-quality-audit` governs the structural inspection in Phase 1.5 — mock boundaries,
+- `feature-workflow` (this skill) governs the full lifecycle -- spec through plan update
+- `code-quality-audit` governs the structural inspection in Phase 1.5 -- mock boundaries,
   test-only APIs, suppression pragmas, BDD conventions
-- `bdd-testing` governs test quality — referenced from Phase 2 and the `bdd-feedback-loop`
-- `bdd-feedback-loop` governs per-module test implementation — used during Phase 2
-- `plan-updates` governs progress tracking — used during Phase 5
-- `tool-usage` is cross-cutting — applies at every phase
+- `bdd-testing` governs test quality -- referenced from Phase 2 and the `bdd-feedback-loop`
+- `bdd-feedback-loop` governs per-module test implementation -- used during Phase 2
+- `plan-updates` governs progress tracking -- used during Phase 5
+- `tool-usage` is cross-cutting -- applies at every phase
 
 The flow: **spec gate → human review → quality baseline (mechanical + structural) → tests → implementation → gaps → spec update → continue**

@@ -3,14 +3,14 @@
 Configure AI coding agents to use universal-dev-skills.
 
 Supported targets:
-  vscode      — Merges settings into VS Code User settings.json
-  claude      — Symlinks skills into ~/.claude/skills/
-  windsurf    — Symlinks skills into ~/.codeium/windsurf/skills/
-  copilot-cli — Symlinks skills, instructions, and hooks into ~/.copilot/
-  cursor      — Converts skills to .cursor/rules/*.mdc (requires --workspace)
-  all         — Runs all of the above (cursor excluded unless --workspace given)
+  vscode      -- Merges settings into VS Code User settings.json
+  claude      -- Symlinks skills into ~/.claude/skills/
+  windsurf    -- Symlinks skills into ~/.codeium/windsurf/skills/
+  copilot-cli -- Symlinks skills, instructions, and hooks into ~/.copilot/
+  cursor      -- Converts skills to .cursor/rules/*.mdc (requires --workspace)
+  all         -- Runs all of the above (cursor excluded unless --workspace given)
 
-Safe to run multiple times — only adds entries that are missing.
+Safe to run multiple times -- only adds entries that are missing.
 
 Usage:
     python3 scripts/setup.py --target vscode          # VS Code / Copilot
@@ -98,7 +98,7 @@ def detect_settings_file() -> Path:
     wsl = os.environ.get("WSL_DISTRO_NAME") or os.environ.get("WSLENV")
 
     if wsl:
-        # WSL — try to find Windows VS Code User settings
+        # WSL -- try to find Windows VS Code User settings
         try:
             appdata = (
                 subprocess.check_output(
@@ -114,7 +114,7 @@ def detect_settings_file() -> Path:
             )
             path = Path(wsl_appdata) / "Code" / "User" / "settings.json"
             print(
-                f"WSL detected — using Windows VS Code User settings: {path}",
+                f"WSL detected -- using Windows VS Code User settings: {path}",
                 file=sys.stderr,
             )
             return path
@@ -123,7 +123,7 @@ def detect_settings_file() -> Path:
         # Fallback: VS Code Server machine settings
         path = Path.home() / ".vscode-server" / "data" / "Machine" / "settings.json"
         print(
-            f"WSL detected — using VS Code Server Machine settings: {path}",
+            f"WSL detected -- using VS Code Server Machine settings: {path}",
             file=sys.stderr,
         )
         return path
@@ -146,7 +146,7 @@ def repo_tilde_path() -> str:
     """
     Return the repo path with ~ prefix for portability in VS Code settings.
 
-    Always uses forward slashes — VS Code resolves ~/paths on all platforms
+    Always uses forward slashes -- VS Code resolves ~/paths on all platforms
     including Windows (confirmed empirically).
     """
     home = Path.home().resolve()
@@ -256,7 +256,7 @@ def write_hook_config(dest: Path, *, dry_run: bool) -> str:
     }
     content = json.dumps(config, indent=2) + "\n"
 
-    # Remove existing symlink — writing through it would modify the repo file
+    # Remove existing symlink -- writing through it would modify the repo file
     if not dry_run and dest.is_symlink():
         dest.unlink()
 
@@ -334,7 +334,7 @@ def setup_vscode(*, dry_run: bool) -> None:
         ],
     )
 
-    # Hooks — generate config with absolute path to the shell script
+    # Hooks -- generate config with absolute path to the shell script
     # (VS Code resolves relative paths from the workspace root, not the JSON dir)
     managed_hooks_dir = Path.home() / ".vscode-copilot" / "hooks"
     hook_action = write_hook_config(managed_hooks_dir / "enforce-tool-usage.json", dry_run=dry_run)
@@ -403,7 +403,7 @@ def setup_claude(*, dry_run: bool) -> None:
         print(action)
     print()
 
-    # Global CLAUDE.md — create if missing, never overwrite
+    # Global CLAUDE.md -- create if missing, never overwrite
     print("Global CLAUDE.md:")
     claude_content = "Before starting any task, read and follow the skill-compliance skill.\n"
     if claude_md.exists():
@@ -448,7 +448,7 @@ def setup_windsurf(*, dry_run: bool) -> None:
     if not dry_run:
         print(f"✓ Skills linked in {skills_dir}")
 
-    # Windsurf rules are workspace-specific — print a reminder
+    # Windsurf rules are workspace-specific -- print a reminder
     print()
     print("Note: Windsurf uses workspace-level rules (.windsurf/rules/).")
     print("Create this file in each workspace for skill-recall:")
@@ -530,7 +530,7 @@ def convert_skill_to_cursor_rule(skill_dir: Path) -> str:
 
     # Extract YAML frontmatter
     if not text.startswith("---"):
-        return text  # No frontmatter — return as-is
+        return text  # No frontmatter -- return as-is
 
     end = text.index("---", 3)
     frontmatter = text[3:end].strip()
@@ -617,14 +617,14 @@ def setup_opencode(*, dry_run: bool) -> None:
     print(f"Skills:   {skills_dir}")
     print()
 
-    # Skills — symlink each skill directory
+    # Skills -- symlink each skill directory
     print("Skills:")
     actions = ensure_symlinks(skills_dir, [REPO_ROOT / "skills"], dry_run=dry_run)
     for action in actions:
         print(action)
     print()
 
-    # Global AGENTS.md — create if missing, never overwrite
+    # Global AGENTS.md -- create if missing, never overwrite
     print("Global AGENTS.md:")
     agents_content = "Before starting any task, read and follow the skill-compliance skill.\n"
     if agents_md.exists():
@@ -682,7 +682,7 @@ def main() -> None:
 
     dry_run = "--dry-run" in sys.argv
 
-    # Parse --target (required — show help if missing)
+    # Parse --target (required -- show help if missing)
     target = None
     for i, arg in enumerate(sys.argv[1:], 1):
         if arg == "--target" and i + 1 < len(sys.argv):

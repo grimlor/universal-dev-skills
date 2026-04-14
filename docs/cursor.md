@@ -1,4 +1,4 @@
-# Setup — Cursor
+# Setup -- Cursor
 
 Cursor supports rules (`.cursor/rules/`) and `AGENTS.md`, but does **not** natively support the Agent Skills specification (`SKILL.md`). Skills need to be adapted into Cursor's rules format.
 
@@ -67,7 +67,7 @@ For each skill, copy the `SKILL.md` body into a `.mdc` file and adapt the frontm
 
 ```markdown
 ---
-description: "BDD test conventions — system specification, not unit testing. Use when writing, modifying, or reviewing test files."
+description: "BDD test conventions -- system specification, not unit testing. Use when writing, modifying, or reviewing test files."
 alwaysApply: false
 ---
 
@@ -87,7 +87,7 @@ Cursor can import rules directly from a GitHub repository:
 2. Click **+ Add Rule** → **Remote Rule (Github)**
 3. Paste the repository URL
 
-Imported rules auto-sync with the source repository. This could be a distribution path, but note that it imports rules — not SKILL.md files — so the skills would need to be restructured as rules in a separate branch or directory if you want to use this mechanism.
+Imported rules auto-sync with the source repository. This could be a distribution path, but note that it imports rules -- not SKILL.md files -- so the skills would need to be restructured as rules in a separate branch or directory if you want to use this mechanism.
 
 ## User Rules
 
@@ -108,7 +108,7 @@ Cursor does not have a built-in memory or auto-note system:
 | `AGENTS.md` | Workspace root | Always-on instructions, re-read each session |
 | User Rules | Cursor Settings → Rules | Global text, applied to all projects |
 
-Cursor has no auto-memory mechanism — it does not write conversation insights to disk. The Notepad feature is a manual scratchpad and must be explicitly referenced.
+Cursor has no auto-memory mechanism -- it does not write conversation insights to disk. The Notepad feature is a manual scratchpad and must be explicitly referenced.
 
 ### Skill-recall after context compaction
 
@@ -116,11 +116,11 @@ The `skill-compliance` rule is converted with `alwaysApply: true`, so it is incl
 
 ## Limitations
 
-- **No SKILL.md support** — Cursor does not follow the Agent Skills specification or support progressive disclosure (loading name/description first, then full content on demand).
-- **No external directory setting** — Unlike VS Code's `chat.agentSkillsLocations`, there is no way to point Cursor at an external cloned directory. Each project needs its own `.cursor/rules/` copy, or you can use remote GitHub rules.
-- **No custom agents** — Cursor does not have an equivalent to VS Code's `.agent.md` custom agent definitions.
-- **Rule size** — Rules should be kept under 500 lines for best results.
+- **No SKILL.md support** -- Cursor does not follow the Agent Skills specification or support progressive disclosure (loading name/description first, then full content on demand).
+- **No external directory setting** -- Unlike VS Code's `chat.agentSkillsLocations`, there is no way to point Cursor at an external cloned directory. Each project needs its own `.cursor/rules/` copy, or you can use remote GitHub rules.
+- **No custom agents** -- Cursor does not have an equivalent to VS Code's `.agent.md` custom agent definitions.
+- **Rule size** -- Rules should be kept under 500 lines for best results.
 
 ## Skill Applicability Notes
 
-The `tool-usage` skill references VS Code-specific tools (`get_errors`, `runTests`, `replace_string_in_file`, etc.). Cursor is VS Code-based and provides equivalent tooling, so the principles apply — but the exact tool names and invocation patterns may differ. When converting `tool-usage` to a Cursor rule, adapt the tool references to match Cursor's agent capabilities.
+The `tool-usage` skill references VS Code-specific tools (`get_errors`, `runTests`, `replace_string_in_file`, etc.). Cursor is VS Code-based and provides equivalent tooling, so the principles apply -- but the exact tool names and invocation patterns may differ. When converting `tool-usage` to a Cursor rule, adapt the tool references to match Cursor's agent capabilities.

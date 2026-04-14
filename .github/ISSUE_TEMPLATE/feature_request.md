@@ -22,4 +22,4 @@ Any other approaches you thought about and why they're less ideal.
 
 ## Additional Context
 
-Anything else — examples, related issues, etc.
+Anything else -- examples, related issues, etc.

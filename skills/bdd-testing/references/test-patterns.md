@@ -1,12 +1,12 @@
-# BDD Test Patterns — Detailed Examples
+# BDD Test Patterns -- Detailed Examples
 
-## The Three-Part Contract — Complete Examples
+## The Three-Part Contract -- Complete Examples
 
 Every test method requires a name, a Given/When/Then docstring, and Given/When/Then
 body comments. The following contrasts the anti-pattern with both correct forms.
 
 ```python
-# ❌ Wrong — name only, no docstring, no body structure
+# ❌ Wrong -- name only, no docstring, no body structure
 def test_registered_adapter_is_retrievable_by_name(self):
     registry = AdapterRegistry()
     registry.register("postgres", PostgresAdapter)
@@ -14,7 +14,7 @@ def test_registered_adapter_is_retrievable_by_name(self):
     assert result is PostgresAdapter
 
 
-# ✅ Correct — Given included (explicit setup, not default fixture state)
+# ✅ Correct -- Given included (explicit setup, not default fixture state)
 def test_registered_adapter_is_retrievable_by_name(self):
     """
     Given an adapter registered under a known name
@@ -34,7 +34,7 @@ def test_registered_adapter_is_retrievable_by_name(self):
     )
 
 
-# ✅ Correct — Given required in docstring (the precondition is the point)
+# ✅ Correct -- Given required in docstring (the precondition is the point)
 def test_extraction_error_on_one_listing_does_not_abort_others(self):
     """
     Given a batch where one listing raises an extraction error
@@ -64,11 +64,11 @@ def test_extraction_error_on_one_listing_does_not_abort_others(self):
 
 **Rule:** Always include Given in the docstring. The only exception is when the
 precondition is the default state established by conftest fixtures and adds no
-distinguishing information — even then, the `# Given:` body comment is always present.
+distinguishing information -- even then, the `# Given:` body comment is always present.
 
 ---
 
-## Mock Boundary Contract — Full Examples
+## Mock Boundary Contract -- Full Examples
 
 Every test class declares its mock boundary in the class docstring. Three lines: what
 is mocked, what runs real, and what must never be constructed directly.
@@ -82,13 +82,13 @@ class TestSemanticScoring:
     WHAT: relevance_score, category_score, quality_score, and penalty_score are
           derived from real database similarity queries against indexed content;
           an item matching target criteria scores higher than one that does not
-    WHY: Scores are the core signal — if they are tautological or mocked, the
+    WHY: Scores are the core signal -- if they are tautological or mocked, the
          entire pipeline produces meaningless output
 
     MOCK BOUNDARY:
-        Mock:  mock_client fixture (external API — the only I/O boundary)
+        Mock:  mock_client fixture (external API -- the only I/O boundary)
         Real:  Scorer instance, database via store fixture, tmp_path
-        Never: Construct Result directly — always obtain via scorer.score(item)
+        Never: Construct Result directly -- always obtain via scorer.score(item)
     """
 
 
@@ -98,10 +98,10 @@ class TestScoreComputation:
 
     WHO: The ranker computing final_score via score fusion
     WHAT: normalized_score is 1.0 at or above baseline; grades linearly below; 0.5 when absent
-    WHY: Computed scores are a key signal — wrong values silently skew ranking without errors
+    WHY: Computed scores are a key signal -- wrong values silently skew ranking without errors
 
     MOCK BOUNDARY:
-        Mock:  nothing — this class tests pure computation
+        Mock:  nothing -- this class tests pure computation
         Real:  Scorer.compute_score() called directly with float inputs
         Never: Mock the scorer itself to return a preset score
     """
@@ -114,11 +114,11 @@ class TestAdapterRegistration:
     WHO: The pipeline runner loading adapters from configuration
     WHAT: Registered adapters are retrievable by name string;
           an unregistered name produces an error that names the adapter
-    WHY: The runner must not know concrete adapter classes — the name is
+    WHY: The runner must not know concrete adapter classes -- the name is
          the only coupling between config and implementation
 
     MOCK BOUNDARY:
-        Mock:  nothing — AdapterRegistry is pure computation (dict lookup)
+        Mock:  nothing -- AdapterRegistry is pure computation (dict lookup)
         Real:  AdapterRegistry, PostgresAdapter class reference
         Never: Mock the registry itself; mock_adapter's I/O methods are AsyncMock
                but the registry must be a real instance
@@ -127,7 +127,7 @@ class TestAdapterRegistration:
 
 ---
 
-## Assertion Quality — Full Examples
+## Assertion Quality -- Full Examples
 
 Every assertion requires a diagnostic message. The message must show enough context
 that a failing test is self-explanatory without running a debugger.
@@ -160,7 +160,7 @@ assert set(result.keys()) == {"score", "category_score", "final_score"}, (
     f"Unexpected keys in result. Got: {sorted(result.keys())}"
 )
 
-# ❌ Bare assertion — failure is opaque
+# ❌ Bare assertion -- failure is opaque
 assert result.is_valid
 assert len(items) == 3
 assert "error" in response
@@ -174,14 +174,14 @@ small variation.
 
 ---
 
-## Test Data — Representative Values
+## Test Data -- Representative Values
 
 Test data should be close enough to real-world values that failures mean something.
 Placeholder strings like `"t"` for title or `"f"` for full_text produce opaque
 failures and hide bugs where the implementation uses the field content.
 
 ```python
-# ✅ Realistic — failures are interpretable
+# ✅ Realistic -- failures are interpretable
 order = Order(
     source="web",
     external_id="ord_8821234",
@@ -201,7 +201,7 @@ order = Order(
     price_text="$18,000 - $22,000/yr",
 )
 
-# ❌ Meaningless placeholders — failures are opaque
+# ❌ Meaningless placeholders -- failures are opaque
 order = Order(
     source="s", external_id="1", title="t",
     customer="c", region="r", url="u", description="d"
@@ -246,10 +246,10 @@ when it encodes a business rule referenced by name in the production code.
 - Config loading: use real config files written to `tmp_path`, not a mock
 
 **Never mock:**
-- The subject under test — if you mock `Scorer` in `TestSemanticScoring`, you are
+- The subject under test -- if you mock `Scorer` in `TestSemanticScoring`, you are
   not testing `Scorer`
 - Internal helper functions within the module under test
-- Dataclass constructors — build real instances with real field values
+- Dataclass constructors -- build real instances with real field values
 - Pure computation logic of any kind
 
 The mock boundary contract in each test class docstring is the authoritative
@@ -257,14 +257,14 @@ statement of what is mocked for that class.
 
 ---
 
-## Tautology Tests — The Most Dangerous Anti-Pattern
+## Tautology Tests -- The Most Dangerous Anti-Pattern
 
 A tautology test always passes regardless of production code behavior. It typically
 appears when a test constructs expected output directly and asserts on the constructed
 object rather than invoking the system under test.
 
 ```python
-# ❌ Tautology — Result is constructed here, not by Scorer
+# ❌ Tautology -- Result is constructed here, not by Scorer
 # This test passes even if Scorer.score() is deleted from the codebase
 def test_score_above_threshold_for_matching_item(self):
     result = Result(score=0.8, category_score=0.7, final_score=0.75)
@@ -272,7 +272,7 @@ def test_score_above_threshold_for_matching_item(self):
         f"Expected score > 0.5, got {result.score}"
     )
 
-# ✅ Real — Scorer is invoked, database is queried, score is earned
+# ✅ Real -- Scorer is invoked, database is queried, score is earned
 def test_score_above_threshold_for_matching_item(self, scorer, indexed_data):
     """
     Given data indexed in the store and an item matching the indexed content
@@ -298,13 +298,13 @@ def test_score_above_threshold_for_matching_item(self, scorer, indexed_data):
 
 ---
 
-## Coverage — Three Categories That Surface Late
+## Coverage -- Three Categories That Surface Late
 
 After all spec tests pass, run coverage and examine uncovered lines. Three categories
 of requirements routinely surface only at coverage time. All three are real
-requirements — do not delete the code, write the spec.
+requirements -- do not delete the code, write the spec.
 
-**Defensive guard code** — protects against API misuse:
+**Defensive guard code** -- protects against API misuse:
 ```python
 # Production code: what happens when full_text is empty?
 if not item.description.strip():
@@ -312,7 +312,7 @@ if not item.description.strip():
 # → Write: test_empty_description_raises_validation_error
 ```
 
-**Graceful degradation** — soft failures the system absorbs rather than raising:
+**Graceful degradation** -- soft failures the system absorbs rather than raising:
 ```python
 # Production code: history collection may not exist yet
 try:
@@ -322,7 +322,7 @@ except CollectionNotFoundError:
 # → Write: test_missing_history_collection_returns_empty_list
 ```
 
-**Conditional formatting branches** — display logic that varies by state:
+**Conditional formatting branches** -- display logic that varies by state:
 ```python
 # Production code: warning only appears when flagged
 if result.flagged:
@@ -333,14 +333,14 @@ if result.flagged:
 For each uncovered line, ask: is this a real requirement (write the spec), dead code
 (remove it), or over-engineering (remove it and simplify)?
 
-**"Pre-existing" is not a category.** Whether a line existed before your changes is irrelevant — if it is uncovered after your work, it is uncovered. The only valid dispositions are: real requirement (write the spec), dead code (remove it), or over-engineering (remove it). "It was already there" is not a disposition.
+**"Pre-existing" is not a category.** Whether a line existed before your changes is irrelevant -- if it is uncovered after your work, it is uncovered. The only valid dispositions are: real requirement (write the spec), dead code (remove it), or over-engineering (remove it). "It was already there" is not a disposition.
 
 ---
 
-## Error Testing — Messages, Not Just Types
+## Error Testing -- Messages, Not Just Types
 
 Verify message content, not just exception type. Future changes to error message
-wording will break tests that check for the right message — that is the point.
+wording will break tests that check for the right message -- that is the point.
 
 ```python
 # ✅ Checks what the operator actually sees
@@ -354,16 +354,16 @@ assert "available" in str(exc_info.value).lower(), (
     f"Error should list available options. Got: {exc_info.value}"
 )
 
-# ❌ Only confirms an exception occurred — message could be anything
+# ❌ Only confirms an exception occurred -- message could be anything
 with pytest.raises(ValueError):
     registry.get("nonexistent")
 
-# ❌ Constructs the error manually and asserts on the construction — always true
+# ❌ Constructs the error manually and asserts on the construction -- always true
 err = ValueError(f"No adapter for 'nonexistent'")
 assert "nonexistent" in str(err)
 ```
 
-The third anti-pattern is particularly insidious — it looks like it tests error
+The third anti-pattern is particularly insidious -- it looks like it tests error
 content but only confirms that Python string formatting works.
 
 ---
@@ -372,8 +372,8 @@ content but only confirms that Python string formatting works.
 
 Use pytest markers defined in `pyproject.toml` to categorize tests:
 
-- `@pytest.mark.integration` — Tests requiring external services (databases, APIs)
-- `@pytest.mark.live` — Tests requiring live network access
+- `@pytest.mark.integration` -- Tests requiring external services (databases, APIs)
+- `@pytest.mark.live` -- Tests requiring live network access
 
 Unit tests (no marker) should run fast with zero external dependencies.
 
@@ -384,7 +384,7 @@ Unit tests (no marker) should run fast with zero external dependencies.
 Tests must **never** import `_`-prefixed names from production modules.
 
 ```python
-# ❌ Testing private internals — breaks encapsulation
+# ❌ Testing private internals -- breaks encapsulation
 from myapp.pipeline.processor import _parse_header, _extract_body
 
 def test_parse_header_extracts_metadata(self):
@@ -402,7 +402,7 @@ def test_loaded_item_has_correct_metadata(self, data_dir):
 ```
 
 If a private function has complex logic that seems worth testing directly, that is a
-signal it should be promoted to its own module — not a justification to import it.
+signal it should be promoted to its own module -- not a justification to import it.
 
 ---
 
@@ -432,7 +432,7 @@ class TestProcessingWorkflow:
 ### ❌ Mocking the Subject Under Test
 
 ```python
-# ❌ Wrong — mocking Scorer in a test that claims to test scoring
+# ❌ Wrong -- mocking Scorer in a test that claims to test scoring
 mock_scorer = MagicMock()
 mock_scorer.score.return_value = Result(score=0.8, ...)
 result = mock_scorer.score(item)
@@ -445,11 +445,11 @@ for code that may be entirely broken.
 ### ❌ Mocking Pure Computation (Registry)
 
 ```python
-# ❌ Wrong — AdapterRegistry is pure computation, not I/O
+# ❌ Wrong -- AdapterRegistry is pure computation, not I/O
 mock_registry = MagicMock()
 mock_registry.get.return_value = mock_adapter
 
-# ✅ Correct — register a mock adapter in a real registry
+# ✅ Correct -- register a mock adapter in a real registry
 registry = AdapterRegistry()
 registry.register("postgres", mock_adapter)
 ```
@@ -459,13 +459,13 @@ The registry has no I/O and no side effects. Mocking it hides misconfiguration.
 ### ❌ Direct Construction Bypassing the SUT
 
 ```python
-# ❌ Wrong — inserts directly into database, bypassing AuditLogger.record()
+# ❌ Wrong -- inserts directly into database, bypassing AuditLogger.record()
 collection = logger._store.get_or_create_collection("history")
 collection.add(ids=["item-1"], documents=["Premium Subscription at Acme"], metadatas=[{}])
 results = collection.get(ids=["item-1"])
-assert len(results["documents"]) == 1  # tautology — logger.record() never called
+assert len(results["documents"]) == 1  # tautology -- logger.record() never called
 
-# ✅ Correct — calls the real logger, then verifies via public query
+# ✅ Correct -- calls the real logger, then verifies via public query
 logger.record(item, verdict="approved", reason="Strong match")
 history = logger.get_recent(limit=10)
 assert any(entry.external_id == item.external_id for entry in history), (
@@ -476,11 +476,11 @@ assert any(entry.external_id == item.external_id for entry in history), (
 ### ❌ Accessing Private Store Attributes
 
 ```python
-# ❌ Wrong — _store and _registry are implementation details
+# ❌ Wrong -- _store and _registry are implementation details
 collection = logger._store.get_or_create_collection("history")
 original = dict(AdapterRegistry._registry)
 
-# ✅ Correct — test through public methods only
+# ✅ Correct -- test through public methods only
 logger.record(item, verdict="approved")
 runner.run()
 ```
@@ -488,10 +488,10 @@ runner.run()
 ### ❌ Patching Internal Parsing Functions
 
 ```python
-# ❌ Wrong — parse_item is an internal parser, not an I/O boundary
+# ❌ Wrong -- parse_item is an internal parser, not an I/O boundary
 patch("...parse_item", side_effect=ParseError)
 
-# ✅ Correct — return mixed valid/invalid data from the I/O mock
+# ✅ Correct -- return mixed valid/invalid data from the I/O mock
 data_source.fetch_all.return_value = [valid_data, malformed_data]
 # Then assert output contains only the valid item
 ```
@@ -499,7 +499,7 @@ data_source.fetch_all.return_value = [valid_data, malformed_data]
 ### ❌ Repeated Patch Blocks
 
 ```python
-# ❌ Wrong — same block repeated in every test method
+# ❌ Wrong -- same block repeated in every test method
 def test_search_happy_path(self):
     with patch("...load_config") as mc, patch("...Runner") as mr:
         ...
@@ -508,7 +508,7 @@ def test_search_no_results(self):
     with patch("...load_config") as mc, patch("...Runner") as mr:
         ...
 
-# ✅ Correct — extract to conftest fixture
+# ✅ Correct -- extract to conftest fixture
 @pytest.fixture
 def cli_mocks():
     with patch("...load_config") as mc, patch("...Runner") as mr:
@@ -520,7 +520,7 @@ between copies is intentional or drift.
 
 ---
 
-## conftest.py — Infrastructure You Must Not Bypass
+## conftest.py -- Infrastructure You Must Not Bypass
 
 `conftest.py` provides two categories of infrastructure that all test files
 depend on. Neither is optional.
@@ -533,8 +533,8 @@ via `__new__` (bypassing `__init__` to avoid real connection setup) and
 replaces I/O methods with `AsyncMock` or `MagicMock`. Use this fixture
 rather than creating local mocks in individual test files.
 
-If a setup pattern recurs across two or more test classes — such as a runner with
-mocked adapter I/O — add it to conftest as a fixture rather than reconstructing
+If a setup pattern recurs across two or more test classes -- such as a runner with
+mocked adapter I/O -- add it to conftest as a fixture rather than reconstructing
 it inline in each test method.
 
 ### Output Directory Guard

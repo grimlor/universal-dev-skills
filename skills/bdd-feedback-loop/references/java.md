@@ -21,21 +21,21 @@ Language-specific guidance for applying `bdd-feedback-loop` in Java projects.
 ## Common Java Remediation Issues
 
 - Missing imports (IDE may not auto-import AssertJ static methods)
-- Wrong argument types passed to constructors — Java has no named parameters,
+- Wrong argument types passed to constructors -- Java has no named parameters,
   so argument order errors are common
-- Unchecked cast warnings in mock setup — use `@SuppressWarnings("unchecked")`
+- Unchecked cast warnings in mock setup -- use `@SuppressWarnings("unchecked")`
   with justification if unavoidable
-- `when(...).thenReturn(...)` type mismatch — return type must match the
+- `when(...).thenReturn(...)` type mismatch -- return type must match the
   stubbed method's signature exactly
-- Forgetting `@ExtendWith(MockitoExtension.class)` — `@Mock` annotations
+- Forgetting `@ExtendWith(MockitoExtension.class)` -- `@Mock` annotations
   won't initialize without it
 
 ## Step 5 Java-Specific Checks
 
 - Use `assertThat(value).isCloseTo(expected, within(tolerance))` for
   floating-point comparisons (AssertJ).
-- Validate exception message content, not only exception type — use
+- Validate exception message content, not only exception type -- use
   `assertThatThrownBy(...).hasMessageContaining("expected")`.
 - Ensure `@Nested` test classes have `@DisplayName` for BDD-style readability.
-- Verify strict stubbing — Mockito's `MockitoExtension` fails on unused stubs
+- Verify strict stubbing -- Mockito's `MockitoExtension` fails on unused stubs
   by default. Remove stubs that aren't exercised.

@@ -3,7 +3,7 @@ name: skill-compliance
 description: "ALWAYS READ FIRST. Before performing any task, identify the task type, the files being modified, and the relevant languages or subprojects, then load the right skills and references and confirm them to the user. Use at the start of every task, before any other skill."
 ---
 
-# Skill Compliance — Polyglot Routing
+# Skill Compliance -- Polyglot Routing
 
 ## Purpose
 
@@ -38,12 +38,12 @@ or mixed-language monorepos.
 
 You own the quality of every file you touch. When you read, edit, or generate
 code, you are responsible for ensuring it meets the standards defined in your
-skills — regardless of whether an issue was introduced by you or existed before
+skills -- regardless of whether an issue was introduced by you or existed before
 you arrived.
 
 **"Pre-existing" is not an exemption.** If you are working in a file and you
 encounter lint errors, type errors, missing specs, untested code paths, or
-deviations from skill guidance, they must be fixed — but **how** they are fixed
+deviations from skill guidance, they must be fixed -- but **how** they are fixed
 depends on context:
 
 - **During a feature workflow:** quality fixes on existing files go into a
@@ -57,7 +57,7 @@ If a fix is genuinely out of scope (e.g., in a file you are not otherwise
 touching), report the issue explicitly and recommend a concrete next step.
 Silence is never acceptable.
 
-Follow your skills from the start of every task — not after being reminded, and
+Follow your skills from the start of every task -- not after being reminded, and
 not selectively. When you catch yourself reasoning that a rule "doesn't apply
 here" or that an issue "isn't your change," treat that as a signal to re-read
 the relevant skill and comply.
@@ -66,25 +66,25 @@ the relevant skill and comply.
 
 ## Procedure
 
-### Step 1 — Identify the Task Type
+### Step 1 -- Identify the Task Type
 
 Before writing any code, editing any file, or executing any command, classify the
 request. This determines which generic workflow skills apply.
 
 Common task types:
 
-- **Planning / architecture** — likely `plan-updates`, sometimes `feature-workflow`
-- **Feature implementation** — `feature-workflow`
-- **Test writing or review** — `bdd-testing`; `bdd-feedback-loop` when implementing
+- **Planning / architecture** -- likely `plan-updates`, sometimes `feature-workflow`
+- **Feature implementation** -- `feature-workflow`
+- **Test writing or review** -- `bdd-testing`; `bdd-feedback-loop` when implementing
    from a spec document
-- **Commit / PR description work** — `conventional-commits`
-- **Tooling or standards work** — relevant language standards skill
-- **Customization work** — agent customization guidance if editing instructions,
+- **Commit / PR description work** -- `conventional-commits`
+- **Tooling or standards work** -- relevant language standards skill
+- **Customization work** -- agent customization guidance if editing instructions,
    skills, prompts, or agents
 
 `tool-usage` is cross-cutting whenever tools or terminal commands are used.
 
-### Step 2 — Identify the Work Surface
+### Step 2 -- Identify the Work Surface
 
 Determine which files or directories are actually in scope.
 
@@ -98,7 +98,7 @@ Use this priority order:
 If the task is a monorepo or mixed-language repo, do **not** route based only on
 repo identity. Route based on the subtree that contains the files being modified.
 
-### Step 3 — Determine the Language and Subproject
+### Step 3 -- Determine the Language and Subproject
 
 Use the touched files and nearest manifests to determine the active language or
 languages.
@@ -120,25 +120,25 @@ For monorepos, prefer the **nearest** manifest or build file to the edited file:
 
 Do not assume the repo root governs every subtree.
 
-### Step 4 — Select the Relevant Skills
+### Step 4 -- Select the Relevant Skills
 
 Read each identified skill's `SKILL.md` in full. Do not skim. Do not summarize
 from memory. Use the file read tool to load the complete content.
 
 At minimum, the following rules apply:
 
-- `tool-usage` — applies whenever you use any tool or terminal command
-- `plan-updates` — applies whenever progress or status needs to persist across sessions
-- `code-quality-antipatterns` — applies whenever writing, editing, or reviewing code
+- `tool-usage` -- applies whenever you use any tool or terminal command
+- `plan-updates` -- applies whenever progress or status needs to persist across sessions
+- `code-quality-antipatterns` -- applies whenever writing, editing, or reviewing code
   (any task where suppressions might be added or encountered)
 
 Then add task-specific skills:
 
-- `feature-workflow` — feature or non-trivial implementation work
-- `bdd-testing` — whenever tests are being written, modified, or reviewed
-- `bdd-feedback-loop` — whenever implementing tests from a spec document
-- `conventional-commits` — whenever staging, committing, or preparing PR titles
-- `code-quality-audit` — when auditing files for structural quality violations
+- `feature-workflow` -- feature or non-trivial implementation work
+- `bdd-testing` -- whenever tests are being written, modified, or reviewed
+- `bdd-feedback-loop` -- whenever implementing tests from a spec document
+- `conventional-commits` -- whenever staging, committing, or preparing PR titles
+- `code-quality-audit` -- when auditing files for structural quality violations
   (mock boundaries, test-only APIs, suppression pragmas, BDD conventions), or
   during Phase 1.5 of the feature workflow
 
@@ -153,7 +153,7 @@ and subtree. Examples:
 For mixed-language changes, load the relevant skills or references for **each**
 language in scope. Apply them per file or subtree rather than as repo-wide defaults.
 
-### Step 5 — Handle Ambiguity Explicitly
+### Step 5 -- Handle Ambiguity Explicitly
 
 If the target files, subtree, or language are ambiguous, do not guess.
 
@@ -165,7 +165,7 @@ Use this fallback order:
 4. Until clarified, apply only the generic workflow skills and avoid committing
     language-specific config changes
 
-### Step 6 — Confirm to the User
+### Step 6 -- Confirm to the User
 
 Before beginning any work, post a message to the user that includes:
 
@@ -186,7 +186,7 @@ Example:
 
 Do not begin work until this confirmation is posted.
 
-### Step 7 — Locate or Create the Tracking Document
+### Step 7 -- Locate or Create the Tracking Document
 
 Before beginning work, locate or create the file that will track progress
 for this session. Follow the decision tree in the `plan-updates` skill.
@@ -194,17 +194,17 @@ for this session. Follow the decision tree in the `plan-updates` skill.
 If an established `.copilot/plan.md` already exists for the work, use it as the
 canonical async tracker rather than duplicating state in another file.
 
-### Step 8 — Write Skill Summary to Session Memory
+### Step 8 -- Write Skill Summary to Session Memory
 
 After loading all skills and posting the confirmation (Step 6), write a
 session memory file at `/memories/session/active-skills.md` summarizing
 the active skills and their most critical rules. This file must be
-concise — one line per skill, 2–3 key rules each.
+concise -- one line per skill, 2–3 key rules each.
 
 **Format:**
 
 ```markdown
-# Active Skills — <task summary>
+# Active Skills -- <task summary>
 
 If you cannot recall the full rules for a skill listed below, re-read its
 SKILL.md before proceeding. This summary is a recall trigger, not a substitute.
@@ -216,7 +216,7 @@ SKILL.md before proceeding. This summary is a recall trigger, not a substitute.
 **Example:**
 
 ```markdown
-# Active Skills — implement login handler tests
+# Active Skills -- implement login handler tests
 
 - **bdd-testing**: 100% coverage required, no bare assertions, G/W/T docstring + body comments on every method
 - **code-quality-antipatterns**: NO pragmas without user approval, fix > suppress, no test-only params on production APIs
@@ -224,7 +224,7 @@ SKILL.md before proceeding. This summary is a recall trigger, not a substitute.
 - **python-code-standards**: pyright strict, ruff with D rules
 ```
 
-**Why:** Session memory filenames are listed in every prompt — even after
+**Why:** Session memory filenames are listed in every prompt -- even after
 context compaction drops the full skill text. When session memory exists,
 the agent can re-read it cheaply to recall which skills are active and
 what the critical rules are, then reload full skills as needed.
@@ -232,7 +232,7 @@ what the critical rules are, then reload full skills as needed.
 If the task changes and different skills become relevant, update the file
 rather than creating a new one.
 
-### Step 9 — Proceed
+### Step 9 -- Proceed
 
 After posting the confirmation, begin the task using the procedures
 defined in the loaded skills.
@@ -241,11 +241,11 @@ If at any point during the task you realize an additional skill applies
 that you did not load, stop, read it, and post an amended confirmation
 before continuing.
 
-### Step 10 — Protect Skills from Context Loss
+### Step 10 -- Protect Skills from Context Loss
 
 Skill content loaded via file reads lives in conversation history. When
 the context window fills, the system compresses older messages into
-summaries — silently dropping procedural steps, weakening requirements,
+summaries -- silently dropping procedural steps, weakening requirements,
 and conflating distinct rules.
 
 **The defense is prevention, not recovery.** Structure work around
@@ -263,7 +263,7 @@ builds:
    decisions made. This ensures progress is recorded outside the
    conversation, not just in it.
 
-3. **If the conversation is getting long, restore context — do not
+3. **If the conversation is getting long, restore context -- do not
    abandon it.** When significant depth has accumulated (many tool
    calls, large file reads, multiple implementation rounds), the
    correct response is to re-read, not restart. Re-read the agent
@@ -271,7 +271,7 @@ builds:
    re-read this skill, re-read the skills relevant to the current task,
    and re-read the tracking document to establish where work left off.
    Then confirm to the user what was re-loaded and continue. Starting a
-   new session is a user decision, not an agent decision — suggest it
+   new session is a user decision, not an agent decision -- suggest it
    only if the tracking document is missing or so out of date that
    current state cannot be reconstructed from it.
 

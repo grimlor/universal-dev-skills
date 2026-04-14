@@ -3,7 +3,7 @@ name: plan-updates
 description: "Progress tracking in project artifacts. Use after completing implementation work (Phase 5 of the feature workflow), at checkpoints during refactoring or audit passes, or when the user asks to update project status."
 ---
 
-# Plan Updates — Tracking Progress in Project Artifacts
+# Plan Updates -- Tracking Progress in Project Artifacts
 
 ## When This Skill Applies
 
@@ -27,7 +27,7 @@ Use this decision tree every time before updating progress:
 
 3. **Is this a refactoring, audit, or remediation pass?**
    Create or update `.copilot/task.md` (git-ignored). Follow the task tracking
-   format below. This file is the session state for the current pass — update it
+   format below. This file is the session state for the current pass -- update it
    at every checkpoint and re-read it when resuming after context loss.
 
 `.copilot/` is git-ignored by convention. If the directory does not exist, create it
@@ -42,12 +42,12 @@ and add `.copilot/` to `.gitignore` before writing any files there.
 **Location:** `.copilot/plan.md`, or an existing plan document found in `docs/` or
 the project root.
 
-Each phase has a heading like `### Phase N — Description` followed by checkboxes:
+Each phase has a heading like `### Phase N -- Description` followed by checkboxes:
 
 ```markdown
-### Phase 4c — Operational Resilience
-- [x] File logging — persist logs alongside stderr output
-- [x] Throttle detection — recognize rate limiting signals
+### Phase 4c -- Operational Resilience
+- [x] File logging -- persist logs alongside stderr output
+- [x] Throttle detection -- recognize rate limiting signals
 - [ ] Some future item not yet implemented
 ```
 
@@ -65,7 +65,7 @@ Each phase has a heading like `### Phase N — Description` followed by checkbox
 **Location:** `.copilot/task.md`
 
 For work that touches existing test or source files rather than adding new features,
-track progress at the **test class** level — not the file level. Files are too large
+track progress at the **test class** level -- not the file level. Files are too large
 to be a meaningful completion unit; a class maps to one REQUIREMENT and can be
 completed without context pressure building mid-work.
 
@@ -73,7 +73,7 @@ Group classes by file for orientation, but make each class its own checkable ite
 Record findings inline so that context can be restored from this file alone:
 
 ```markdown
-# Task — BDD Test Remediation
+# Task -- BDD Test Remediation
 
 ## Goal
 Audit all test files against the current bdd-testing skill. Fix violations in place.
@@ -84,8 +84,8 @@ Started: 2026-01-15
 ## Files
 
 ### tools/code_review/prescriptive_io_test.py
-- [x] TestPrescriptiveIOParsing — WHAT enumeration added; Given elision fixed in 3 methods
-- [x] TestPrescriptiveIOValidation — clean
+- [x] TestPrescriptiveIOParsing -- WHAT enumeration added; Given elision fixed in 3 methods
+- [x] TestPrescriptiveIOValidation -- clean
 - [ ] TestPrescriptiveIOErrorHandling
 - [ ] TestPrescriptiveIOFormatting
 
@@ -102,17 +102,17 @@ Started: 2026-01-15
 
 ### 3. BDD Specifications
 
-**Location:** The project's BDD specifications document — a canonical listing of all
+**Location:** The project's BDD specifications document -- a canonical listing of all
 behavioral contracts. Look for it alongside the project plan, or in a `specs/` or
 `tests/` directory.
 
 The BDD Specifications document contains `TestClass` definitions with method signatures
-(no bodies — just `...`).
+(no bodies -- just `...`).
 
 **Rules:**
 - Add new spec classes during Phase 1 (planning) of the feature workflow
 - If implementation reveals requirements not in the spec, add them here
-- Keep the document in sync with actual test files — if a test class exists in code,
+- Keep the document in sync with actual test files -- if a test class exists in code,
   its spec should exist here
 - Follow the existing format: class docstring with REQUIREMENT/WHO/WHAT/WHY,
   then method signatures with `...` bodies

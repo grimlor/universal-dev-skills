@@ -30,7 +30,7 @@ expect(() => validate(input)).toThrow(expect.objectContaining({
 }));
 ```
 
-Always assert the error message, not just the error type — this prevents
+Always assert the error message, not just the error type -- this prevents
 tests from passing on the wrong `Error`.
 
 ## Async Test Patterns
@@ -48,7 +48,7 @@ it('should reject on bad input', async () => {
 });
 ```
 
-Always `await` the assertion or return the promise — an un-awaited async
+Always `await` the assertion or return the promise -- an un-awaited async
 assertion will silently pass.
 
 ## Mock Boundary Patterns

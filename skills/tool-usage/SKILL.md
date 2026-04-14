@@ -1,6 +1,6 @@
 ---
 name: tool-usage
-description: "Tool and terminal decisions for every task. Use for any request involving file reads or edits, running tests, executing searches, git commands, or terminal work — even when the user does not mention tool choice. Determines whether to use VS Code integrations, MCP tools, or terminal commands."
+description: "Tool and terminal decisions for every task. Use for any request involving file reads or edits, running tests, executing searches, git commands, or terminal work -- even when the user does not mention tool choice. Determines whether to use VS Code integrations, MCP tools, or terminal commands."
 ---
 
 # Tool Usage Guidelines
@@ -30,13 +30,13 @@ Python-specific extension, pragma, and Ruff severity notes are in
 
 ## Tool-First Approach
 
-Use specialized VS Code tools instead of terminal commands. This is not a preference — it is a requirement. Tools provide structured output, integrated error reporting, and correct path resolution that raw terminal commands do not.
+Use specialized VS Code tools instead of terminal commands. This is not a preference -- it is a requirement. Tools provide structured output, integrated error reporting, and correct path resolution that raw terminal commands do not.
 
 | Task | Use This Tool | Never This |
 |------|--------------|----------|
 | Read/edit files | `read_file`, `replace_string_in_file`, `create_file` | `cat`, `sed`, `awk`, `echo` |
 | Run tests | `runTests` tool | `pytest` in terminal |
-| Check errors | `get_errors` tool (Pylance/Pyright; partial Ruff) | — |
+| Check errors | `get_errors` tool (Pylance/Pyright; partial Ruff) | -- |
 | Search code | `semantic_search`, `grep_search` | `grep`, `find` in terminal |
 | Find files | `file_search`, `list_dir` | `ls`, `find` in terminal |
 | Git status/changes | `get_changed_files`, GitKraken `git_status` | `git status` in terminal |
@@ -48,7 +48,7 @@ Use specialized VS Code tools instead of terminal commands. This is not a prefer
 | Git stash | GitKraken `git_stash` | `git stash` in terminal |
 | Run language snippets | Show script to user; ask them to enable snippet tool (see below) | ad-hoc shell one-liners; running scripts without user review |
 
-**Running tests via terminal is not permitted.** The `runTests` tool handles test environment setup, path configuration, output formatting, and coverage reporting. Any session step that would otherwise run `pytest`, `jest`, `dotnet test`, etc. in the terminal must use `runTests` instead — no exceptions, including quick sanity checks and coverage runs.
+**Running tests via terminal is not permitted.** The `runTests` tool handles test environment setup, path configuration, output formatting, and coverage reporting. Any session step that would otherwise run `pytest`, `jest`, `dotnet test`, etc. in the terminal must use `runTests` instead -- no exceptions, including quick sanity checks and coverage runs.
 
 **Terminal verification:** The VS Code Problems panel may not surface every
 diagnostic from every analyzer. After completing edits, run language-native CLI
@@ -83,7 +83,7 @@ When the task is platform-dependent, search the available tool list using the di
 - **ADO workspace** with `ado-workflows-mcp` installed: searching `pull_request` finds ADO PR tools → use them.
 - **Bare workspace** with neither: no match → tell the user to use the web UI or terminal.
 
-The git operations in the tool-first table above (status, commit, branch, push, blame, stash) are platform-agnostic — they work the same regardless of the remote. Only the tasks in this section vary by platform.
+The git operations in the tool-first table above (status, commit, branch, push, blame, stash) are platform-agnostic -- they work the same regardless of the remote. Only the tasks in this section vary by platform.
 
 ## When Terminal Is Appropriate
 
@@ -94,14 +94,14 @@ The git operations in the tool-first table above (status, commit, branch, push, 
 - **Type-check + lint sweep**: Running language-native analyzers and linters after edits to catch diagnostics invisible to `get_errors`
 - **Commands with no tool equivalent**: When no specialized tool exists
 
-General test runs are not on this list. They have a tool equivalent — `runTests` — and that tool must be used. Similarly, when snippet tools are available for a language, they should be preferred over ad-hoc terminal one-liners.
+General test runs are not on this list. They have a tool equivalent -- `runTests` -- and that tool must be used. Similarly, when snippet tools are available for a language, they should be preferred over ad-hoc terminal one-liners.
 
 **Bun coverage note:** The `runTests` tool response for Bun contains only
-pass/fail summaries — no coverage data in the payload. However, when
+pass/fail summaries -- no coverage data in the payload. However, when
 `bunfig.toml` has `coverage = true` and an lcov reporter, `runTests` triggers
 coverage and writes `coverage/lcov.info`. The agent workflow is:
 `runTests` → `read_file coverage/lcov.info`. If `bunfig.toml` does not exist
-(e.g. contributed projects), create one locally — it does not need to be
+(e.g. contributed projects), create one locally -- it does not need to be
 committed. See `references/typescript.md` for details.
 
 ## Script Handling

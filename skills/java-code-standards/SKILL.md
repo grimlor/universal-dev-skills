@@ -20,7 +20,7 @@ Whenever:
 
 ---
 
-## Scope — Personal vs. Team Projects
+## Scope -- Personal vs. Team Projects
 
 **This standard applies in full only to projects where you control the toolchain**
 (personal projects, greenfield repos, repos where you are the sole or primary
@@ -31,7 +31,7 @@ author).
 1. **GitHub owner is `grimlor`** → personal repo → full standard applies.
 2. **Forked repo** (different owner, contributor commits from `grimlor`) → apply
    the higher bar of your personal standard and the upstream's standard to your
-   contributions. Don't rewrite the upstream's existing configs — the upstream
+   contributions. Don't rewrite the upstream's existing configs -- the upstream
    project's conventions (checkstyle rules, test framework, build system) are
    theirs to own.
 3. **Repo lives under a work org path or an ADO workspace** → team repo → follow
@@ -51,10 +51,10 @@ this standard. Forked project configs reflect the original author's choices, not
 necessarily yours.
 
 At work or in open-source contributions, team repos may follow different
-conventions — and that's expected. Key differences to watch for:
+conventions -- and that's expected. Key differences to watch for:
 
 - **Build system:** teams may use Maven or Gradle (Groovy or Kotlin DSL). Match
-  what's configured — don't switch build systems unilaterally.
+  what's configured -- don't switch build systems unilaterally.
 - **Style checker:** teams may use Checkstyle, PMD, or Google Java Format. Adapt
   to what's in the project.
 - **Test framework:** some teams use JUnit 4 or TestNG instead of JUnit 5. Don't
@@ -83,7 +83,7 @@ For team/open-source projects, use whatever build system is present:
 | `build.gradle.kts` | Gradle (Kotlin DSL) |
 
 Always use the wrapper (`./gradlew` or `./mvnw`) rather than a globally installed
-build tool — this ensures reproducible builds and eliminates version mismatch
+build tool -- this ensures reproducible builds and eliminates version mismatch
 between developers.
 
 ---
@@ -211,7 +211,7 @@ specification. For contributed or forked projects, match the upstream's threshol
 
 **Why `-Werror`:** Treating warnings as errors ensures no new warnings accumulate.
 The same principle as `strict: true` in TypeScript or `typeCheckingMode: strict`
-in Pyright — catch problems at compile time, not in production.
+in Pyright -- catch problems at compile time, not in production.
 
 ---
 
@@ -277,7 +277,7 @@ if needed, but don't commit a different config than the team uses.
 
 ## Javadoc Documentation Standard
 
-All public symbols must have Javadoc — classes, interfaces, methods, and
+All public symbols must have Javadoc -- classes, interfaces, methods, and
 constructors. Checkstyle's `MissingJavadocMethod` and `MissingJavadocType`
 modules enforce this.
 
@@ -336,7 +336,7 @@ public interface StorageAdapter {
 }
 ```
 
-**Tests do not require Javadoc** — the BDD-style `@DisplayName` and nested
+**Tests do not require Javadoc** -- the BDD-style `@DisplayName` and nested
 `@Nested` class names serve as the specification.
 
 ---
@@ -356,7 +356,7 @@ Gradle provides the standard lifecycle tasks:
 | `./gradlew checkstyleMain` | Run Checkstyle on main sources |
 | `./gradlew spotbugsMain` | Run SpotBugs on main sources |
 
-The `check` task is the full quality gate — equivalent to Python's `task check`
+The `check` task is the full quality gate -- equivalent to Python's `task check`
 or TypeScript's `npm run check`.
 
 ### Maven equivalents
@@ -398,7 +398,7 @@ repos:
 ```
 
 Running the full `check` task in a pre-commit hook is viable for small projects
-but may be too slow for large codebases. At minimum, format and compile — reserve
+but may be too slow for large codebases. At minimum, format and compile -- reserve
 the full gate (`./gradlew check`) for CI or a manual pre-push check.
 
 ### Using Gradle git hooks plugin
@@ -437,18 +437,18 @@ gitHooks {
 @SuppressWarnings("unchecked")
 
 // ✅ Specific with reason
-@SuppressWarnings("unchecked") // Generic type erasure at API boundary — SDK returns raw List
+@SuppressWarnings("unchecked") // Generic type erasure at API boundary -- SDK returns raw List
 List<String> items = (List<String>) sdk.getItems();
 ```
 
 ### SpotBugs `@SuppressFBWarnings`
 
-Same rules — narrow scope, specific bug pattern, always include a justification:
+Same rules -- narrow scope, specific bug pattern, always include a justification:
 
 ```java
 @SuppressFBWarnings(
     value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
-    justification = "False positive — try-with-resources generates redundant null check"
+    justification = "False positive -- try-with-resources generates redundant null check"
 )
 ```
 
@@ -530,7 +530,7 @@ public class Config {
     // constructor, getters, equals, hashCode, toString...
 }
 
-// ✅ Record — immutable by default, no boilerplate
+// ✅ Record -- immutable by default, no boilerplate
 public record Config(String apiUrl, int timeout) {}
 ```
 
@@ -563,31 +563,31 @@ dependencies {
 ## Workflow for Applying Standards to an Existing Project
 
 **For personal projects:** apply the full standard below.
-**For team projects:** see [Scope](#scope--personal-vs-team-projects) first — only
+**For team projects:** see [Scope](#scope--personal-vs-team-projects) first -- only
 apply what the team has agreed to, or what doesn't affect shared config.
 
-1. **Set up `build.gradle.kts`** — add Java toolchain, Checkstyle, SpotBugs,
+1. **Set up `build.gradle.kts`** -- add Java toolchain, Checkstyle, SpotBugs,
    Spotless, and JaCoCo plugins per the canonical config.
 
-2. **Create Checkstyle config** — place `config/checkstyle/checkstyle.xml` with
+2. **Create Checkstyle config** -- place `config/checkstyle/checkstyle.xml` with
    the canonical Google-based config.
 
-3. **Configure JUnit 5** — ensure `useJUnitPlatform()` in the test task and
+3. **Configure JUnit 5** -- ensure `useJUnitPlatform()` in the test task and
    `junit-bom` platform dependency.
 
-4. **Set compiler warnings** — add `-Xlint:all -Werror -parameters` to
+4. **Set compiler warnings** -- add `-Xlint:all -Werror -parameters` to
    `JavaCompile` tasks.
 
 5. **Run formatter:** `./gradlew spotlessApply`
 
 6. **Run analysis with auto-fix where possible:** `./gradlew check`
 
-7. **Fix remaining issues manually** — Checkstyle and SpotBugs reports include
+7. **Fix remaining issues manually** -- Checkstyle and SpotBugs reports include
    file + line. Common unfixable: missing Javadoc, unchecked casts at API
    boundaries.
 
 8. **Verify clean:** `./gradlew check` should pass with no warnings.
 
-9. **Set up pre-commit hooks** — configure pre-commit or Gradle git hooks plugin.
+9. **Set up pre-commit hooks** -- configure pre-commit or Gradle git hooks plugin.
 
 10. **Commit:** `chore(build): add Checkstyle, SpotBugs, and strict compiler warnings`

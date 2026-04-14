@@ -14,7 +14,7 @@ Java-specific details for applying `tool-usage`.
 The Extension Pack for Java bundles Red Hat's Java language support
 (`redhat.java`), the Maven/Gradle project manager, the debugger, and the
 test runner. It provides IntelliSense, go-to-definition, inline diagnostics,
-and refactoring support — equivalent to what Pylance does for Python or the
+and refactoring support -- equivalent to what Pylance does for Python or the
 TS language service does for TypeScript.
 
 ### Test runner integration
@@ -58,12 +58,12 @@ classpath in sync with the build system.
 
 Java diagnostics appear in the Problems panel from two sources:
 
-- **Java language server** (red hat) — real-time compiler errors and
+- **Java language server** (red hat) -- real-time compiler errors and
   warnings as you type. These match `javac` output.
-- **Checkstyle extension** — style violations from the checkstyle config.
+- **Checkstyle extension** -- style violations from the checkstyle config.
 
 After completing edits, run the full quality gate in the terminal as final
-verification — the Problems panel may buffer changes or miss SpotBugs
+verification -- the Problems panel may buffer changes or miss SpotBugs
 findings entirely.
 
 ```bash
@@ -99,10 +99,10 @@ from the core `tool-usage` skill: write to `.copilot/scripts/`, then execute.
 Always use the Gradle wrapper rather than running `gradle` directly:
 
 ```bash
-# ✅ Uses the wrapper — reproducible
+# ✅ Uses the wrapper -- reproducible
 ./gradlew test
 
-# ❌ Global install — version may differ
+# ❌ Global install -- version may differ
 gradle test
 ```
 

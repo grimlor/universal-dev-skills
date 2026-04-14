@@ -13,7 +13,7 @@ C#-specific details for applying `tool-usage`.
 The C# Dev Kit provides solution-level project management, test explorer
 integration, and NuGet package management. The base C# extension provides
 IntelliSense, go-to-definition, inline diagnostics, refactoring, and
-debugging — equivalent to what Pylance does for Python.
+debugging -- equivalent to what Pylance does for Python.
 
 ### Test runner integration
 
@@ -53,9 +53,9 @@ analyzer support and faster IntelliSense.
 
 C# diagnostics appear in the Problems panel from two sources:
 
-- **Roslyn language server** — real-time compiler errors, warnings, and
+- **Roslyn language server** -- real-time compiler errors, warnings, and
   analyzer findings as you type.
-- **Build output** — diagnostics from `dotnet build`, including analyzers
+- **Build output** -- diagnostics from `dotnet build`, including analyzers
   enabled in `.editorconfig` or `Directory.Build.props`.
 
 After completing edits, run the full quality gate in the terminal as final
@@ -98,7 +98,7 @@ dotnet build
 dotnet test
 dotnet format
 
-# ❌ Direct MSBuild — less portable
+# ❌ Direct MSBuild -- less portable
 msbuild /t:Build
 ```
 

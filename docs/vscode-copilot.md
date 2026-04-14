@@ -1,4 +1,4 @@
-# Setup — VS Code / GitHub Copilot
+# Setup -- VS Code / GitHub Copilot
 
 GitHub Copilot in VS Code has native support for Agent Skills, custom instructions, and custom agents. This is the primary platform these skills were built for.
 
@@ -11,7 +11,7 @@ GitHub Copilot in VS Code has native support for Agent Skills, custom instructio
 | Custom Agents (`.agent.md`) | `agents/` directory | `.github/agents/` or custom path |
 | Always-on instructions | `copilot-instructions.md` | `.github/copilot-instructions.md` |
 
-## Option A — Global Settings (Recommended)
+## Option A -- Global Settings (Recommended)
 
 Clone this repo once and configure VS Code to read from it across all workspaces. Zero per-project setup.
 
@@ -52,7 +52,7 @@ This keeps the default `.github/` paths active (so per-project customizations st
 
 Alternatively, type `/` in chat to see available skills, or check **Configure Chat** (gear icon) → **Instructions & Rules** to see loaded instruction files.
 
-## Option B — Copy into a Workspace
+## Option B -- Copy into a Workspace
 
 Copy the files into a project's `.github/` directory:
 
@@ -65,7 +65,7 @@ cp -r agents/ /path/to/your-repo/.github/agents/
 
 This makes the skills version-controlled with the project and available to all contributors.
 
-## Option C — User Profile Directory
+## Option C -- User Profile Directory
 
 VS Code also reads from user profile directories that persist across all workspaces:
 
@@ -90,22 +90,22 @@ For team distribution, skills can be bundled inside an MCP server Python package
 1. Bundle skills as package data under `_bundled_skills/` in the wheel.
 2. On server startup, before the MCP transport starts, run an `install_skills()` function.
 3. `install_skills()` uses `importlib.resources.files()` to read the bundled files and copies any missing ones into `.github/skills/` in the workspace root.
-4. **Never overwrite existing files** — only copy missing items, preserving user customizations.
+4. **Never overwrite existing files** -- only copy missing items, preserving user customizations.
 
 This creates a zero-interaction install path: `pip install your-mcp-server` → skills appear in the workspace on next server start.
 
 ### Key design decisions
 
-- `importlib.resources` over `__file__`-relative paths — works in all install modes including wheels and zip imports
-- `Path.cwd()` detection — VS Code launches MCP servers with the workspace root as cwd
-- Startup-time install — no CLI command or manual step required
-- INFO-level logging for installs, DEBUG for skips — observable without being noisy
+- `importlib.resources` over `__file__`-relative paths -- works in all install modes including wheels and zip imports
+- `Path.cwd()` detection -- VS Code launches MCP servers with the workspace root as cwd
+- Startup-time install -- no CLI command or manual step required
+- INFO-level logging for installs, DEBUG for skips -- observable without being noisy
 
 ## How the Entry Point Works
 
 The `instructions/copilot-instructions.md` file contains a single line that directs the agent to read the `skill-compliance` skill before doing anything else. `skill-compliance` then orchestrates loading all relevant skills for the current task.
 
-This chain — entry point → skill-compliance → relevant skills — is what makes the system self-enforcing rather than advisory.
+This chain -- entry point → skill-compliance → relevant skills -- is what makes the system self-enforcing rather than advisory.
 
 ## Memory & Context Persistence
 
@@ -113,19 +113,19 @@ VS Code Copilot has the richest memory system of any supported platform:
 
 | Scope | Location | Loaded | Survives Compaction? |
 |---|---|---|---|
-| User memory | `/memories/` (memory tool) | First 200 lines auto-loaded every turn | Yes — persists across all workspaces and conversations |
+| User memory | `/memories/` (memory tool) | First 200 lines auto-loaded every turn | Yes -- persists across all workspaces and conversations |
 | Session memory | `/memories/session/` (memory tool) | Filenames listed every turn; content on demand | Until conversation ends |
-| Repository memory | `/memories/repo/` (memory tool) | Create-only; stored locally in workspace | Yes — persists across conversations in the same workspace |
+| Repository memory | `/memories/repo/` (memory tool) | Create-only; stored locally in workspace | Yes -- persists across conversations in the same workspace |
 
-The memory tool is a VS Code extension feature (`github.copilot-chat`) — it is not filesystem-accessible and is not available in Copilot CLI or VS Code Cloud.
+The memory tool is a VS Code extension feature (`github.copilot-chat`) -- it is not filesystem-accessible and is not available in Copilot CLI or VS Code Cloud.
 
 ### Skill-recall after context compaction
 
 Three layers ensure skills are re-read after compaction:
 
-1. **User memory note** (`/memories/session-memory-protocol.md`) — auto-loaded every turn, instructs the agent to check session memory and reload skills if in doubt.
-2. **`copilot-instructions.md` trigger** — always-on instruction that checks for session memory files.
-3. **Skill-compliance Step 8** — writes active skill summaries to session memory with an unconditional reload instruction.
+1. **User memory note** (`/memories/session-memory-protocol.md`) -- auto-loaded every turn, instructs the agent to check session memory and reload skills if in doubt.
+2. **`copilot-instructions.md` trigger** -- always-on instruction that checks for session memory files.
+3. **Skill-compliance Step 8** -- writes active skill summaries to session memory with an unconditional reload instruction.
 
 ## Relevant VS Code Settings
 
@@ -143,7 +143,7 @@ Three layers ensure skills are re-read after compaction:
 
 For GitHub organizations, custom instructions and agents can be defined at the organization level and automatically discovered by all members:
 
-- `github.copilot.chat.organizationInstructions.enabled` — organization-level instructions
-- `github.copilot.chat.organizationCustomAgents.enabled` — organization-level agents
+- `github.copilot.chat.organizationInstructions.enabled` -- organization-level instructions
+- `github.copilot.chat.organizationCustomAgents.enabled` -- organization-level agents
 
 See [GitHub's documentation](https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-organization-instructions) for setup.

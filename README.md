@@ -1,10 +1,10 @@
 # Universal Dev Skills
 
-Portable, agent-agnostic skills that enforce development discipline — spec-before-code, BDD testing, plan-first workflows — across any project and any AI coding agent.
+Portable, agent-agnostic skills that enforce development discipline -- spec-before-code, BDD testing, plan-first workflows -- across any project and any AI coding agent.
 
 ## What This Is
 
-A collection of [Agent Skills](https://agentskills.io/) that establish consistent development practices with AI coding agents. Each skill encodes domain knowledge — from how to write tests to how to format commit messages — using the open Agent Skills standard (`SKILL.md` + YAML frontmatter + Markdown).
+A collection of [Agent Skills](https://agentskills.io/) that establish consistent development practices with AI coding agents. Each skill encodes domain knowledge -- from how to write tests to how to format commit messages -- using the open Agent Skills standard (`SKILL.md` + YAML frontmatter + Markdown).
 
 The enforcement model is the key design choice: the `skill-compliance` skill makes the agent explicitly acknowledge which skills it loaded before touching anything, making non-compliance observable rather than silent.
 
@@ -16,14 +16,14 @@ These skills define processes and decision rules. They apply regardless of langu
 
 | Skill | Purpose |
 |-------|---------|
-| **skill-compliance** | Pre-task routing — identifies the task type, work surface, and languages in scope, then loads the right skills and references |
-| **tool-usage** | VS Code tool-first approach — when to use tools vs. terminal commands |
-| **bdd-testing** | BDD test conventions — system specification, not unit testing |
-| **bdd-feedback-loop** | Per-module test implementation procedure — spec to clean output |
-| **feature-workflow** | Spec-before-code development — 5-phase lifecycle from planning to status update |
+| **skill-compliance** | Pre-task routing -- identifies the task type, work surface, and languages in scope, then loads the right skills and references |
+| **tool-usage** | VS Code tool-first approach -- when to use tools vs. terminal commands |
+| **bdd-testing** | BDD test conventions -- system specification, not unit testing |
+| **bdd-feedback-loop** | Per-module test implementation procedure -- spec to clean output |
+| **feature-workflow** | Spec-before-code development -- 5-phase lifecycle from planning to status update |
 | **conventional-commits** | Commit message format following Conventional Commits v1.0.0 |
 | **plan-updates** | Progress tracking in project plan and BDD specification artifacts |
-| **code-quality-antipatterns** | Suppression pragma policy — prevents autonomous type-ignore, noqa, pragma no-cover (cross-cutting) |
+| **code-quality-antipatterns** | Suppression pragma policy -- prevents autonomous type-ignore, noqa, pragma no-cover (cross-cutting) |
 
 ### Language Standards Skills
 
@@ -36,7 +36,7 @@ These skills define toolchain configuration, linting, formatting, coverage thres
 | **java-code-standards** | Checkstyle, SpotBugs, Spotless, Gradle, JUnit 5 |
 | **csharp-code-standards** | Roslyn analyzers, .editorconfig, dotnet CLI, xUnit |
 
-Java and C# standards are forward-looking — authored before live projects exist in the workspace. They will be refined when real project usage begins.
+Java and C# standards are forward-looking -- authored before live projects exist in the workspace. They will be refined when real project usage begins.
 
 ### Language References
 
@@ -67,7 +67,7 @@ These skills work with multiple AI coding agents. The skill content (Markdown + 
 
 ## Quick Start
 
-### Option 1 — Clone and run the setup script (recommended)
+### Option 1 -- Clone and run the setup script (recommended)
 
 Clone this repo once, then run the setup script for your agent:
 
@@ -92,7 +92,7 @@ The Cursor target converts SKILL.md files to `.cursor/rules/*.mdc` and requires 
 
 For manual setup, see the per-agent guides: [VS Code/Copilot](docs/vscode-copilot.md) · [Cursor](docs/cursor.md) · [Windsurf](docs/windsurf.md) · [Claude Code](docs/claude-code.md) · [OpenCode](docs/opencode.md)
 
-### Option 2 — Copy into a repository
+### Option 2 -- Copy into a repository
 
 Copy the skills and instructions into a project's expected directory:
 
@@ -110,7 +110,7 @@ cp -r skills/ /path/to/your-repo/.windsurf/skills/
 # For Cursor (see setup guide for rules conversion)
 ```
 
-### Option 3 — MCP package distribution
+### Option 3 -- MCP package distribution
 
 Skills can be bundled inside an MCP server package and auto-installed into workspaces on server startup. See the [VS Code/Copilot setup guide](docs/vscode-copilot.md#mcp-package-distribution) for the pattern.
 
@@ -141,7 +141,7 @@ python3 scripts/setup.py --target <agent>         # re-run for your agent
 python3 scripts/setup.py --target <agent> --dry-run  # preview first
 ```
 
-The setup script is idempotent — it will skip existing symlinks and only create missing files.
+The setup script is idempotent -- it will skip existing symlinks and only create missing files.
 
 ## Repo Structure
 
@@ -150,7 +150,7 @@ universal-dev-skills/
 ├── instructions/                    # Entry-point instruction files
 │   └── copilot-instructions.md
 ├── skills/                          # Agent Skills (SKILL.md per skill)
-│   ├── skill-compliance/            # Polyglot routing — always loaded first
+│   ├── skill-compliance/            # Polyglot routing -- always loaded first
 │   ├── tool-usage/                  # Tool-vs-terminal decisions
 │   │   └── references/              #   python.md, typescript.md, java.md, csharp.md
 │   ├── bdd-testing/                 # Test quality conventions
@@ -170,13 +170,13 @@ universal-dev-skills/
 │   └── enforce-tool-usage.sh        #   Shell script matching blocked commands
 ├── scripts/                         # Setup automation
 │   └── setup.py                     #   Multi-target installer (vscode, claude, windsurf, copilot-cli, cursor, opencode)
-├── agents/                          # Custom agent definitions — one folder per platform
+├── agents/                          # Custom agent definitions -- one folder per platform
 │   └── vscode/
 │       └── dev.agent.md
 └── docs/                            # Per-agent setup guides
 ```
 
-The `agents/` directory is organized by platform so that editor settings can point to a specific subdirectory (e.g., `agents/vscode/`) without picking up agents meant for other tools. Contributions for other IDEs are welcome — add a new subdirectory (e.g., `agents/cursor/`, `agents/windsurf/`).
+The `agents/` directory is organized by platform so that editor settings can point to a specific subdirectory (e.g., `agents/vscode/`) without picking up agents meant for other tools. Contributions for other IDEs are welcome -- add a new subdirectory (e.g., `agents/cursor/`, `agents/windsurf/`).
 
 ## Skill Format
 
@@ -208,7 +208,7 @@ skills/bdd-testing/
     └── csharp.md             # xUnit / FluentAssertions / Moq patterns
 ```
 
-The agent loads the `name` and `description` at startup (lightweight), then loads the full `SKILL.md` body only when it decides the skill is relevant (progressive disclosure). Language references are loaded based on which files are being edited — `skill-compliance` handles this routing.
+The agent loads the `name` and `description` at startup (lightweight), then loads the full `SKILL.md` body only when it decides the skill is relevant (progressive disclosure). Language references are loaded based on which files are being edited -- `skill-compliance` handles this routing.
 
 ## Adding Repo-Specific Skills
 
@@ -216,11 +216,11 @@ These universal skills cover general development workflow. For domain-specific k
 
 ## Design Principles
 
-- **Polyglot** — Workflow skills are language-agnostic; language-specific details live in references and standards skills (Python, TypeScript, Java, C#)
-- **Opinionated** — Encodes a specific workflow (spec → test → implement → verify) with strict toolchain defaults (100% coverage, warnings-as-errors)
-- **Self-reinforcing** — Skills cross-reference each other to form a coherent system; `skill-compliance` routes to the right combination
-- **Portable** — Works across multiple AI agents via the Agent Skills standard
-- **Observable** — `skill-compliance` makes the agent declare what it loaded, so you can verify before work begins
+- **Polyglot** -- Workflow skills are language-agnostic; language-specific details live in references and standards skills (Python, TypeScript, Java, C#)
+- **Opinionated** -- Encodes a specific workflow (spec → test → implement → verify) with strict toolchain defaults (100% coverage, warnings-as-errors)
+- **Self-reinforcing** -- Skills cross-reference each other to form a coherent system; `skill-compliance` routes to the right combination
+- **Portable** -- Works across multiple AI agents via the Agent Skills standard
+- **Observable** -- `skill-compliance` makes the agent declare what it loaded, so you can verify before work begins
 
 ## License
 

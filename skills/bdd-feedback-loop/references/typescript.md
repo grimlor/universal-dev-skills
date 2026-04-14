@@ -18,14 +18,14 @@ npx jest path/to/test-file.test.ts
 ## Common TypeScript Remediation Issues
 
 - Missing imports (module not found, named export typos)
-- Type mismatches — especially `string | undefined` vs `string` in mock returns
-- `any` leaking from mock setup — use `jest.MockedFunction<typeof fn>` for typed mocks
-- Async/sync mock mismatches — `mockResolvedValue` vs `mockReturnValue`
+- Type mismatches -- especially `string | undefined` vs `string` in mock returns
+- `any` leaking from mock setup -- use `jest.MockedFunction<typeof fn>` for typed mocks
+- Async/sync mock mismatches -- `mockResolvedValue` vs `mockReturnValue`
 - Missing `await` on async assertions (causes silent pass)
 
 ## Step 5 TypeScript-Specific Checks
 
 - Use `expect(value).toBeCloseTo(expected, precision)` for floating-point comparisons.
-- Validate error message content, not only error type — use `toThrow('expected message')`.
-- Avoid `any` in assertions — if the SUT returns a typed value, assert on typed properties.
+- Validate error message content, not only error type -- use `toThrow('expected message')`.
+- Avoid `any` in assertions -- if the SUT returns a typed value, assert on typed properties.
 - Ensure mock boundaries use `jest.MockedFunction` or `jest.mocked()` for type safety.

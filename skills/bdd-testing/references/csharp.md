@@ -18,7 +18,7 @@ dotnet test --collect:"XPlat Code Coverage" \
 
 For forked or contributed projects, match the upstream's threshold.
 
-## Test Structure — xUnit + FluentAssertions
+## Test Structure -- xUnit + FluentAssertions
 
 ```csharp
 using FluentAssertions;
@@ -44,27 +44,27 @@ public class RetryPolicyTests
 ```
 
 Use nested classes for BDD-style "context" grouping. xUnit's `[Fact]` and
-`[Theory]` attributes serve as specifications — no separate display-name
+`[Theory]` attributes serve as specifications -- no separate display-name
 annotation is needed.
 
 ## Exception Assertion Patterns
 
 ```csharp
-// FluentAssertions — preferred
+// FluentAssertions -- preferred
 var act = () => ParseConfig(null);
 act.Should().Throw<ArgumentNullException>()
     .WithMessage("*must not be null*");
 
-// FluentAssertions — async
+// FluentAssertions -- async
 var act = async () => await service.ProcessAsync(invalidInput);
 await act.Should().ThrowAsync<ValidationException>()
     .WithMessage("*invalid*");
 
-// xUnit — when you only need the exception type
+// xUnit -- when you only need the exception type
 Assert.Throws<ArgumentNullException>(() => ParseConfig(null));
 ```
 
-Always assert the error message, not just the exception type — this prevents
+Always assert the error message, not just the exception type -- this prevents
 tests from passing on the wrong exception.
 
 ## Async Test Patterns
@@ -87,7 +87,7 @@ public async Task Should_reject_bad_input()
 }
 ```
 
-Always `await` the assertion — an un-awaited async assertion will silently
+Always `await` the assertion -- an un-awaited async assertion will silently
 pass.
 
 ## Mock Boundary Patterns
@@ -126,7 +126,7 @@ contract.
 ### Strict Mock Behavior
 
 ```csharp
-// Strict mode — throws on unexpected calls
+// Strict mode -- throws on unexpected calls
 var mock = new Mock<IService>(MockBehavior.Strict);
 ```
 

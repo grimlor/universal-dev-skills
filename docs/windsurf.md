@@ -1,4 +1,4 @@
-# Setup — Windsurf
+# Setup -- Windsurf
 
 Windsurf has native support for the Agent Skills specification (`SKILL.md`), `AGENTS.md`, and its own rules system. It also scans cross-agent compatibility paths (`.agents/skills/`), making it one of the most compatible targets for these skills.
 
@@ -13,7 +13,7 @@ Windsurf has native support for the Agent Skills specification (`SKILL.md`), `AG
 
 ## Quick Start
 
-### Option A — Copy skills into workspace
+### Option A -- Copy skills into workspace
 
 ```bash
 mkdir -p /path/to/your-repo/.windsurf
@@ -27,7 +27,7 @@ mkdir -p /path/to/your-repo/.agents
 cp -r skills/ /path/to/your-repo/.agents/skills/
 ```
 
-### Option B — Global skills directory
+### Option B -- Global skills directory
 
 Windsurf reads global skills from `~/.codeium/windsurf/skills/`. Symlink or copy:
 
@@ -39,17 +39,17 @@ done
 
 Global skills are available in all workspaces on your machine.
 
-### Option C — Use AGENTS.md
+### Option C -- Use AGENTS.md
 
-Create an `AGENTS.md` in your project root with the key instructions. Windsurf processes it through the same rules engine — root-level files are always-on, subdirectory files are auto-scoped.
+Create an `AGENTS.md` in your project root with the key instructions. Windsurf processes it through the same rules engine -- root-level files are always-on, subdirectory files are auto-scoped.
 
 ## How Skills Work in Windsurf
 
 Windsurf follows the progressive disclosure model from the Agent Skills spec:
 
-1. **Discovery** — Only the skill's `name` and `description` are loaded at startup.
-2. **Invocation** — Cascade reads the full `SKILL.md` content when it decides the description is relevant.
-3. **Resources** — Supporting files (scripts, references) are loaded only when needed.
+1. **Discovery** -- Only the skill's `name` and `description` are loaded at startup.
+2. **Invocation** -- Cascade reads the full `SKILL.md` content when it decides the description is relevant.
+3. **Resources** -- Supporting files (scripts, references) are loaded only when needed.
 
 Skills can be invoked automatically (based on description matching) or manually via `@skill-name` in the Cascade input.
 
@@ -112,7 +112,7 @@ Windsurf automatically persists conversation insights:
 | Workspace rules | `.windsurf/rules/*.md` | Re-read each session; supports `trigger` frontmatter |
 | `AGENTS.md` | Workspace root | Always-on instructions, re-read each session |
 
-Auto memories are workspace-scoped and machine-local — they do not sync across devices or get committed to version control.
+Auto memories are workspace-scoped and machine-local -- they do not sync across devices or get committed to version control.
 
 ### Skill-recall after context compaction
 
@@ -130,10 +130,10 @@ Save as `.windsurf/rules/skill-compliance.md`. This is re-read every session, en
 
 ## Limitations
 
-- **No external directory setting** — Unlike VS Code, you cannot add arbitrary paths for skill discovery. Use the global directory or workspace copy.
-- **No custom agents** — Windsurf does not have an equivalent to `.agent.md` files for defining custom personas with tool restrictions.
-- **Rule size** — Workspace rules are limited to 12,000 characters per file. Global rules are limited to 6,000 characters.
-- **No `.instructions.md` support** — Use Windsurf rules for the equivalent functionality.
+- **No external directory setting** -- Unlike VS Code, you cannot add arbitrary paths for skill discovery. Use the global directory or workspace copy.
+- **No custom agents** -- Windsurf does not have an equivalent to `.agent.md` files for defining custom personas with tool restrictions.
+- **Rule size** -- Workspace rules are limited to 12,000 characters per file. Global rules are limited to 6,000 characters.
+- **No `.instructions.md` support** -- Use Windsurf rules for the equivalent functionality.
 
 ## Skill Applicability Notes
 

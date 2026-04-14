@@ -10,11 +10,11 @@ TypeScript-specific details for applying `tool-usage`.
 | ESLint | `dbaeumer.vscode-eslint` | Inline lint diagnostics from project config |
 | Jest | `Orta.vscode-jest` | Inline test status, watch mode, debug integration, coverage gutters |
 | Pretty TypeScript Errors | `yoavbls.pretty-ts-errors` | Human-readable formatting of complex TS errors |
-| Bun | `oven.bun-vscode` | Bun runtime integration — debugging, `bun.lock` support, Bun-based test discovery |
+| Bun | `oven.bun-vscode` | Bun runtime integration -- debugging, `bun.lock` support, Bun-based test discovery |
 
 The built-in TypeScript language service runs automatically and provides type
 checking, IntelliSense, and refactoring support. The nightly extension is
-optional but recommended — it picks up TypeScript improvements before stable
+optional but recommended -- it picks up TypeScript improvements before stable
 releases.
 
 ### Jest extension notes
@@ -24,12 +24,12 @@ The Jest extension surfaces test results inline and in the status bar
 
 In a **multi-root workspace** where not every folder has Jest, the extension
 may show a warning icon (⚠) for folders without a `jest.config.*`. This is
-expected — the extension only activates for folders that have a valid Jest
+expected -- the extension only activates for folders that have a valid Jest
 configuration. For a cleaner experience when doing focused TypeScript work,
 open the specific project folder rather than the parent workspace.
 
 The `runTests` tool integrates with the Jest extension's test discovery.
-Always use `runTests` rather than `jest` in the terminal — the tool handles
+Always use `runTests` rather than `jest` in the terminal -- the tool handles
 path resolution, output formatting, and workspace context that raw CLI
 invocation misses.
 
@@ -59,7 +59,7 @@ invocation misses.
 
 **Why `typescript.tsdk`:** Points VS Code at the project's own TypeScript
 version rather than the globally bundled one. This ensures the editor's
-type-checking matches `tsc --noEmit` output exactly — no version drift
+type-checking matches `tsc --noEmit` output exactly -- no version drift
 between editor and CLI.
 
 ## ESLint vs. Problems Panel
@@ -73,7 +73,7 @@ Both sources show inline squiggles. Key differences:
   `eslint .` output.
 
 After completing edits, run both CLI checks in the terminal as final
-verification — the Problems panel may not surface every diagnostic
+verification -- the Problems panel may not surface every diagnostic
 immediately.
 
 ```bash
@@ -92,7 +92,7 @@ creating `eslint.config.mjs` and deleting legacy config files, run
 
 There is no language-server snippet tool for TypeScript (unlike Python's
 Pylance `RunCodeSnippet`). Direct interpreter invocations (`npx tsx`,
-`bun -e`, `bun <file.ts>`) are blocked by the hook — they bypass user review.
+`bun -e`, `bun <file.ts>`) are blocked by the hook -- they bypass user review.
 
 For ad-hoc TypeScript execution, follow the Script Handling rules from the
 core `tool-usage` skill:
@@ -119,7 +119,7 @@ Jest, Vitest, and Mocha: use the `runTests` tool rather than running tests in
 the terminal.
 
 **Bun coverage via `runTests`:** The `runTests` tool's response payload
-contains only a pass/fail summary — no coverage table, no file-level
+contains only a pass/fail summary -- no coverage table, no file-level
 breakdown. However, when `bunfig.toml` has `coverage = true` and
 `coverageReporter = ["text", "lcov"]`, `runTests` **does** trigger Bun's
 coverage engine under the hood. The lcov file is written to
@@ -127,15 +127,15 @@ coverage engine under the hood. The lcov file is written to
 
 **Agent workflow for Bun coverage:**
 
-1. Use `runTests` to execute tests (standard rule — no terminal needed).
+1. Use `runTests` to execute tests (standard rule -- no terminal needed).
 2. Read `coverage/lcov.info` via `read_file` to get file-level coverage data.
 3. The lcov file is regenerated on each `runTests` invocation, so it always
    reflects the most recent run.
 
 This requires `bunfig.toml` with the lcov reporter configured. If
 `bunfig.toml` does not exist (e.g. contributed projects), create one locally
-with coverage settings — it does not need to be committed.
+with coverage settings -- it does not need to be committed.
 
 Detect a Bun-based project by the presence of `bun.lock` or `bun.lockb` in the
 project root. When present, prefer `bun` over `npm` for package management.
-`bun run`, `npx`, and `bunx` are all blocked — they can execute arbitrary code.
+`bun run`, `npx`, and `bunx` are all blocked -- they can execute arbitrary code.

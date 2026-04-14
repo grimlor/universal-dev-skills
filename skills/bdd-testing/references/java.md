@@ -5,10 +5,10 @@ Language-specific guidance for applying `bdd-testing` in Java projects.
 ## Coverage Commands
 
 ```bash
-# Gradle — run tests and generate coverage report
+# Gradle -- run tests and generate coverage report
 ./gradlew test jacocoTestReport
 
-# Gradle — verify coverage threshold (fails if below 100%)
+# Gradle -- verify coverage threshold (fails if below 100%)
 ./gradlew check
 
 # Maven
@@ -19,7 +19,7 @@ Coverage threshold is enforced at 100% line coverage via JaCoCo's
 `jacocoTestCoverageVerification` task in personal projects. For forked or
 contributed projects, match the upstream's threshold.
 
-## Test Structure — JUnit 5 + AssertJ
+## Test Structure -- JUnit 5 + AssertJ
 
 ```java
 import static org.assertj.core.api.Assertions.*;
@@ -53,22 +53,22 @@ for human-readable specifications.
 ## Exception Assertion Patterns
 
 ```java
-// AssertJ — preferred
+// AssertJ -- preferred
 assertThatThrownBy(() -> parseConfig(null))
     .isInstanceOf(IllegalArgumentException.class)
     .hasMessageContaining("must not be null");
 
-// AssertJ — capture and inspect
+// AssertJ -- capture and inspect
 Throwable thrown = catchThrowable(() -> service.process(invalidInput));
 assertThat(thrown)
     .isInstanceOf(ValidationException.class)
     .hasMessageContaining("invalid");
 
-// JUnit 5 — when you only need the exception type
+// JUnit 5 -- when you only need the exception type
 assertThrows(IllegalArgumentException.class, () -> parseConfig(null));
 ```
 
-Always assert the error message, not just the exception type — this prevents
+Always assert the error message, not just the exception type -- this prevents
 tests from passing on the wrong exception.
 
 ## Async / Concurrent Test Patterns
@@ -123,7 +123,7 @@ contract.
 
 ### Strict Stubbing
 
-Mockito's `MockitoExtension` enables strict stubbing by default — unused
+Mockito's `MockitoExtension` enables strict stubbing by default -- unused
 stubs cause test failures. This is the desired behavior; it prevents dead
 mock setup from accumulating.
 

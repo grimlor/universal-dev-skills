@@ -15,23 +15,23 @@ dotnet test --filter "FullyQualifiedName~MyServiceTests"
 
 ## Common C# Remediation Issues
 
-- Nullable reference type warnings (`CS8600`, `CS8602`) — use `!` only with
+- Nullable reference type warnings (`CS8600`, `CS8602`) -- use `!` only with
   justification, prefer null guards or `?` chaining
 - Missing `using` directives (FluentAssertions, Moq, xUnit)
-- `Setup` vs `Returns` type mismatch — Moq's `Returns()` must match the
+- `Setup` vs `Returns` type mismatch -- Moq's `Returns()` must match the
   mocked method's return type exactly
-- Forgetting `async Task` return type on async test methods — xUnit silently
+- Forgetting `async Task` return type on async test methods -- xUnit silently
   ignores `async void` tests
-- Constructor parameter order errors — C# has no keyword arguments in most
+- Constructor parameter order errors -- C# has no keyword arguments in most
   cases, so order matters
 
 ## Step 5 C#-Specific Checks
 
 - Use `value.Should().BeApproximately(expected, precision)` for floating-point
   comparisons (FluentAssertions).
-- Validate exception message content, not only exception type — use
+- Validate exception message content, not only exception type -- use
   `.WithMessage("*expected*")`.
 - Ensure nested test classes follow BDD grouping conventions (see
   `bdd-testing/references/csharp.md` for xUnit patterns).
-- Verify mock behavior — use `MockBehavior.Strict` when you want to catch
+- Verify mock behavior -- use `MockBehavior.Strict` when you want to catch
   unexpected interactions.

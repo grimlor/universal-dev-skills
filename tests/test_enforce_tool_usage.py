@@ -63,7 +63,7 @@ class TestStripQuotes:
     WHY: Without quote stripping, argument content like ``git commit -m "pytest --cov"``
         would falsely trigger the pytest rule.
 
-    Mock: nothing — this class tests pure string processing.
+    Mock: nothing -- this class tests pure string processing.
     Real: strip_quotes function.
     Never: nothing.
     """
@@ -147,7 +147,7 @@ class TestSplitSegments:
     WHY: Each segment must be evaluated independently so that
         ``pip install foo && python setup.py`` catches the python segment.
 
-    Mock: nothing — pure string splitting.
+    Mock: nothing -- pure string splitting.
     Real: split_segments function.
     Never: nothing.
     """
@@ -293,7 +293,7 @@ class TestLeadingCommand:
     WHY: Without path stripping and env handling, agents could bypass the
         blocklist by using full paths or env wrappers.
 
-    Mock: nothing — pure string extraction.
+    Mock: nothing -- pure string extraction.
     Real: leading_command function.
     Never: nothing.
     """
@@ -401,7 +401,7 @@ class TestWordsInSegment:
     WHY: The ``anywhere`` match mode needs to check every word in the segment
         against category commands, not just the leading command.
 
-    Mock: nothing — pure string extraction.
+    Mock: nothing -- pure string extraction.
     Real: words_in_segment function.
     Never: nothing.
     """
@@ -479,10 +479,10 @@ class TestClassifyCategories:
         15. Quoted content does not trigger false positives.
         16. Commands with path prefixes are still caught.
         17. Commands via env wrapper are still caught.
-    WHY: This is the core security enforcement — incorrect classification
+    WHY: This is the core security enforcement -- incorrect classification
         means either tools are bypassed or legitimate commands are blocked.
 
-    Mock: nothing — uses the real tool-usage-rules.json config.
+    Mock: nothing -- uses the real tool-usage-rules.json config.
     Real: classify function with full config.
     Never: nothing.
     """
@@ -659,7 +659,7 @@ class TestClassifyCategories:
 
     def test_allows_bun_test(self, config: dict[str, Any]) -> None:
         """
-        Given bun test (allowed subcommand — runTests gives different results),
+        Given bun test (allowed subcommand -- runTests gives different results),
         When classify is called,
         Then it returns None (allowed).
         """
@@ -674,7 +674,7 @@ class TestClassifyCategories:
 
     def test_allows_bun_test_coverage(self, config: dict[str, Any]) -> None:
         """
-        Given bun test --coverage (allowed — test is an allowed subcommand),
+        Given bun test --coverage (allowed -- test is an allowed subcommand),
         When classify is called,
         Then it returns None (allowed).
         """
@@ -1228,7 +1228,7 @@ class TestClassifyCategories:
         """
         Given an empty command string,
         When classify is called,
-        Then it returns None (allowed — nothing to block).
+        Then it returns None (allowed -- nothing to block).
         """
         # Given:
         cmd = ""
@@ -1283,7 +1283,7 @@ class TestLoadConfig:
         3. An invalid JSON file raises JSONDecodeError.
     WHY: Config loading is the entry point for all classification rules.
 
-    Mock: nothing — uses real filesystem via tmp_path.
+    Mock: nothing -- uses real filesystem via tmp_path.
     Real: load_config function with real files.
     Never: nothing.
     """
@@ -1349,7 +1349,7 @@ class TestDenyResponse:
     WHY: An incorrectly structured response would not be recognized by the
         hook runner, allowing blocked commands through.
 
-    Mock: nothing — pure dict construction.
+    Mock: nothing -- pure dict construction.
     Real: deny_response function.
     Never: nothing.
     """
@@ -1617,7 +1617,7 @@ class TestCheckCategory:
     WHY: Incorrect match-mode handling would either miss blocked commands
         or falsely block legitimate ones.
 
-    Mock: nothing — pure function with synthetic category dicts.
+    Mock: nothing -- pure function with synthetic category dicts.
     Real: check_category function.
     Never: nothing.
     """

@@ -1,17 +1,17 @@
 ---
 name: code-quality-audit
-description: "Systematic audit of code against structural quality rules — mock boundaries, test-only API pollution, suppression pragmas, and BDD conventions. Use when auditing a codebase or set of files for quality violations, during Phase 1.5 of the feature workflow, or as a standalone quality review task."
+description: "Systematic audit of code against structural quality rules -- mock boundaries, test-only API pollution, suppression pragmas, and BDD conventions. Use when auditing a codebase or set of files for quality violations, during Phase 1.5 of the feature workflow, or as a standalone quality review task."
 ---
 
-# Code Quality Audit — Structural Inspection Procedure
+# Code Quality Audit -- Structural Inspection Procedure
 
 ## When This Skill Applies
 
-- **During Phase 1.5 of the feature workflow** — scoped to the files the spec
+- **During Phase 1.5 of the feature workflow** -- scoped to the files the spec
   identifies for modification.
-- **As a standalone task** — when the user requests a quality audit, code review,
+- **As a standalone task** -- when the user requests a quality audit, code review,
   or codebase health check.
-- **During remediation passes** — when working through findings from a prior audit.
+- **During remediation passes** -- when working through findings from a prior audit.
 
 This skill defines the **procedure** for conducting an audit. The **rules** being
 audited against live in other skills:
@@ -32,7 +32,7 @@ tell you *what to inspect for*.
 ### Feature workflow (Phase 1.5)
 
 Scope the audit to **existing files** that the spec indicates will be modified.
-New files created by the feature are exempt — they will be written to standard
+New files created by the feature are exempt -- they will be written to standard
 from the start.
 
 ### Standalone audit
@@ -44,7 +44,7 @@ trees unless the user narrows it.
 
 ## Procedure
 
-### Step 1 — Mechanical Checks
+### Step 1 -- Mechanical Checks
 
 Run the project's configured lint and type-check toolchain on the scoped files.
 These are the same checks as Phase 1.5's original scope:
@@ -53,9 +53,9 @@ These are the same checks as Phase 1.5's original scope:
 - Type errors (Pyright, TypeScript compiler, javac, C# compiler)
 - Formatting drift (if the project enforces a formatter)
 
-Record all findings. These are the easy wins — tools catch them automatically.
+Record all findings. These are the easy wins -- tools catch them automatically.
 
-### Step 2 — Mock Boundary Audit
+### Step 2 -- Mock Boundary Audit
 
 For each test file in scope, check whether mocks target I/O boundaries or
 internal code:
@@ -70,12 +70,12 @@ internal code:
 For each violation, record:
 
 1. **File and line(s)**
-2. **What it accomplishes** — the test intent the mock serves
-3. **Why it violates** — which boundary rule it breaks
-4. **The alternative** — how to achieve the same test intent by mocking at the
+2. **What it accomplishes** -- the test intent the mock serves
+3. **Why it violates** -- which boundary rule it breaks
+4. **The alternative** -- how to achieve the same test intent by mocking at the
    actual I/O boundary
 
-### Step 3 — Test-Only Production API Audit
+### Step 3 -- Test-Only Production API Audit
 
 For each production file in scope, look for symbols that have **zero production
 callers** but are used by tests:
@@ -88,14 +88,14 @@ callers** but are used by tests:
 For each finding, record:
 
 1. **Symbol name, file, and line**
-2. **Production callers** (should be zero — verify with usage search)
+2. **Production callers** (should be zero -- verify with usage search)
 3. **Test callers** (list the test files and approximate count)
-4. **What it accomplishes** — the test need it serves
-5. **Why it violates** — `code-quality-antipatterns` §6 (test-only production APIs)
-6. **The alternative** — how tests can achieve the same goal using only the
+4. **What it accomplishes** -- the test need it serves
+5. **Why it violates** -- `code-quality-antipatterns` §6 (test-only production APIs)
+6. **The alternative** -- how tests can achieve the same goal using only the
    public API and I/O boundary mocks
 
-### Step 4 — Suppression Pragma Audit
+### Step 4 -- Suppression Pragma Audit
 
 Scan the scoped files for all suppression pragmas:
 
@@ -107,23 +107,23 @@ Scan the scoped files for all suppression pragmas:
 
 For each suppression found, classify it:
 
-- **Removable** — a real fix exists (type narrowing, stub file, code restructuring).
+- **Removable** -- a real fix exists (type narrowing, stub file, code restructuring).
   Record the fix.
-- **External** — caused by a third-party library's missing stubs. Record whether
+- **External** -- caused by a third-party library's missing stubs. Record whether
   local stubs could replace it.
-- **Justified** — genuinely unavoidable, has an explanation comment, and is narrowly
+- **Justified** -- genuinely unavoidable, has an explanation comment, and is narrowly
   scoped. Record as "no action needed" with the justification.
 
-### Step 5 — BDD Convention Audit
+### Step 5 -- BDD Convention Audit
 
 For each test file in scope, check compliance with BDD conventions from the
 `bdd-testing` skill:
 
-- **Class-level docstrings** — REQUIREMENT / WHO / WHAT / WHY present and meaningful
-- **Method-level docstrings** — Given / When / Then in title-case (not ALL-CAPS)
-- **Method body comments** — `# Given`, `# When`, `# Then` structuring the test body
-- **Test organization** — grouped by consumer requirement, not by code structure
-- **Assertion quality** — no bare assertions without context; no tautology tests
+- **Class-level docstrings** -- REQUIREMENT / WHO / WHAT / WHY present and meaningful
+- **Method-level docstrings** -- Given / When / Then in title-case (not ALL-CAPS)
+- **Method body comments** -- `# Given`, `# When`, `# Then` structuring the test body
+- **Test organization** -- grouped by consumer requirement, not by code structure
+- **Assertion quality** -- no bare assertions without context; no tautology tests
 
 ---
 
@@ -132,9 +132,9 @@ For each test file in scope, check compliance with BDD conventions from the
 The audit produces a findings document organized by category. Each finding must
 include:
 
-1. **The violation** — what the code does and where
-2. **What it accomplishes** — the intent behind the code (charitable reading)
-3. **The recommended alternative** — how to achieve the same intent correctly
+1. **The violation** -- what the code does and where
+2. **What it accomplishes** -- the intent behind the code (charitable reading)
+3. **The recommended alternative** -- how to achieve the same intent correctly
 
 ### Document Structure
 
@@ -166,7 +166,7 @@ include:
 **Alternative:** ...
 
 ## 3. Suppression Pragma Violations
-### 3a. Removable Suppressions — <category>
+### 3a. Removable Suppressions -- <category>
 ### 3b. External Library Stub Gaps
 ### 3c. Justified Suppressions (No Action Required)
 
@@ -207,9 +207,9 @@ format from the `plan-updates` skill:
 ## Remediation Progress
 
 ### Mock Boundary Violations
-- [x] 1a. Direct `embedder._client` assignment — patched at ollama.AsyncClient boundary
-- [ ] 1b. `patch.object(embedder, "_client")` — 20 instances in test_embedder.py
-- [ ] 1c. `patch.object(PipelineRunner, "run")` — extract pure functions
+- [x] 1a. Direct `embedder._client` assignment -- patched at ollama.AsyncClient boundary
+- [ ] 1b. `patch.object(embedder, "_client")` -- 20 instances in test_embedder.py
+- [ ] 1c. `patch.object(PipelineRunner, "run")` -- extract pure functions
 ```
 
 Update at each checkpoint to maintain resumability across sessions.

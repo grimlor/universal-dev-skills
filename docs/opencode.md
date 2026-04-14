@@ -1,4 +1,4 @@
-# Setup — OpenCode
+# Setup -- OpenCode
 
 OpenCode has native support for the Agent Skills specification (`SKILL.md`), `AGENTS.md`, and Claude Code compatibility paths. It reads skills from multiple directories and supports global configuration at `~/.config/opencode/`.
 
@@ -13,14 +13,14 @@ OpenCode has native support for the Agent Skills specification (`SKILL.md`), `AG
 
 ## Quick Start
 
-### Option A — Copy skills into workspace
+### Option A -- Copy skills into workspace
 
 ```bash
 mkdir -p /path/to/your-repo/.opencode/skills
 cp -r skills/ /path/to/your-repo/.opencode/skills/
 ```
 
-### Option B — Global skills directory
+### Option B -- Global skills directory
 
 OpenCode reads global skills from `~/.config/opencode/skills/`. Symlink or copy:
 
@@ -32,7 +32,7 @@ done
 
 Global skills are available in all workspaces.
 
-### Option C — Claude Code compatibility
+### Option C -- Claude Code compatibility
 
 OpenCode also scans Claude Code paths as fallbacks:
 
@@ -45,9 +45,9 @@ If you already have Claude Code set up, OpenCode will discover the same skills a
 
 OpenCode follows the same progressive disclosure model as the Agent Skills spec:
 
-1. **Discovery** — Skill `name` and `description` from frontmatter are indexed at startup.
-2. **Invocation** — The full `SKILL.md` content is loaded when the description matches the current task.
-3. **Resources** — Supporting files (references, scripts) are loaded only when needed.
+1. **Discovery** -- Skill `name` and `description` from frontmatter are indexed at startup.
+2. **Invocation** -- The full `SKILL.md` content is loaded when the description matches the current task.
+3. **Resources** -- Supporting files (references, scripts) are loaded only when needed.
 
 ## Skill Locations
 
@@ -62,8 +62,8 @@ OpenCode follows the same progressive disclosure model as the Agent Skills spec:
 ## AGENTS.md
 
 OpenCode reads `AGENTS.md` from:
-- **Project root** — always-on instructions for the workspace
-- **`~/.config/opencode/AGENTS.md`** — global instructions for all workspaces
+- **Project root** -- always-on instructions for the workspace
+- **`~/.config/opencode/AGENTS.md`** -- global instructions for all workspaces
 
 It also reads Claude Code's equivalent:
 - **`CLAUDE.md`** and **`.claude/CLAUDE.md`** in the workspace root
@@ -97,10 +97,10 @@ Agent files follow the same markdown format with YAML frontmatter.
 
 OpenCode does not have a built-in memory tool or persistent note system like VS Code Copilot. Context persistence relies on:
 
-- **`AGENTS.md`** — Re-read from disk at the start of every session. The global `~/.config/opencode/AGENTS.md` is always loaded, making it the most reliable anchor for skill-recall instructions.
-- **`opencode.json` instructions** — Loaded every session from config.
-- **CLAUDE.md compatibility** — If you use Claude Code's memory paths (`.claude/CLAUDE.md`, `~/.claude/CLAUDE.md`), OpenCode reads those too.
-- **No auto-memory** — Unlike Windsurf (which writes `~/.codeium/windsurf/memories/`) or Claude Code (which writes `~/.claude/projects/<proj>/memory/`), OpenCode does not automatically persist conversation insights.
+- **`AGENTS.md`** -- Re-read from disk at the start of every session. The global `~/.config/opencode/AGENTS.md` is always loaded, making it the most reliable anchor for skill-recall instructions.
+- **`opencode.json` instructions** -- Loaded every session from config.
+- **CLAUDE.md compatibility** -- If you use Claude Code's memory paths (`.claude/CLAUDE.md`, `~/.claude/CLAUDE.md`), OpenCode reads those too.
+- **No auto-memory** -- Unlike Windsurf (which writes `~/.codeium/windsurf/memories/`) or Claude Code (which writes `~/.claude/projects/<proj>/memory/`), OpenCode does not automatically persist conversation insights.
 
 ### Skill-recall after context compaction
 
@@ -122,12 +122,12 @@ OpenCode is designed for Claude Code compatibility. If you already have a Claude
 | `.claude/CLAUDE.md` | Yes |
 | `~/.claude/skills/` | Yes |
 | `~/.claude/CLAUDE.md` | Yes |
-| `.claude/rules/` | No — use `AGENTS.md` instead |
-| `.claude/agents/` | No — use `.opencode/agents/` |
+| `.claude/rules/` | No -- use `AGENTS.md` instead |
+| `.claude/agents/` | No -- use `.opencode/agents/` |
 
 ## Limitations
 
-- **No `.instructions.md` support** — Use `AGENTS.md` or `opencode.json` instructions.
-- **No rules system** — Unlike Windsurf (rules with triggers) or Cursor (rules with globs), OpenCode relies on `AGENTS.md` and config-level instructions.
-- **No persistent memory** — No built-in mechanism to save and recall notes across sessions.
-- **No external directory setting** — Unlike VS Code's `chat.agentSkillsLocations`, discovery paths are fixed. Use global config directories or workspace-level copies.
+- **No `.instructions.md` support** -- Use `AGENTS.md` or `opencode.json` instructions.
+- **No rules system** -- Unlike Windsurf (rules with triggers) or Cursor (rules with globs), OpenCode relies on `AGENTS.md` and config-level instructions.
+- **No persistent memory** -- No built-in mechanism to save and recall notes across sessions.
+- **No external directory setting** -- Unlike VS Code's `chat.agentSkillsLocations`, discovery paths are fixed. Use global config directories or workspace-level copies.
