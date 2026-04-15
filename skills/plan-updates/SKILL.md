@@ -1,13 +1,13 @@
 ---
 name: plan-updates
-description: "Progress tracking in project artifacts. Use after completing implementation work (Phase 5 of the feature workflow), at checkpoints during refactoring or audit passes, or when the user asks to update project status."
+description: "Progress tracking in project artifacts. Use after completing implementation work (Phase 9 of the feature workflow), at checkpoints during refactoring or audit passes, or when the user asks to update project status."
 ---
 
 # Plan Updates -- Tracking Progress in Project Artifacts
 
 ## When This Skill Applies
 
-After completing implementation work (Phase 5 of the feature workflow), at checkpoints
+After completing implementation work (Phase 9 of the feature workflow), at checkpoints
 during refactoring, audit, or remediation passes, or whenever the user asks to update
 project status. Also applies when reviewing what has been done vs. what remains.
 
@@ -23,7 +23,9 @@ Use this decision tree every time before updating progress:
 
 2. **Is this a feature or non-trivial change?**
    If yes and no plan doc exists, create one at `.copilot/plan.md` (git-ignored).
-   Follow the project plan format below.
+   Read the plan template from the `templates` skill (`references/plan.md`) and
+   fill in the placeholders. Then apply the plan document rules below for ongoing
+   changes.
 
 3. **Is this a refactoring, audit, or remediation pass?**
    Create or update `.copilot/task.md` (git-ignored). Follow the task tracking
@@ -32,6 +34,38 @@ Use this decision tree every time before updating progress:
 
 `.copilot/` is git-ignored by convention. If the directory does not exist, create it
 and add `.copilot/` to `.gitignore` before writing any files there.
+
+---
+
+## Plan Document Rules
+
+**Preamble:**
+- Goal must be a single paragraph, not a bullet list
+- Context/Constraints captures decisions made during Phases 1–3 that future sessions
+  need without re-reading the full spec
+- Open Questions are removed or marked resolved as work progresses -- they must
+  not linger silently
+
+**Session Log:**
+
+The Session Log section at the bottom of `plan.md` is an append-only, datestamped
+record of handoff state. It answers: "Where did we stop, and what should happen next?"
+
+Each entry has three fields: **Stopped after**, **Next action**, and **Decisions made**.
+See the Session Log section in the `templates` skill (`references/plan.md`)
+for the exact format.
+
+**Rules:**
+- Append a new entry at the end of every session that advances the plan -- do not
+  skip this when context is running low
+- Never edit or delete previous entries
+- "Next action" must be specific enough to resume without re-reading the full plan
+  (e.g., "Write test class for validation behavior in spec §3.2", not "Continue work")
+- "Decisions made" captures choices that are not in the spec but affect implementation
+  (e.g., "Chose to use factory pattern for builder initialization" or "None")
+- When resuming after a context reset, re-read the plan from the top -- Goal and
+  Context establish the big picture, the phase checklist shows progress, the last
+  Session Log entry tells you exactly where to pick up
 
 ---
 
@@ -110,7 +144,7 @@ The BDD Specifications document contains `TestClass` definitions with method sig
 (no bodies -- just `...`).
 
 **Rules:**
-- Add new spec classes during Phase 1 (planning) of the feature workflow
+- Add new spec classes during Phase 2 (Spec Gate) of the feature workflow
 - If implementation reveals requirements not in the spec, add them here
 - Keep the document in sync with actual test files -- if a test class exists in code,
   its spec should exist here

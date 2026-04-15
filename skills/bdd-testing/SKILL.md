@@ -8,8 +8,8 @@ description: "BDD test conventions for this repository. Use when writing, modify
 ## When This Skill Applies
 
 Whenever writing, modifying, or reviewing test files. This includes
-creating tests for new features (Phase 2 of the feature workflow) and adding coverage
-specs (Phase 4).
+creating tests for new features (Phase 6 of the feature workflow) and adding coverage
+specs (Phase 8).
 
 ## Role in the Skill System
 

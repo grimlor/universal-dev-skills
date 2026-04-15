@@ -1,13 +1,13 @@
 ---
 name: code-quality-audit
-description: "Systematic audit of code against structural quality rules -- mock boundaries, test-only API pollution, suppression pragmas, and BDD conventions. Use when auditing a codebase or set of files for quality violations, during Phase 1.5 of the feature workflow, or as a standalone quality review task."
+description: "Systematic audit of code against structural quality rules -- mock boundaries, test-only API pollution, suppression pragmas, and BDD conventions. Use when auditing a codebase or set of files for quality violations, during Phase 4 of the feature workflow, or as a standalone quality review task."
 ---
 
 # Code Quality Audit -- Structural Inspection Procedure
 
 ## When This Skill Applies
 
-- **During Phase 1.5 of the feature workflow** -- scoped to the files the spec
+- **During Phase 4 of the feature workflow** -- scoped to the files the spec
   identifies for modification.
 - **As a standalone task** -- when the user requests a quality audit, code review,
   or codebase health check.
@@ -29,7 +29,7 @@ tell you *what to inspect for*.
 
 ## Audit Scope
 
-### Feature workflow (Phase 1.5)
+### Feature workflow (Phase 4)
 
 Scope the audit to **existing files** that the spec indicates will be modified.
 New files created by the feature are exempt -- they will be written to standard
@@ -47,7 +47,7 @@ trees unless the user narrows it.
 ### Step 1 -- Mechanical Checks
 
 Run the project's configured lint and type-check toolchain on the scoped files.
-These are the same checks as Phase 1.5's original scope:
+These are the same checks as Phase 4's original scope:
 
 - Lint errors (Ruff, ESLint, Checkstyle, Roslyn analyzers)
 - Type errors (Pyright, TypeScript compiler, javac, C# compiler)
@@ -218,7 +218,7 @@ Update at each checkpoint to maintain resumability across sessions.
 
 ## Relationship to Other Skills
 
-- **`feature-workflow`** Phase 1.5 invokes this skill's procedure (Steps 1–5)
+- **`feature-workflow`** Phase 4 invokes this skill's procedure (Steps 1–5)
   scoped to files identified by the spec.
 - **`bdd-testing`** provides the mock boundary and BDD convention rules
   audited in Steps 2 and 5.

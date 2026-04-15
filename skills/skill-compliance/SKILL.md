@@ -48,7 +48,7 @@ depends on context:
 
 - **During a feature workflow:** quality fixes on existing files go into a
   separate quality branch and PR so the feature PR shows only the functional
-  delta. See Phase 1.5 and the late-discovery clause in Phase 3 of
+  delta. See Phase 4 and the late-discovery clause in Phase 7 of
   `feature-workflow`.
 - **Outside a feature workflow** (standalone fix, one-off task): fix violations
   inline as part of your current task. Do not defer them to a follow-up.
@@ -140,7 +140,7 @@ Then add task-specific skills:
 - `conventional-commits` -- whenever staging, committing, or preparing PR titles
 - `code-quality-audit` -- when auditing files for structural quality violations
   (mock boundaries, test-only APIs, suppression pragmas, BDD conventions), or
-  during Phase 1.5 of the feature workflow
+  during Phase 4 of the feature workflow
 
 Then add language-specific standards skills or references for the active language
 and subtree. Examples:
