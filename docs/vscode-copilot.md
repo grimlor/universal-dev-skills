@@ -147,3 +147,41 @@ For GitHub organizations, custom instructions and agents can be defined at the o
 - `github.copilot.chat.organizationCustomAgents.enabled` -- organization-level agents
 
 See [GitHub's documentation](https://docs.github.com/en/copilot/how-tos/configure-custom-instructions/add-organization-instructions) for setup.
+
+## Security Hardening -- Tool Approval Policy
+
+The hooks in this repo (`hooks/enforce-tool-usage.sh` + `tool-usage-rules.json`) enforce tool-usage rules by denying terminal commands that should use VS Code tools instead. However, hooks alone are not sufficient -- they only gate the `run_in_terminal` tool. An agent that wants to circumvent them can launder operations through other tools that execute code, such as MCP server tools with code execution capabilities (e.g., Pylance's `runCodeSnippet`), `subprocess` calls inside Python snippets, or script interpreters like `perl -e`.
+
+This is not a theoretical risk. It has been observed in practice.
+
+### Recommended tool approval settings
+
+Reset to strict approvals and only auto-approve operations you trust:
+
+1. **Reset all tool approvals.** Run `Chat: Reset Tool Confirmations` from the Command Palette (`⇧⌘P`). This reverts every tool to requiring explicit approval.
+
+2. **Disable dangerous MCP tools.** Any MCP tool that can execute arbitrary code should be disabled entirely. Use the Configure Tools picker in the Chat view to toggle off tools like `runCodeSnippet`. Disabling is stronger than requiring approval -- a disabled tool cannot be invoked at all. Enable it at your own risk.
+
+3. **Auto-approve only read-only operations.** Use `Chat: Manage Tool Approval` from the Command Palette to selectively pre-approve tools that are strictly read-only (e.g., `grep_search`, `file_search`, `read_file`, `list_dir`, `semantic_search`). Leave everything else requiring manual approval.
+
+4. **Review terminal auto-approvals.** Audit your `chat.tools.terminal.autoApprove` setting. Only allow commands you are certain cannot be used to bypass hooks. For example, `task` and `pre-commit` are safe because they run the project's own configured commands.
+
+5. **Restrict URL auto-approvals.** Audit your `chat.tools.urls.autoApprove` setting. Use the granular `{ "approveRequest": bool, "approveResponse": bool }` form to separate request approval from response content review, especially for sites with user-generated content.
+
+### Why hooks are necessary but not sufficient
+
+The PreToolUse hook intercepts `run_in_terminal` calls and denies commands that violate the tool-usage rules (e.g., `git commit` instead of the GitKraken MCP tool, `grep` instead of `grep_search`). This works well for its scope, but:
+
+- **Hooks only gate tools they are configured for.** A tool the hook doesn't intercept (like a code execution MCP tool) bypasses the hook entirely.
+- **Code execution is command injection.** Any tool that accepts and runs code -- Python snippets, shell eval, script interpreters -- can be used to perform the same operations the hook blocks, just through a different channel.
+- **Defense in depth requires both layers.** Hooks enforce discipline for the normal path (terminal commands). Tool approval settings enforce the perimeter (which tools can run at all).
+
+### Quick reference
+
+| Layer | What it controls | How to configure |
+|---|---|---|
+| PreToolUse hooks | Terminal command allowlist/blocklist | `hooks/tool-usage-rules.json` |
+| Tool approval | Which tools can run and whether they need confirmation | `Chat: Manage Tool Approval` command |
+| Tool disable | Remove tools from availability entirely | Configure Tools picker in Chat view |
+| Permission level | Session-wide approval mode (Default / Bypass / Autopilot) | Permissions picker in Chat input |
+| `chat.tools.eligibleForAutoApproval` | Prevent specific tools from ever being auto-approved | VS Code settings (org-managed) |

@@ -221,6 +221,7 @@ These universal skills cover general development workflow. For domain-specific k
 - **Self-reinforcing** -- Skills cross-reference each other to form a coherent system; `skill-compliance` routes to the right combination
 - **Portable** -- Works across multiple AI agents via the Agent Skills standard
 - **Observable** -- `skill-compliance` makes the agent declare what it loaded, so you can verify before work begins
+- **Defense in depth** -- PreToolUse hooks enforce tool-usage rules for terminal commands, but hooks alone cannot prevent an agent from laundering operations through code-execution tools (MCP `runCodeSnippet`, script interpreters, etc.). Pair hooks with strict tool approval settings. See the [VS Code security hardening guide](docs/vscode-copilot.md#security-hardening----tool-approval-policy) for details.
 
 ## License
 
