@@ -64,6 +64,19 @@ the relevant skill and comply.
 
 ---
 
+## Collaboration Space
+
+`.copilot/` is the **git-ignored collaboration directory** used in every
+repository. Plans, task trackers, design notes, scratch scripts, and any
+other ephemeral working files belong here. If the directory does not exist,
+create it and ensure `.copilot/` is listed in `.gitignore` before writing
+any files there.
+
+Other skills reference this directory by path. This section is the canonical
+declaration of the convention.
+
+---
+
 ## Procedure
 
 ### Step 1 -- Identify the Task Type
