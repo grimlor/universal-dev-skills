@@ -49,8 +49,8 @@ This means:
   integration defects -- the very bugs that matter most.
 - **The mock boundary is where the system ends**, not where a module ends. A function
   in our codebase is part of the system regardless of which module or layer it lives
-  in. `subprocess.run` is not part of our system. `discover_repositories` is, even
-  though it calls `subprocess.run`.
+  in. A stdlib call that spawns a process is not part of our system. Our function
+  that wraps that call is, even though it delegates to the stdlib.
 - **The exception is foundational pure functions.** Functions with no system
   dependencies (e.g., URL parsers, math, config validation) can be tested directly
   with no mocks at all -- they have no I/O to mock and no layers to compose.
@@ -64,15 +64,18 @@ The boundary is where the **system** ends and the **environment** begins:
 
 | I/O boundary (mock these) | Part of the system (never mock) |
 |---|---|
-| `subprocess.run` -- spawns a process | `discover_repositories` -- our function that calls subprocess |
-| `requests.get` -- HTTP call | `fetch_details` -- our function that calls requests |
-| `Connection.query` -- database wire call | `RepoContext.get` -- our caching logic over discovery |
-| `os.getcwd` -- process-level state | `os.path.exists` with `tmp_path` -- use real filesystem instead |
+| Process spawning (subprocess, exec, spawn) | Our function that wraps the process call |
+| HTTP calls (client libraries, fetch) | Our function that calls the HTTP client |
+| Database wire calls (connection/query) | Our caching/repository logic over the connection |
+| Process-level state (cwd, env vars) | Filesystem operations against a test directory |
 
 If you find yourself mocking a function in your own codebase, stop. Trace the call
-chain to the actual I/O operation and mock that instead. Use `tmp_path` for real
-filesystem structure so that `os.path.exists`, `os.listdir`, and `os.path.isdir` all
-run against real directories.
+chain to the actual I/O operation and mock that instead. For filesystem interactions,
+use the test framework's temp directory facility so file operations run against real
+directories.
+
+See the language-specific reference file for concrete examples of I/O boundaries
+and temp directory patterns in your language.
 
 ---
 

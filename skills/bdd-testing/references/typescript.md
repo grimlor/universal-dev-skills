@@ -2,6 +2,19 @@
 
 Language-specific guidance for applying `bdd-testing` in TypeScript projects.
 
+## I/O Boundary Examples
+
+| I/O boundary (mock these) | Part of the system (never mock) |
+|---|---|
+| `child_process.exec` / `spawn` -- spawns a process | `discoverRepos()` -- our function that calls exec |
+| `fetch` / `axios.get` -- HTTP call | `fetchDetails()` -- our function that calls fetch |
+| `pool.query` -- database wire call | `RepoContext.get()` -- our caching logic over the query |
+| `process.cwd()` -- process-level state | `fs.existsSync` with `tmp` dir -- use real filesystem instead |
+
+Use `fs.mkdtempSync(path.join(os.tmpdir(), ...))` or a test helper to create
+real temp directories so that `fs.existsSync`, `fs.readdirSync`, and
+`fs.statSync` all run against real filesystem structure.
+
 ## Coverage Commands
 
 ```bash

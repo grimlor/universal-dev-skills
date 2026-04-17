@@ -119,6 +119,15 @@ jailbreak attacks through dynamically generated code.
 
 For language-specific snippet details, see the relevant reference file.
 
+## Git Branching Protocol
+
+Branching strategy for feature work is defined in the `feature-workflow` skill,
+Phase 4 (Code Quality Baseline). When creating branches for feature work, follow
+that protocol -- it defines the quality-branch → feature-branch → draft-PR
+workflow that keeps quality fixes separate from functional changes.
+
+The `conventional-commits` skill covers commit message format only, not branching.
+
 ## Why This Matters
 
 - **Faster execution**: Tools are optimized for VS Code integration

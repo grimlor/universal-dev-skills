@@ -215,7 +215,14 @@ plan -- it just gets checked off immediately.
    architecture from Phase 3.
 2. **Follow BDD testing principles** -- see the `bdd-testing` skill for conventions.
 3. **Tests must fail** -- Run the tests to confirm they fail. Refer to tool-usage skill.
-   If they pass, either the behavior already exists or the tests aren't testing anything.
+   If they pass, investigate:
+   - **The test is a tautology** (it would pass even without the SUT). Rewrite the
+     test to assert on actual SUT behavior.
+   - **The behavior already exists** (the system already satisfies the requirement).
+     Update the plan to reflect that the spec is already green and skip to Phase 8
+     for coverage verification on that behavior.
+   A passing test that is neither a tautology nor evidence of existing behavior is a
+   red flag -- stop and investigate before proceeding.
 4. **Include failure-mode specs** -- An unspecified failure is an unhandled failure.
    Test error paths, edge cases, and boundary conditions.
 
@@ -231,7 +238,12 @@ plan -- it just gets checked off immediately.
    design. If the design needs to change, go back to Phase 3 and update it first.
 4. **Do not add behavior that isn't specified by a test.** If you discover a need
    during implementation, go back to Phase 6 and add the spec first.
-5. **Late-discovery quality gate.** If implementation requires modifying existing
+5. **BDD ordering is recursive.** If implementation is broken into sub-phases or
+   sub-tasks (e.g., A–D within an Implementation Tasks section), the BDD
+   constraint applies at every level: test specs for each sub-phase must exist
+   and fail before that sub-phase's implementation begins. Sub-phases do not
+   get a free pass on ordering just because the parent phase is Phase 7.
+6. **Late-discovery quality gate.** If implementation requires modifying existing
    files that were **not** identified in Phase 4 and those files have quality
    violations:
    a. Commit any in-progress work on the feature branch.
@@ -301,5 +313,26 @@ Three categories routinely surface only at coverage time:
 - `templates` provides canonical document structures -- plan (Phase 1), spec (Phase 2),
   design note (Phase 3). Read templates from this skill, do not reproduce from memory
 - `tool-usage` is cross-cutting -- applies at every phase
+
+---
+
+## Content Routing -- Where Information Lives
+
+When migrating content from existing documents (feature docs, RFCs, design
+documents) into the template system, use this mapping:
+
+| Source content | Destination |
+|---|---|
+| Motivation / Why | Plan → Goal |
+| Approach / Solution | Design Note, or Plan → Context/Constraints |
+| Root Cause / Current State | Spec → Overview, or Plan → Context/Constraints |
+| Alternative Considered | Design Note → Key Decisions, or Plan → Context/Constraints |
+| Tasks / Implementation Steps | Plan → Implementation Tasks (BDD-ordered; see below) |
+| Behavioral requirements | Spec → Behaviors (one per test class) |
+| API surface | Spec → Public API Surface |
+
+When in doubt, ask: "Is this *what* to build (spec), *why/how* to build it
+(design note), or *project state* (plan)?" Content should live in exactly one
+place -- do not scatter the same information across multiple documents.
 
 The flow: **define → spec → architecture → quality baseline → prerequisite validation → tests → implementation → coverage → plan update**

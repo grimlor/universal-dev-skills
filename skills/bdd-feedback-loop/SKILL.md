@@ -77,6 +77,9 @@ test file, for traceability. Use your language's comment syntax:
 //   processor.computeScore(value: number | null, baseline: number) -> number
 ```
 
+Adapt the comment syntax and type notation to your language (`#` for Python,
+`//` for TypeScript/Java/C#, etc.).
+
 ---
 
 ### Step 3 -- Implement the Tests
@@ -169,22 +172,22 @@ anything that prevented full compliance with the spec or with the BDD principles
 Append to the module's deviation log section in the orchestration doc:
 
 ```
-## Deviations -- test_processor.py
+## Deviations -- <test module file>
 
-### [DEVIATION] TestScoringBehavior.test_negative_signals_penalize_score
-Could not induce negative_score > 0.3 through public API alone. The production
-code path requires at least 3 documents in the negative_signals collection, but
-the store fixture only seeds 1. The test currently seeds manually via
-store.add() -- this bypasses the indexer but is the only path available.
-Recommendation: add a multi-document fixture to conftest, or expose a
-batch-seed method on DataStore.
+### [DEVIATION] <TestClass>.<test_method>
+Could not induce the target condition through public API alone. The production
+code path requires specific preconditions that the current fixture setup does
+not support. The test currently seeds state directly via a low-level API call --
+this bypasses the normal flow but is the only path available.
+Recommendation: add a richer fixture to the shared test setup, or expose a
+public method for batch seeding.
 
-### [DEVIATION] TestScoreComputation -- entire class
-compute_score() is not exposed as a public method on Processor. It appears
-to be internal. All computation tests currently call the private method
-_compute_score() directly, violating the public API rule.
+### [DEVIATION] <TestClass> -- entire class
+The method under test is not exposed as a public method. It appears to be
+internal. All tests currently call the private method directly, violating
+the public API rule.
 Recommendation: either promote to public API or test exclusively through
-processor.process() with appropriate input data.
+the public entry point with appropriate input data.
 ```
 
 A deviation log entry must include:

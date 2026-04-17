@@ -2,6 +2,19 @@
 
 Language-specific guidance for applying `bdd-testing` in C# projects.
 
+## I/O Boundary Examples
+
+| I/O boundary (mock these) | Part of the system (never mock) |
+|---|---|
+| `Process.Start()` -- spawns a process | `RepoDiscovery.Discover()` -- our method that calls Process |
+| `HttpClient.SendAsync()` -- HTTP call | `DetailsFetcher.FetchAsync()` -- our method that calls HttpClient |
+| `DbConnection.ExecuteReader()` -- database wire call | `RepoRepository.FindById()` -- our caching/query logic |
+| `Directory.GetCurrentDirectory()` -- process-level state | `File.Exists(path)` with temp dir -- use real filesystem instead |
+
+Use `Path.Combine(Path.GetTempPath(), Path.GetRandomFileName())` or a test
+helper to create real temp directories so that `File.Exists`, `Directory.Exists`,
+and `Directory.GetFiles` all run against real filesystem structure.
+
 ## Coverage Commands
 
 ```bash

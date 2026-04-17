@@ -2,6 +2,18 @@
 
 Language-specific guidance for applying `bdd-testing` in Java projects.
 
+## I/O Boundary Examples
+
+| I/O boundary (mock these) | Part of the system (never mock) |
+|---|---|
+| `ProcessBuilder.start()` -- spawns a process | `RepoDiscovery.discover()` -- our method that calls ProcessBuilder |
+| `HttpClient.send()` -- HTTP call | `DetailsFetcher.fetch()` -- our method that calls HttpClient |
+| `Connection.prepareStatement()` -- database wire call | `RepoRepository.findById()` -- our caching/query logic |
+| `System.getProperty("user.dir")` -- process-level state | `Files.exists(path)` with `@TempDir` -- use real filesystem instead |
+
+Use JUnit 5's `@TempDir` for real filesystem structure so that `Files.exists`,
+`Files.list`, and `Files.isDirectory` all run against real directories.
+
 ## Coverage Commands
 
 ```bash

@@ -40,6 +40,17 @@ One paragraph: what this feature achieves and why it matters.
 ### Phase 7 -- Implementation
 - [ ] All tests passing
 
+#### Implementation Tasks
+<!-- Break down the implementation into ordered sub-tasks here.
+     BDD ordering is recursive: for each sub-task, test specs must exist and fail
+     before that sub-task's implementation begins. Do not list implementation
+     steps without their corresponding test specs.
+
+     Format:
+     - [ ] Sub-task A -- test spec: <spec reference>
+     - [ ] Sub-task B -- test spec: <spec reference>
+-->
+
 ### Phase 8 -- Coverage Verification
 - [ ] 100% coverage confirmed
 
