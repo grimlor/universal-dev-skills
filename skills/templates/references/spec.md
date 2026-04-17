@@ -1,9 +1,11 @@
 # Spec -- <Feature Name>
 
 ## Overview
+
 One paragraph: what this feature does and why it exists.
 
 ## Out of Scope
+
 Explicit list of what this feature does NOT do.
 
 ## Public API Surface

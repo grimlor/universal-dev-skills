@@ -5,7 +5,7 @@ Language-specific guidance for applying `bdd-testing` in Java projects.
 ## I/O Boundary Examples
 
 | I/O boundary (mock these) | Part of the system (never mock) |
-|---|---|
+| --- | --- |
 | `ProcessBuilder.start()` -- spawns a process | `RepoDiscovery.discover()` -- our method that calls ProcessBuilder |
 | `HttpClient.send()` -- HTTP call | `DetailsFetcher.fetch()` -- our method that calls HttpClient |
 | `Connection.prepareStatement()` -- database wire call | `RepoRepository.findById()` -- our caching/query logic |

@@ -5,7 +5,7 @@ Language-specific guidance for applying `bdd-testing` in C# projects.
 ## I/O Boundary Examples
 
 | I/O boundary (mock these) | Part of the system (never mock) |
-|---|---|
+| --- | --- |
 | `Process.Start()` -- spawns a process | `RepoDiscovery.Discover()` -- our method that calls Process |
 | `HttpClient.SendAsync()` -- HTTP call | `DetailsFetcher.FetchAsync()` -- our method that calls HttpClient |
 | `DbConnection.ExecuteReader()` -- database wire call | `RepoRepository.FindById()` -- our caching/query logic |

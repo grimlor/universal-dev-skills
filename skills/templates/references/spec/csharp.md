@@ -1,4 +1,4 @@
-# Spec Behavior Example -- C#
+# Spec Behavior Example -- CSharp
 
 xUnit + FluentAssertions with XML doc contract and nested test stubs.
 

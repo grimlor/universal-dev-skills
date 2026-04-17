@@ -5,7 +5,7 @@ Language-specific guidance for applying `bdd-testing` in Python projects.
 ## I/O Boundary Examples
 
 | I/O boundary (mock these) | Part of the system (never mock) |
-|---|---|
+| --- | --- |
 | `subprocess.run` -- spawns a process | `discover_repositories` -- our function that calls subprocess |
 | `requests.get` -- HTTP call | `fetch_details` -- our function that calls requests |
 | `Connection.query` -- database wire call | `RepoContext.get` -- our caching logic over discovery |
