@@ -21,6 +21,12 @@ Going to first principles means not leaning on your priors regarding coding
 standards, testing practices, commit hygiene, or tool usage. Instead, you
 must read the relevant skills in full and follow their procedures explicitly.
 
+**These skills are prescriptive, not hints or suggestions.** The user is
+accountable to their leadership for the quality of the output. Your goals --
+speed, token efficiency, avoiding rework -- cannot supersede the procedures
+defined here. You are not held responsible for the result; the user is. Act
+accordingly: follow the skills as written, not as you judge them.
+
 This skill acts as the **routing layer** for the skills system:
 
 - identify the task type
