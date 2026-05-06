@@ -66,6 +66,34 @@ def test_extraction_error_on_one_listing_does_not_abort_others(self):
 precondition is the default state established by conftest fixtures and adds no
 distinguishing information -- even then, the `# Given:` body comment is always present.
 
+### Body comments must be descriptive, not bare labels
+
+```python
+# ❌ Wrong -- comments present but uninformative; reader still has to parse
+#    every line to understand what each phase is doing.
+def test_registered_adapter_is_retrievable_by_name(self):
+    """
+    Given an adapter registered under a known name
+    When a registered name is requested from the registry
+    Then the correct adapter class is returned
+    """
+    # Given:
+    registry = AdapterRegistry()
+    registry.register("postgres", PostgresAdapter)
+
+    # When:
+    adapter_cls = registry.get("postgres")
+
+    # Then:
+    assert adapter_cls is PostgresAdapter, ...
+```
+
+The bare-label form satisfies the *presence* rule but not its purpose. The
+docstring tells you what scenario is being verified; the body comments must
+tell you how each step is realized in *this* code -- naming the concrete
+state, action, and expected outcome (see the descriptive comments in the ✅
+example above).
+
 ---
 
 ## Mock Boundary Contract -- Full Examples
