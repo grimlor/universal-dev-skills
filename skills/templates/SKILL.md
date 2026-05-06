@@ -21,6 +21,7 @@ description: "Document templates for the feature workflow. Use when creating a p
 | Plan document | `references/plan.md` | Phase 1 -- Feature Definition |
 | Behavioral spec | `references/spec.md` | Phase 2 -- Spec Gate |
 | Design note | `references/design-note.md` | Phase 3 -- Architecture |
+| Task tracking | `references/task.md` | Start of refactor / audit / remediation pass |
 
 ### Language-Specific References
 
