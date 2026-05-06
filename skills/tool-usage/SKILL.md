@@ -7,30 +7,30 @@ description: "Tool and terminal decisions for every task. Use for any request in
 
 Standard tool-vs-terminal decision framework.
 
+## Iron Laws
+
+1. **Tool-first.** Use the tool listed in the routing table below; never the
+   "Never This" column.
+2. **Tests run via `runTests` only.** Never `pytest`, `jest`, `dotnet test`,
+   `bun test`, etc. in the terminal -- no exceptions, including sanity checks
+   and coverage runs.
+3. **Scripts require user approval.** When a snippet-execution tool is needed,
+   show the script and ask the user to enable the tool. Never run language
+   runtimes in the terminal as a workaround.
+4. **Verify after edits.** After completing edits, run language-native CLI
+   type/lint checks in the terminal as final verification -- the Problems
+   panel may not surface every diagnostic.
+
 ## Language References
 
-This file defines language-agnostic tool usage. For language/toolchain-specific
-verification details, use:
+For language/toolchain-specific verification details:
 
 - `references/python.md`
+- `references/typescript.md`
+- `references/java.md`
+- `references/csharp.md`
 
-## Prerequisites
-
-The tool-first approach depends on editor integrations feeding diagnostics into
-the Problems panel (`get_errors`). Configure your language's analysis/lint
-extensions so `get_errors` surfaces meaningful errors.
-
-Regardless of language, the principle is:
-
-- Use editor-integrated diagnostics first.
-- After edits, run language-native CLI checks (type/lint/test) as final verification.
-
-Python-specific extension, pragma, and Ruff severity notes are in
-`references/python.md`.
-
-## Tool-First Approach
-
-Use specialized VS Code tools instead of terminal commands. This is not a preference -- it is a requirement. Tools provide structured output, integrated error reporting, and correct path resolution that raw terminal commands do not.
+## Tool-First Routing
 
 | Task | Use This Tool | Never This |
 |------|--------------|----------|
@@ -48,27 +48,11 @@ Use specialized VS Code tools instead of terminal commands. This is not a prefer
 | Git stash | GitKraken `git_stash` | `git stash` in terminal |
 | Run language snippets | Show script to user; ask them to enable snippet tool (see below) | ad-hoc shell one-liners; running scripts without user review |
 
-**Running tests via terminal is not permitted.** The `runTests` tool handles test environment setup, path configuration, output formatting, and coverage reporting. Any session step that would otherwise run `pytest`, `jest`, `dotnet test`, etc. in the terminal must use `runTests` instead -- no exceptions, including quick sanity checks and coverage runs.
-
-**Terminal verification:** The VS Code Problems panel may not surface every
-diagnostic from every analyzer. After completing edits, run language-native CLI
-checks in the terminal as a final verification step.
-
 ## Platform-Dependent Operations
 
-Some operations depend on the git hosting platform (GitHub, Azure DevOps, GitLab, etc.) and have different tool implementations depending on what MCP servers or extensions are installed. **Do not hardcode a specific tool for these tasks.** Instead, discover what is available at runtime.
-
-### Principle
-
-When the task is platform-dependent, search the available tool list using the discovery pattern for that task category. Use whatever tool matches. If nothing matches, fall back to the terminal or web UI.
-
-### Discovery procedure
-
-1. Use the tool search capability to probe available tools with the pattern from the table below
-2. If a matching tool is found, use it
-3. If no match, use the documented fallback
-
-### Platform-dependent task categories
+For platform-dependent tasks (GitHub vs ADO vs GitLab vs ...), do not hardcode
+a tool. Probe the available tool list with the discovery pattern below; use
+whatever matches; otherwise use the fallback.
 
 | Task | Discovery Pattern | Fallback |
 |------|------------------|----------|
@@ -77,42 +61,35 @@ When the task is platform-dependent, search the available tool list using the di
 | Work items / issues | `issue\|work_item` | Project tracker web UI |
 | CI / pipeline status | `pipeline\|build\|check` | CI provider web UI |
 
-### Examples
+Example: in a GitHub workspace with GitKraken installed, searching `review`
+finds `gitlens_start_review`. In an ADO workspace with `ado-workflows-mcp`,
+searching `pull_request` finds ADO PR tools. With neither installed, fall back
+to the web UI.
 
-- **GitHub workspace** with GitKraken installed: searching `review` finds `gitlens_start_review` → use it.
-- **ADO workspace** with `ado-workflows-mcp` installed: searching `pull_request` finds ADO PR tools → use them.
-- **Bare workspace** with neither: no match → tell the user to use the web UI or terminal.
-
-The git operations in the tool-first table above (status, commit, branch, push, blame, stash) are platform-agnostic -- they work the same regardless of the remote. Only the tasks in this section vary by platform.
+The git operations in the routing table above (status, commit, branch, push,
+blame, stash) are platform-agnostic; only the tasks in this table vary.
 
 ## When Terminal Is Appropriate
 
 - **Package installation**: `pip install`, `npm install`, `dotnet restore`, etc.
-- **Build/compilation**: Complex build processes requiring environment setup
-- **Background processes**: Servers, long-running tasks (`isBackground=true`)
-- **Environment setup**: Virtual environments, cloud CLI auth
-- **Type-check + lint sweep**: Running language-native analyzers and linters after edits to catch diagnostics invisible to `get_errors`
-- **Commands with no tool equivalent**: When no specialized tool exists
+- **Build/compilation**: complex builds requiring environment setup
+- **Background processes**: servers, long-running tasks (`isBackground=true`)
+- **Environment setup**: virtual environments, cloud CLI auth
+- **Type-check + lint sweep**: language-native analyzers after edits (Iron Law 4)
+- **Commands with no tool equivalent**
 
-General test runs are not on this list. They have a tool equivalent -- `runTests` -- and that tool must be used. Similarly, when snippet tools are available for a language, they should be preferred over ad-hoc terminal one-liners.
-
-**Bun coverage note:** The `runTests` tool response for Bun contains only
-pass/fail summaries -- no coverage data in the payload. However, when
-`bunfig.toml` has `coverage = true` and an lcov reporter, `runTests` triggers
-coverage and writes `coverage/lcov.info`. The agent workflow is:
-`runTests` → `read_file coverage/lcov.info`. If `bunfig.toml` does not exist
-(e.g. contributed projects), create one locally -- it does not need to be
-committed. See `references/typescript.md` for details.
+For language-specific terminal commands (Bun coverage workflow, Ruff severity,
+etc.), see the relevant reference file.
 
 ## Script Handling
 
 Some language servers expose snippet-execution tools (e.g. Pylance
 `RunCodeSnippet` for Python). These are **disabled by default** for security.
-When the agent needs to run a script:
+When a script needs to run:
 
-1. **Show the full script** to the user in a code block.
-2. **Ask the user to enable** the snippet tool and approve your running it.
-3. **Do not** run language runtimes directly in the terminal as a workaround.
+1. Show the full script to the user in a code block.
+2. Ask the user to enable the snippet tool and approve your running it.
+3. Do not run language runtimes directly in the terminal as a workaround.
 
 This ensures the user reviews every script before execution, preventing
 jailbreak attacks through dynamically generated code.
@@ -122,15 +99,8 @@ For language-specific snippet details, see the relevant reference file.
 ## Git Branching Protocol
 
 Branching strategy for feature work is defined in the `feature-workflow` skill,
-Phase 4 (Code Quality Baseline). When creating branches for feature work, follow
-that protocol -- it defines the quality-branch → feature-branch → draft-PR
-workflow that keeps quality fixes separate from functional changes.
+Phase 4 (Code Quality Baseline) -- the quality-branch → feature-branch →
+draft-PR workflow that keeps quality fixes separate from functional changes.
 
-The `conventional-commits` skill covers commit message format only, not branching.
-
-## Why This Matters
-
-- **Faster execution**: Tools are optimized for VS Code integration
-- **Better context**: Structured data instead of raw text parsing
-- **Error handling**: Built-in validation catches issues early
-- **Iteration speed**: Especially impactful for testing and file operations
+The `conventional-commits` skill covers commit message format only, not
+branching.
