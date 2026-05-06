@@ -5,14 +5,14 @@ description: "Document templates for the feature workflow. Use when creating a p
 
 # Templates -- Canonical Document Structures
 
-## When This Skill Applies
+## Iron Laws
 
-Whenever you need to create a plan document, behavioral spec, or design note.
-Other skills reference this skill as the source of truth for document structure.
-
-Do not reproduce templates from memory. Read the template file directly.
-
----
+1. **Never reproduce templates from memory.** Always read the template file
+   directly from `references/`.
+2. **Read the language-agnostic template first**, then the matching language
+   reference (when one exists for that template).
+3. **Templates define structure only.** Population rules live in the requesting
+   skill (`feature-workflow` or `plan-updates`).
 
 ## Available Templates
 
@@ -24,25 +24,16 @@ Do not reproduce templates from memory. Read the template file directly.
 
 ### Language-Specific References
 
-Some templates have language-specific reference files for code examples.
-Read the language-agnostic template first, then read the relevant language
-reference for code patterns.
-
 | Template | Language references |
 |---|---|
 | Behavioral spec | `references/spec/python.md`, `references/spec/typescript.md`, `references/spec/java.md`, `references/spec/csharp.md` |
 
----
+## On Invocation
 
-## Usage
-
-1. Read the relevant template file from this skill's `references/` directory.
-2. If the template has language-specific references, also read the reference
+1. Read the template file from `references/`.
+2. If a language-specific reference exists for that template, read the one
    matching your project's language.
 3. Copy the template content into the target location.
-4. Fill in all placeholders (marked with `<angle brackets>`), using the
-   language-specific reference for code block patterns.
-5. Follow the rules defined in the requesting skill (`feature-workflow` or
-   `plan-updates`) for how to populate each section.
-
-Templates define **structure**. Skills define **rules and workflow**.
+4. Fill in all `<angle bracket>` placeholders, using the language reference
+   for code block patterns.
+5. Follow the requesting skill's rules for how to populate each section.
