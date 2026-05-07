@@ -1,0 +1,13 @@
+# Generated / vendored
+.venv/
+.git/
+.pytest_cache/
+.ruff_cache/
+.coverage
+uv.lock
+
+# OS
+.DS_Store
+
+# Python sources are formatted by ruff, not prettier
+**/*.py

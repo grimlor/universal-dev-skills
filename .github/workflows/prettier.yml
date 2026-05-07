@@ -1,0 +1,39 @@
+name: Prettier
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    # Avoid recursive runs from this workflow's own auto-commits
+    if: "!contains(github.event.head_commit.message, 'style: prettier auto-format')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Need write access for the auto-commit step
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # Push back to the same ref the workflow ran against
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Run Prettier
+        run: npx --yes prettier@3 --write .
+
+      - name: Commit fixes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style: prettier auto-format"
+          commit_user_name: github-actions[bot]
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
