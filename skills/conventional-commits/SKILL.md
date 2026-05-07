@@ -6,17 +6,22 @@ NOTE: Never commit autonomously. Always prepare a message and ask for user appro
 
 # Conventional Commits -- Message Format
 
+## Iron Laws
+
+1. **Never commit autonomously.** Show the staged diff and the proposed message; wait for explicit user approval before executing the commit. Reformatting hooks may modify files mid-commit -- that is not approval to keep going on a different commit.
+2. **Every commit gets a type.** No untyped commits. Subject line is `<type>[optional scope]: <description>`.
+3. **One logical change per commit.** Don't bundle a feature with a refactor; don't sweep unrelated files in with `git add -u`. Stage the specific paths you intend to ship.
+4. **`feat` and `fix` are the only version-bumping types.** Mark breaking changes with `!` after the type/scope or a `BREAKING CHANGE:` footer (equivalent; both trigger a major bump).
+5. **Subject line is imperative, lowercase after the colon, no trailing period, ≤72 chars.** Body wraps at 72 and explains _what_ and _why_, not _how_.
+6. **Re-stage after auto-formatting hooks; reuse the original message.** Hook reformat → reject → re-stage → retry is the normal workflow, not a new commit.
+
 ## When This Skill Applies
 
-Whenever writing a commit message, preparing a PR title, or describing changes for a changelog. This includes interactive commits, automated commits, and squash-merge titles.
+Whenever writing a commit message, PR title, or changelog entry. This includes interactive commits, automated commits, and squash-merge titles.
 
-This skill defines **message format only**. For how to execute git operations (staging, committing, pushing), follow `tool-usage` -- it determines whether to use GitKraken MCP tools, GitHub MCP tools, or terminal commands based on what is available.
-
----
+This skill defines **message format only.** For how to execute git operations (staging, committing, pushing), follow `tool-usage` -- it determines whether to use GitKraken MCP tools, GitHub MCP tools, or terminal commands based on what is available.
 
 ## Format
-
-Every commit message follows [Conventional Commits v1.0.0](https://www.conventionalcommits.org/):
 
 ```
 <type>[optional scope]: <description>
@@ -26,7 +31,7 @@ Every commit message follows [Conventional Commits v1.0.0](https://www.conventio
 [optional footer(s)]
 ```
 
-### Type (required)
+### Types
 
 | Type | Meaning | Version bump |
 | --- | --- | --- |
@@ -42,137 +47,58 @@ Every commit message follows [Conventional Commits v1.0.0](https://www.conventio
 | `chore` | Maintenance tasks (tooling, config) | none |
 | `revert` | Reverts a previous commit | depends on reverted type |
 
-### Breaking Changes
+### Scope
 
-A breaking change triggers a **major** bump (0.2.0 → 1.0.0). Signal it with either:
+Optional. Narrows the area of change to a module or subsystem name (`auth`, `api`, `models`, `cli`, `config`, `deps`, `release`). Scopes should be short, stable, and map to subsystems or directories.
 
-- `!` after the type/scope: `feat!: redesign workflow format`
-- A `BREAKING CHANGE:` footer in the body:
+### Description
 
-```
-feat: redesign workflow format
+Imperative mood ("add", "fix", "remove" -- not "added", "fixes", "removed"). Lowercase first letter after the colon. No trailing period. ≤72 chars including type and scope.
 
-BREAKING CHANGE: Step headers now use `####` instead of `###`.
-Existing workflows must be updated.
-```
+### Body
 
-### Scope (optional)
+Optional. Wrap at 72. Explain _what_ and _why_, not _how_.
 
-Scope narrows the area of change. Use the module or subsystem name:
-
-```
-feat(auth): add OAuth2 token refresh
-fix(api): handle missing query parameter gracefully
-test(models): add validation assertions
-ci(release): add semantic-release workflow
-```
-
-Define scopes based on your project's module structure. Good scopes are short, stable names that map to subsystems or directories -- e.g., `api`, `auth`, `models`, `cli`, `config`, `deps`, `release`.
-
-### Description (required)
-
-- Imperative mood: "add", "fix", "remove" -- not "added", "fixes", "removed"
-- Lowercase first letter (after the colon)
-- No period at the end
-- No more than 72 characters total for the first line
-
-### Body (optional)
-
-Explain _what_ and _why_, not _how_. Wrap at 72 characters.
-
-### Footer (optional)
+### Footers
 
 - `BREAKING CHANGE: <description>` -- triggers major bump
 - `Refs: #123` -- links to an issue
 - `Co-authored-by: Name <email>` -- attribution
 
----
+### Squash-merge PRs
 
-## Examples
+The PR title becomes the squash commit message and must follow the same format.
 
-```
-feat(auth): add OAuth2 token refresh
-
-Access tokens now refresh automatically when they expire within
-5 minutes of a request. This prevents 401 errors during long
-running operations without requiring manual re-authentication.
-
-Refs: #42
-```
-
-```
-fix(api): handle missing query parameter without crashing
-
-Previously, an empty `filter` parameter caused a TypeError in
-the query builder. Now it defaults to an empty dict and logs
-a warning.
-```
-
-```
-ci(release): add semantic-release workflow
-
-Automates version bumping and GitHub Release creation on push to
-main. Reads conventional commit history since the last tag and
-determines the appropriate semver increment.
-```
-
-```
-docs: update README with installation instructions
-```
-
-```
-test(models): add input validation assertions
-```
-
-```
-build(deps): bump fastapi from 0.109.0 to 0.110.0
-
-BREAKING CHANGE: 0.110.0 removes the deprecated `on_event`
-lifecycle hook. All startup handlers have been migrated to
-`lifespan` context managers.
-```
-
----
-
-## Rules
-
-1. **Every commit gets a type.** No untyped commits.
-2. **One logical change per commit.** Don't bundle a feature with a refactor.
-3. **Squash-merge PRs** should use the PR title as the commit message, which must also follow this format.
-4. **`feat` and `fix` are the only types that trigger version bumps.** All other types are recorded in the changelog but don't change the version.
-5. **Use `!` or `BREAKING CHANGE:` for breaking changes.** Both are equivalent; `!` is shorter for simple cases.
-6. **Always show the user the proposed commit message before committing.** Present the draft message and offer to show the diff, then wait for explicit user approval. Do not commit autonomously.
-
----
+For worked examples, read `references/examples.md`.
 
 ## Pre-Commit Hooks
 
-Projects may run pre-commit hooks (or equivalent staged-file checks) before a commit is accepted. This means **commits can fail at the hook stage** until staged files satisfy the configured quality gates.
+Pre-commit hooks (or equivalent staged-file checks) may run before a commit is accepted. Commits can fail at the hook stage until staged files satisfy the configured quality gates.
 
 ### Auto-formatting and re-staging
 
-Many pre-commit hooks **reformat staged files in place** (e.g., Ruff, Black, Prettier, google-java-format). When this happens:
+Many hooks reformat staged files in place (Ruff, Black, Prettier, google-java-format). When this happens:
 
 1. The hook modifies the working-tree copy of the file.
 2. The commit is rejected because the staged content no longer matches.
-3. **Re-stage the modified files** and commit again with the same message.
+3. **Re-stage the modified files** and retry with the same message.
 
-This is the normal workflow -- not an error. Do not generate a new commit message just because the hook failed on the first attempt. Reuse the message you already prepared.
+This is normal workflow, not an error. Iron Law 6.
 
-### Formatting a file on demand (the "hack" pattern)
+### Formatting a file on demand
 
-To get a file formatted by the project's pre-commit hooks without making a real change:
+To get a file formatted without making a real change:
 
-1. Make a trivial edit to the file (e.g., add a blank line) to get a change to commit.
+1. Make a trivial edit (e.g., add a blank line).
 2. Stage the file.
-3. Attempt a commit -- the hooks will reformat it.
+3. Attempt a commit -- the hooks reformat it.
 4. Re-stage the reformatted file and commit (or reset the commit if the only purpose was formatting).
 
-This is useful when a file predates the hooks or was edited outside the project's toolchain.
+Useful when a file predates the hooks or was edited outside the project's toolchain.
 
 ### Persistent failures after re-staging
 
-If the commit still fails after re-staging the auto-formatted output, the remaining violations are **not auto-fixable**. These are typically lint errors or type-checking failures that require manual intervention. Read the hook output, fix each reported issue, re-stage, and retry.
+If the commit still fails after re-staging the auto-formatted output, the remaining violations are not auto-fixable -- typically lint or type-check errors requiring manual intervention. Read the hook output, fix each reported issue, re-stage, and retry.
 
 ### Activating hooks
 
@@ -182,10 +108,17 @@ Activation depends on the project's toolchain. Python projects using the canonic
 uv run pre-commit install
 ```
 
-This only needs to be run once per clone. See the language-specific standards skill for your active stack (for example, `python-code-standards`).
+This only needs to be run once per clone. See the language-specific standards skill for your active stack (e.g., `python-code-standards`).
 
----
+## On Invocation
+
+1. Stage exactly the files you intend to ship (Iron Law 3).
+2. Draft the commit message in the format above.
+3. Show the user the staged diff and the proposed message. Wait for explicit approval.
+4. Execute the commit per `tool-usage`.
+5. If a hook reformats files, re-stage and retry with the same message (Iron Law 6).
+6. If the hook reports non-auto-fixable violations, fix them, re-stage, retry.
 
 ## Why This Exists
 
-Semantic release tools (e.g., `semantic-release`, `python-semantic-release`, `release-please`) read commit messages to determine version bumps automatically. Without consistent conventional commits, the automation cannot determine whether a change is a feature, fix, or breaking change -- and either bumps incorrectly or not at all.
+Semantic release tools (`semantic-release`, `python-semantic-release`, `release-please`) read commit messages to determine version bumps automatically. Without consistent conventional commits, the automation cannot tell whether a change is a feature, fix, or breaking change -- and either bumps incorrectly or not at all.
