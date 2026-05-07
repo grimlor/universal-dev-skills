@@ -8,6 +8,13 @@ on:
 permissions:
   contents: write
 
+env:
+  # Opt JS actions (checkout@v4, setup-node@v4, git-auto-commit-action@v5) into
+  # Node.js 24 ahead of the June 2, 2026 default switch. Node 20 is removed
+  # from runners on Sept 16, 2026.
+  # https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 jobs:
   format:
     runs-on: ubuntu-latest
@@ -26,7 +33,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Run Prettier
         run: npx --yes prettier@3 --write .
