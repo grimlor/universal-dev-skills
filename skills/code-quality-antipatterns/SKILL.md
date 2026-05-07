@@ -5,26 +5,50 @@ description: "Suppression pragma policy and common code quality antipatterns. Us
 
 # Code Quality Antipatterns -- Suppression Pragmas and Common Evasions
 
-## When This Skill Applies
+## Iron Laws
 
-Whenever writing, editing, or reviewing code -- production or test. If the task
-could result in a suppression pragma being added, or if the agent encounters an
-existing one while working, this skill applies.
+### Suppression pragmas
 
-This is a **cross-cutting** skill. It does not replace the language-specific
-standards skills (which define *how* to format a suppression when one is
-justified). It defines *when* a suppression is allowed and what the correct
-alternative is.
+1. **No suppression pragmas during implementation work.** While writing or
+   modifying code, the answer to a diagnostic is always "fix the code", never
+   "silence the warning".
+2. **Pragmas are only considered post-implementation**, during a final lint
+   or type-check pass when a diagnostic genuinely resists clean fixing.
+3. **No suppression without explicit user approval in the current
+   conversation.** The agent presents the diagnostic, the correct fix, why
+   the fix is not viable, and the proposed pragma -- then waits.
+4. **Approved suppressions are line-level, rule-specific, and commented.** No
+   file-level disables, no anonymous `# type: ignore`, no
+   `/* eslint-disable */` blocks.
 
----
+### Antipattern hygiene
 
-## Core Rule -- No Suppression Without Approval
+5. **Don't silence diagnostics through evasion.** Catch-all `except`,
+   force-unwraps (`!`, `cast()`), and runtime `try`/`pass` blocks are
+   pragmas in disguise. They escape the approval flow but produce the same
+   silencing effect.
+6. **Don't bend production APIs for test convenience.** Mock at the I/O
+   boundary; never add a parameter, dependency, or branch to production
+   code whose only caller is a test.
+7. **An unapproved pragma or an unjustified evasion is a task failure.**
+   Treat it like a lint error: the task is not complete until the
+   suppression is removed, the evasion is replaced with a real fix, or the
+   user has explicitly approved leaving it.
 
-Suppression pragmas -- in any language, for any tool -- are **never added
-autonomously**. The agent must not add a suppression without explicit user
-approval in the current conversation.
+Coverage suppressions follow `bdd-testing`'s coverage rule: every uncovered
+line is a spec gap, the disposition is write the spec or remove the code, and
+the approval flow above gates any `pragma: no cover`.
 
-This includes, but is not limited to:
+## Cross-Cutting Note
+
+This skill defines *whether* a suppression is allowed. The language-specific
+standards skills (`python-code-standards`, `typescript-code-standards`,
+`java-code-standards`, `csharp-code-standards`) define *how* to format one
+when the user has approved it.
+
+## Suppression Categories
+
+The Iron Laws apply to every suppression mechanism:
 
 | Category | Examples |
 |---|---|
@@ -32,28 +56,25 @@ This includes, but is not limited to:
 | **Type checking** | `# type: ignore`, `# pyright: ignore`, `@ts-ignore`, `@ts-expect-error`, `// @ts-nocheck` |
 | **Linting** | `# noqa`, `// eslint-disable-next-line`, `#pragma warning disable`, `@SuppressWarnings`, `// noinspection` |
 
-### Before Proposing a Suppression
+## Approval Workflow
 
-The agent must:
+When a diagnostic survives the post-implementation pass and looks like a
+suppression candidate, the agent must:
 
-1. **Explain precisely what the diagnostic is and why it fires.** Not "the type
-   checker complains" -- name the rule, show the error, explain the root cause.
-2. **Present the correct fix first.** There is almost always a real fix. Present
-   it as the primary recommendation.
-3. **Explain why the fix is not viable** only if that is genuinely the case.
-   "Inconvenient" and "verbose" are not reasons.
-4. **Present the suppression as a second option** with the exact pragma, the
+1. **Name the diagnostic.** Identify the exact rule and show the message.
+   "The type checker complains" is not enough.
+2. **Present the correct fix first** as the primary recommendation.
+3. **Explain why the fix is not viable**, only if it genuinely is not.
+   "Inconvenient" and "verbose" do not count.
+4. **Propose the suppression as the second option** -- the exact pragma, the
    required justification comment, and the narrowest possible scope.
 5. **Wait for the user to choose.** Do not default to the suppression.
 
-**Violation of this rule is treated the same as a lint error or coverage gap.**
-A pragma added without approval means the task is not complete.
-
----
-
 ## Antipattern Catalog
 
-### 1. Coverage Suppression Instead of Writing the Spec
+### Suppression Antipatterns
+
+#### 1. Coverage Suppression Instead of Writing the Spec
 
 **The antipattern:** A line is hard to reach in tests, so the agent marks it
 `# pragma: no cover` instead of writing the spec or removing dead code.
@@ -68,7 +89,7 @@ an unspecified line. The correct dispositions are:
 
 "Hard to test" is not "unreachable."
 
-### 2. Type-Ignore Instead of Type Stubs
+#### 2. Type-Ignore Instead of Type Stubs
 
 **The antipattern:** A third-party library ships without type information.
 Instead of creating a stub file, the agent sprinkles `# type: ignore` on every
@@ -100,7 +121,7 @@ Language-specific equivalents:
 | Java | `@SuppressWarnings("unchecked")` | Add proper generic bounds or cast through a checked method |
 | C# | `#pragma warning disable CS8600` | Use nullable annotations and proper null guards |
 
-### 3. Type-Ignore Instead of Narrowing
+#### 3. Type-Ignore Instead of Narrowing
 
 **The antipattern:** A value has type `T | None`. Instead of narrowing with a
 guard, the agent adds `# type: ignore` or uses a force-unwrap (`!` in TS,
@@ -139,7 +160,7 @@ if (!user) {
 const name = user.name;
 ```
 
-### 4. Broad Suppressions Instead of Narrow Ones
+#### 4. Broad Suppressions Instead of Narrow Ones
 
 **The antipattern:** When a suppression is justified, the agent uses the broadest
 form available -- file-level `# noqa`, `/* eslint-disable */`, `@ts-nocheck`,
@@ -163,12 +184,13 @@ silently. The original reason becomes invisible.
 # type: ignore[import-untyped]  # no published stubs for this lib; stub in typings/
 ```
 
-### 5. Catch-All Exception Handling as a Pragma Equivalent
+### Evasion Antipatterns
+
+#### 5. Catch-All Exception Handling as a Runtime Pragma
 
 **The antipattern:** Instead of handling specific failure modes, the agent wraps
-code in `except Exception` (or equivalent) to suppress errors at runtime rather
-than at the type-checker level -- achieving the same silencing effect through
-different means.
+code in `except Exception` (or equivalent) to suppress errors at runtime --
+achieving the same silencing effect through different means.
 
 **Why it's wrong:** The broad catch hides bugs, swallows unexpected errors, and
 makes debugging impossible. It's a runtime pragma.
@@ -176,13 +198,12 @@ makes debugging impossible. It's a runtime pragma.
 **The correct fix:** Catch the specific exception types that represent known
 failure modes. Let unexpected exceptions propagate.
 
-### 6. Test-Only Parameters on Production APIs
+#### 6. Test-Only Parameters on Production APIs
 
 **The antipattern:** A production function is hard to test because it calls
 another function internally (e.g., `load_settings()`). Instead of mocking at
-the I/O boundary where the dependency reads from disk or network, the agent adds
-a parameter to the production function so tests can inject the dependency
-directly.
+the I/O boundary, the agent adds a parameter to the production function so
+tests can inject the dependency directly.
 
 **Why it's wrong:** The parameter exists solely for test convenience -- no
 production caller uses it. This pollutes the public API with test concerns,
@@ -200,24 +221,26 @@ production code path in every test that uses the shortcut.
 network call, environment variable) and mock *that*. For file-based config,
 write a real config file to `tmp_path` and `chdir` into it. For environment
 variables, use `monkeypatch.setenv`. For network calls, mock the HTTP client.
-
-The test should exercise the same code path production uses. If every other
-handler calls `load_settings()` internally and the tests supply a real config
-file, the odd one out with an injected `settings` parameter is the antipattern.
-
----
+The test should exercise the same code path production uses.
 
 ## Relationship to Other Skills
 
-- **Language-specific standards** (`python-code-standards`, `typescript-code-standards`,
-  etc.) define *how* to format a suppression when one has been approved (scope,
-  syntax, required comments). This skill defines *whether* a suppression is
-  allowed.
-- **`bdd-testing`** defines the coverage requirement (100%) and the disposition
-  for uncovered lines (spec or remove). This skill extends that principle: a
-  `# pragma: no cover` counts as an uncovered line unless approved.
-- **`code-quality-audit`** operationalizes the rules in this skill into a
-  systematic inspection procedure with structured output. This skill defines
-  *what is correct*; the audit skill defines *how to inspect for it*.
-- **`skill-compliance`** routes to this skill via the "cross-cutting" rule -- it
+- **Language-specific standards** (`python-code-standards`, etc.) define *how*
+  to format an approved suppression (scope, syntax, required comments).
+- **`bdd-testing`** owns the 100% coverage rule and uncovered-line dispositions.
+  This skill enforces the same rule against `pragma: no cover`.
+- **`code-quality-audit`** operationalizes these antipatterns into a systematic
+  inspection procedure with structured output.
+- **`skill-compliance`** routes to this skill via the cross-cutting rule -- it
   applies alongside whatever task-specific skills are active.
+
+## On Invocation
+
+1. **Writing or modifying code?** Pragmas are off the table. Fix the code.
+2. **Running a final lint or type-check pass?** If a diagnostic resists clean
+   fixing, follow the Approval Workflow before adding any suppression.
+3. **Reviewing code?** Flag any uncommented, broad, or unapproved pragma as a
+   violation.
+4. **Encountered an existing pragma while editing?** Do not propagate the
+   pattern. If the cause is now fixable, remove the pragma; otherwise leave it
+   and note it.
