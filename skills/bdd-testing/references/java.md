@@ -11,8 +11,7 @@ Language-specific guidance for applying `bdd-testing` in Java projects.
 | `Connection.prepareStatement()` -- database wire call | `RepoRepository.findById()` -- our caching/query logic |
 | `System.getProperty("user.dir")` -- process-level state | `Files.exists(path)` with `@TempDir` -- use real filesystem instead |
 
-Use JUnit 5's `@TempDir` for real filesystem structure so that `Files.exists`,
-`Files.list`, and `Files.isDirectory` all run against real directories.
+Use JUnit 5's `@TempDir` for real filesystem structure so that `Files.exists`, `Files.list`, and `Files.isDirectory` all run against real directories.
 
 ## Coverage Commands
 
@@ -27,9 +26,7 @@ Use JUnit 5's `@TempDir` for real filesystem structure so that `Files.exists`,
 ./mvnw verify
 ```
 
-Coverage threshold is enforced at 100% line coverage via JaCoCo's
-`jacocoTestCoverageVerification` task in personal projects. For forked or
-contributed projects, match the upstream's threshold.
+Coverage threshold is enforced at 100% line coverage via JaCoCo's `jacocoTestCoverageVerification` task in personal projects. For forked or contributed projects, match the upstream's threshold.
 
 ## Test Structure -- JUnit 5 + AssertJ
 
@@ -59,8 +56,7 @@ class RetryPolicyTest {
 }
 ```
 
-Use `@Nested` classes for BDD-style "context" grouping and `@DisplayName`
-for human-readable specifications.
+Use `@Nested` classes for BDD-style "context" grouping and `@DisplayName` for human-readable specifications.
 
 ## Exception Assertion Patterns
 
@@ -80,8 +76,7 @@ assertThat(thrown)
 assertThrows(IllegalArgumentException.class, () -> parseConfig(null));
 ```
 
-Always assert the error message, not just the exception type -- this prevents
-tests from passing on the wrong exception.
+Always assert the error message, not just the exception type -- this prevents tests from passing on the wrong exception.
 
 ## Async / Concurrent Test Patterns
 
@@ -129,15 +124,11 @@ class OrderServiceTest {
 }
 ```
 
-Mock at module boundaries (API clients, external services, databases), not
-internal classes. See `bdd-testing` core skill for the full mock boundary
-contract.
+Mock at module boundaries (API clients, external services, databases), not internal classes. See `bdd-testing` core skill for the full mock boundary contract.
 
 ### Strict Stubbing
 
-Mockito's `MockitoExtension` enables strict stubbing by default -- unused
-stubs cause test failures. This is the desired behavior; it prevents dead
-mock setup from accumulating.
+Mockito's `MockitoExtension` enables strict stubbing by default -- unused stubs cause test failures. This is the desired behavior; it prevents dead mock setup from accumulating.
 
 ## Static Analysis Verification
 
@@ -151,5 +142,4 @@ After completing test changes, verify with:
 ./mvnw verify
 ```
 
-This runs tests + coverage verification + Checkstyle + SpotBugs. All must
-pass clean before the tests are considered done.
+This runs tests + coverage verification + Checkstyle + SpotBugs. All must pass clean before the tests are considered done.

@@ -9,6 +9,7 @@ One paragraph: what this feature does and why it exists.
 Explicit list of what this feature does NOT do.
 
 ## Public API Surface
+
 <!-- List new or modified public symbols in a code block using the project's
      language. Include types, parameters, defaults, and which module each
      belongs to. -->

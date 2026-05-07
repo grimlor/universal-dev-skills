@@ -2,8 +2,7 @@
 
 ## The Three-Part Contract -- Complete Examples
 
-Every test method requires a name, a Given/When/Then docstring, and Given/When/Then
-body comments. The following contrasts the anti-pattern with both correct forms.
+Every test method requires a name, a Given/When/Then docstring, and Given/When/Then body comments. The following contrasts the anti-pattern with both correct forms.
 
 ```python
 # ❌ Wrong -- name only, no docstring, no body structure
@@ -62,9 +61,7 @@ def test_extraction_error_on_one_listing_does_not_abort_others(self):
     )
 ```
 
-**Rule:** Always include Given in the docstring. The only exception is when the
-precondition is the default state established by conftest fixtures and adds no
-distinguishing information -- even then, the `# Given:` body comment is always present.
+**Rule:** Always include Given in the docstring. The only exception is when the precondition is the default state established by conftest fixtures and adds no distinguishing information -- even then, the `# Given:` body comment is always present.
 
 ### Body comments must be descriptive, not bare labels
 
@@ -88,18 +85,13 @@ def test_registered_adapter_is_retrievable_by_name(self):
     assert adapter_cls is PostgresAdapter, ...
 ```
 
-The bare-label form satisfies the *presence* rule but not its purpose. The
-docstring tells you what scenario is being verified; the body comments must
-tell you how each step is realized in *this* code -- naming the concrete
-state, action, and expected outcome (see the descriptive comments in the ✅
-example above).
+The bare-label form satisfies the _presence_ rule but not its purpose. The docstring tells you what scenario is being verified; the body comments must tell you how each step is realized in _this_ code -- naming the concrete state, action, and expected outcome (see the descriptive comments in the ✅ example above).
 
 ---
 
 ## Mock Boundary Contract -- Full Examples
 
-Every test class declares its mock boundary in the class docstring. Three lines: what
-is mocked, what runs real, and what must never be constructed directly.
+Every test class declares its mock boundary in the class docstring. Three lines: what is mocked, what runs real, and what must never be constructed directly.
 
 ```python
 class TestSemanticScoring:
@@ -157,8 +149,7 @@ class TestAdapterRegistration:
 
 ## Assertion Quality -- Full Examples
 
-Every assertion requires a diagnostic message. The message must show enough context
-that a failing test is self-explanatory without running a debugger.
+Every assertion requires a diagnostic message. The message must show enough context that a failing test is self-explanatory without running a debugger.
 
 ```python
 # ✅ Shows expected vs actual with context
@@ -194,19 +185,13 @@ assert len(items) == 3
 assert "error" in response
 ```
 
-**When pytest.approx is required:**
-Floating-point comparisons from similarity scores or weighted sums must always
-use `pytest.approx`. A tolerance of `abs=0.01` is appropriate for final scores;
-`abs=0.05` is appropriate for component scores where external computation introduces
-small variation.
+**When pytest.approx is required:** Floating-point comparisons from similarity scores or weighted sums must always use `pytest.approx`. A tolerance of `abs=0.01` is appropriate for final scores; `abs=0.05` is appropriate for component scores where external computation introduces small variation.
 
 ---
 
 ## Test Data -- Representative Values
 
-Test data should be close enough to real-world values that failures mean something.
-Placeholder strings like `"t"` for title or `"f"` for full_text produce opaque
-failures and hide bugs where the implementation uses the field content.
+Test data should be close enough to real-world values that failures mean something. Placeholder strings like `"t"` for title or `"f"` for full_text produce opaque failures and hide bugs where the implementation uses the field content.
 
 ```python
 # ✅ Realistic -- failures are interpretable
@@ -236,8 +221,7 @@ order = Order(
 )
 ```
 
-**Magic numbers** are acceptable when their meaning is stated in either an inline
-comment or the assertion message:
+**Magic numbers** are acceptable when their meaning is stated in either an inline comment or the assertion message:
 
 ```python
 # ✅ Magic number explained in comment
@@ -254,42 +238,40 @@ assert result == 0.7
 assert len(chunks) == 4
 ```
 
-Extract a named constant only when the same value appears in multiple tests or
-when it encodes a business rule referenced by name in the production code.
+Extract a named constant only when the same value appears in multiple tests or when it encodes a business rule referenced by name in the production code.
 
 ---
 
 ## Mocking Rules
 
 **Mock at I/O boundaries only:**
+
 - Network calls (external APIs, HTTP requests)
 - Browser automation (Playwright, Selenium)
 - System resources (`webbrowser.open`, `builtins.input`)
 - Time/randomness (`asyncio.sleep`, `random.uniform`) for speed and determinism
 
 **Use real instances for everything else:**
+
 - Filesystem operations: use `tmp_path` or `tempfile.TemporaryDirectory()`
 - Embedded databases: use real instance with `tmp_path`
 - All pure computation: math, regex parsing, config validation, dataclass construction
 - Config loading: use real config files written to `tmp_path`, not a mock
 
 **Never mock:**
-- The subject under test -- if you mock `Scorer` in `TestSemanticScoring`, you are
-  not testing `Scorer`
+
+- The subject under test -- if you mock `Scorer` in `TestSemanticScoring`, you are not testing `Scorer`
 - Internal helper functions within the module under test
 - Dataclass constructors -- build real instances with real field values
 - Pure computation logic of any kind
 
-The mock boundary contract in each test class docstring is the authoritative
-statement of what is mocked for that class.
+The mock boundary contract in each test class docstring is the authoritative statement of what is mocked for that class.
 
 ---
 
 ## Tautology Tests -- The Most Dangerous Anti-Pattern
 
-A tautology test always passes regardless of production code behavior. It typically
-appears when a test constructs expected output directly and asserts on the constructed
-object rather than invoking the system under test.
+A tautology test always passes regardless of production code behavior. It typically appears when a test constructs expected output directly and asserts on the constructed object rather than invoking the system under test.
 
 ```python
 # ❌ Tautology -- Result is constructed here, not by Scorer
@@ -320,6 +302,7 @@ def test_score_above_threshold_for_matching_item(self, scorer, indexed_data):
 ```
 
 **How to recognize a tautology:**
+
 - The When step does not call any production code
 - The Given and Then operate entirely on objects created in the test body
 - Deleting the module under test would not cause the test to fail
@@ -328,11 +311,10 @@ def test_score_above_threshold_for_matching_item(self, scorer, indexed_data):
 
 ## Coverage -- Three Categories That Surface Late
 
-After all spec tests pass, run coverage and examine uncovered lines. Three categories
-of requirements routinely surface only at coverage time. All three are real
-requirements -- do not delete the code, write the spec.
+After all spec tests pass, run coverage and examine uncovered lines. Three categories of requirements routinely surface only at coverage time. All three are real requirements -- do not delete the code, write the spec.
 
 **Defensive guard code** -- protects against API misuse:
+
 ```python
 # Production code: what happens when full_text is empty?
 if not item.description.strip():
@@ -341,6 +323,7 @@ if not item.description.strip():
 ```
 
 **Graceful degradation** -- soft failures the system absorbs rather than raising:
+
 ```python
 # Production code: history collection may not exist yet
 try:
@@ -351,6 +334,7 @@ except CollectionNotFoundError:
 ```
 
 **Conditional formatting branches** -- display logic that varies by state:
+
 ```python
 # Production code: warning only appears when flagged
 if result.flagged:
@@ -358,8 +342,7 @@ if result.flagged:
 # → Write: test_flagged_item_includes_warning_in_display
 ```
 
-For each uncovered line, ask: is this a real requirement (write the spec), dead code
-(remove it), or over-engineering (remove it and simplify)?
+For each uncovered line, ask: is this a real requirement (write the spec), dead code (remove it), or over-engineering (remove it and simplify)?
 
 **"Pre-existing" is not a category.** Whether a line existed before your changes is irrelevant -- if it is uncovered after your work, it is uncovered. The only valid dispositions are: real requirement (write the spec), dead code (remove it), or over-engineering (remove it). "It was already there" is not a disposition.
 
@@ -367,8 +350,7 @@ For each uncovered line, ask: is this a real requirement (write the spec), dead 
 
 ## Error Testing -- Messages, Not Just Types
 
-Verify message content, not just exception type. Future changes to error message
-wording will break tests that check for the right message -- that is the point.
+Verify message content, not just exception type. Future changes to error message wording will break tests that check for the right message -- that is the point.
 
 ```python
 # ✅ Checks what the operator actually sees
@@ -391,8 +373,7 @@ err = ValueError(f"No adapter for 'nonexistent'")
 assert "nonexistent" in str(err)
 ```
 
-The third anti-pattern is particularly insidious -- it looks like it tests error
-content but only confirms that Python string formatting works.
+The third anti-pattern is particularly insidious -- it looks like it tests error content but only confirms that Python string formatting works.
 
 ---
 
@@ -429,8 +410,7 @@ def test_loaded_item_has_correct_metadata(self, data_dir):
     )
 ```
 
-If a private function has complex logic that seems worth testing directly, that is a
-signal it should be promoted to its own module -- not a justification to import it.
+If a private function has complex logic that seems worth testing directly, that is a signal it should be promoted to its own module -- not a justification to import it.
 
 ---
 
@@ -467,8 +447,7 @@ result = mock_scorer.score(item)
 assert result.score == 0.8  # tautology
 ```
 
-This is the most common and most damaging violation. It produces 100% green tests
-for code that may be entirely broken.
+This is the most common and most damaging violation. It produces 100% green tests for code that may be entirely broken.
 
 ### ❌ Mocking Pure Computation (Registry)
 
@@ -543,34 +522,22 @@ def cli_mocks():
         yield SimpleNamespace(config=mc, runner=mr)
 ```
 
-Shared setup belongs in conftest. Repeated inline blocks hide whether variation
-between copies is intentional or drift.
+Shared setup belongs in conftest. Repeated inline blocks hide whether variation between copies is intentional or drift.
 
 ---
 
 ## conftest.py -- Infrastructure You Must Not Bypass
 
-`conftest.py` provides two categories of infrastructure that all test files
-depend on. Neither is optional.
+`conftest.py` provides two categories of infrastructure that all test files depend on. Neither is optional.
 
 ### Shared I/O Stubs
 
-When an I/O client (API client, database connection, etc.) is used across
-multiple test classes, create a conftest fixture that constructs the client
-via `__new__` (bypassing `__init__` to avoid real connection setup) and
-replaces I/O methods with `AsyncMock` or `MagicMock`. Use this fixture
-rather than creating local mocks in individual test files.
+When an I/O client (API client, database connection, etc.) is used across multiple test classes, create a conftest fixture that constructs the client via `__new__` (bypassing `__init__` to avoid real connection setup) and replaces I/O methods with `AsyncMock` or `MagicMock`. Use this fixture rather than creating local mocks in individual test files.
 
-If a setup pattern recurs across two or more test classes -- such as a runner with
-mocked adapter I/O -- add it to conftest as a fixture rather than reconstructing
-it inline in each test method.
+If a setup pattern recurs across two or more test classes -- such as a runner with mocked adapter I/O -- add it to conftest as a fixture rather than reconstructing it inline in each test method.
 
 ### Output Directory Guard
 
-If your application writes files to an output directory, `conftest.py` should
-redirect it to a temporary path for the duration of every test run. This
-prevents tests from writing to real output locations.
+If your application writes files to an output directory, `conftest.py` should redirect it to a temporary path for the duration of every test run. This prevents tests from writing to real output locations.
 
-**Do not bypass this guard.** Any test that exercises file output uses the
-redirected path provided by the conftest fixture. Never hardcode or reference
-the real output directory in a test.
+**Do not bypass this guard.** Any test that exercises file output uses the redirected path provided by the conftest fixture. Never hardcode or reference the real output directory in a test.

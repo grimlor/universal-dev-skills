@@ -11,9 +11,7 @@ Language-specific guidance for applying `bdd-testing` in C# projects.
 | `DbConnection.ExecuteReader()` -- database wire call | `RepoRepository.FindById()` -- our caching/query logic |
 | `Directory.GetCurrentDirectory()` -- process-level state | `File.Exists(path)` with temp dir -- use real filesystem instead |
 
-Use `Path.Combine(Path.GetTempPath(), Path.GetRandomFileName())` or a test
-helper to create real temp directories so that `File.Exists`, `Directory.Exists`,
-and `Directory.GetFiles` all run against real filesystem structure.
+Use `Path.Combine(Path.GetTempPath(), Path.GetRandomFileName())` or a test helper to create real temp directories so that `File.Exists`, `Directory.Exists`, and `Directory.GetFiles` all run against real filesystem structure.
 
 ## Coverage Commands
 
@@ -56,9 +54,7 @@ public class RetryPolicyTests
 }
 ```
 
-Use nested classes for BDD-style "context" grouping. xUnit's `[Fact]` and
-`[Theory]` attributes serve as specifications -- no separate display-name
-annotation is needed.
+Use nested classes for BDD-style "context" grouping. xUnit's `[Fact]` and `[Theory]` attributes serve as specifications -- no separate display-name annotation is needed.
 
 ## Exception Assertion Patterns
 
@@ -77,8 +73,7 @@ await act.Should().ThrowAsync<ValidationException>()
 Assert.Throws<ArgumentNullException>(() => ParseConfig(null));
 ```
 
-Always assert the error message, not just the exception type -- this prevents
-tests from passing on the wrong exception.
+Always assert the error message, not just the exception type -- this prevents tests from passing on the wrong exception.
 
 ## Async Test Patterns
 
@@ -100,8 +95,7 @@ public async Task Should_reject_bad_input()
 }
 ```
 
-Always `await` the assertion -- an un-awaited async assertion will silently
-pass.
+Always `await` the assertion -- an un-awaited async assertion will silently pass.
 
 ## Mock Boundary Patterns
 
@@ -132,9 +126,7 @@ public class OrderServiceTests
 }
 ```
 
-Mock at module boundaries (API clients, external services, databases), not
-internal classes. See `bdd-testing` core skill for the full mock boundary
-contract.
+Mock at module boundaries (API clients, external services, databases), not internal classes. See `bdd-testing` core skill for the full mock boundary contract.
 
 ### Strict Mock Behavior
 
@@ -143,9 +135,7 @@ contract.
 var mock = new Mock<IService>(MockBehavior.Strict);
 ```
 
-Use `MockBehavior.Strict` when you want to ensure no unexpected interactions
-occur. Default (`Loose`) is fine for most tests where you only care about
-specific interactions.
+Use `MockBehavior.Strict` when you want to ensure no unexpected interactions occur. Default (`Loose`) is fine for most tests where you only care about specific interactions.
 
 ## Analyzer and Build Verification
 

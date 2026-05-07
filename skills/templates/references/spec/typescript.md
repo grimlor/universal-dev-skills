@@ -17,19 +17,19 @@ Jest/Vitest describe block with JSDoc contract and test stubs.
  *     Real:  <what must be real -- our domain logic, internal components>
  *     Never: <what must never be mocked -- the system under test>
  */
-describe('<BehaviorName>', () => {
+describe("<BehaviorName>", () => {
   /**
    * Given <precondition>
    * When <action>
    * Then <outcome>
    */
-  it('<scenario_proving_what_1>', () => {
+  it("<scenario_proving_what_1>", () => {
     // Given:
 
     // When:
 
     // Then:
-    throw new Error('not implemented');
+    throw new Error("not implemented");
   });
 
   /**
@@ -37,13 +37,13 @@ describe('<BehaviorName>', () => {
    * When <action>
    * Then <outcome>
    */
-  it('<scenario_proving_what_2>', () => {
+  it("<scenario_proving_what_2>", () => {
     // Given:
 
     // When:
 
     // Then:
-    throw new Error('not implemented');
+    throw new Error("not implemented");
   });
 
   /**
@@ -51,13 +51,13 @@ describe('<BehaviorName>', () => {
    * When <action>
    * Then <outcome>
    */
-  it('<scenario_proving_what_3>', () => {
+  it("<scenario_proving_what_3>", () => {
     // Given:
 
     // When:
 
     // Then:
-    throw new Error('not implemented');
+    throw new Error("not implemented");
   });
 });
 ```

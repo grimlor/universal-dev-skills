@@ -5,13 +5,12 @@ description: "Roslyn analyzer, .editorconfig, and build configuration standards 
 
 # C# Code Standards
 
-> **Forward-looking skill.** This skill was authored before any live C# projects
-> exist in the workspace. Refine canonical configs and common fix patterns when
-> real project usage begins.
+> **Forward-looking skill.** This skill was authored before any live C# projects exist in the workspace. Refine canonical configs and common fix patterns when real project usage begins.
 
 ## When This Skill Applies
 
 Whenever:
+
 - Setting up tooling in a new C#/.NET project
 - Auditing or updating `.csproj`, `Directory.Build.props`, or `.editorconfig`
 - Running Roslyn analyzers, `dotnet format`, or the compiler to find and fix issues
@@ -22,56 +21,34 @@ Whenever:
 
 ## Scope -- Personal vs. Team Projects
 
-**This standard applies in full only to projects where you control the toolchain**
-(personal projects, greenfield repos, repos where you are the sole or primary
-author).
+**This standard applies in full only to projects where you control the toolchain** (personal projects, greenfield repos, repos where you are the sole or primary author).
 
 ### How to determine if you control the toolchain
 
 1. **GitHub owner is `grimlor`** → personal repo → full standard applies.
-2. **Forked repo** (different owner, contributor commits from `grimlor`) → apply
-   the higher bar of your personal standard and the upstream's standard to your
-   contributions. Don't rewrite the upstream's existing configs -- the upstream
-   project's conventions (analyzer rules, test framework, project structure) are
-   theirs to own.
-3. **Repo lives under a work org path or an ADO workspace** → team repo → follow
-   team conventions for shared config, but apply the higher bar of your personal
-   standard and the team's standard to your own contributions. You may not be
-   able to reduce existing tech debt, but don't add to it.
-4. **`.csproj` or `Directory.Build.props` already has a different analyzer setup**
-   → someone else owns the config; don't replace it without team agreement.
-5. **`CODEOWNERS` file exists or git log shows multiple authors** → shared
-   codebase; don't commit toolchain changes unilaterally.
+2. **Forked repo** (different owner, contributor commits from `grimlor`) → apply the higher bar of your personal standard and the upstream's standard to your contributions. Don't rewrite the upstream's existing configs -- the upstream project's conventions (analyzer rules, test framework, project structure) are theirs to own.
+3. **Repo lives under a work org path or an ADO workspace** → team repo → follow team conventions for shared config, but apply the higher bar of your personal standard and the team's standard to your own contributions. You may not be able to reduce existing tech debt, but don't add to it.
+4. **`.csproj` or `Directory.Build.props` already has a different analyzer setup** → someone else owns the config; don't replace it without team agreement.
+5. **`CODEOWNERS` file exists or git log shows multiple authors** → shared codebase; don't commit toolchain changes unilaterally.
 
-When in doubt, ask the user which category the repo falls into before applying the
-full standard.
+When in doubt, ask the user which category the repo falls into before applying the full standard.
 
-**Important:** Do not treat configs from forked projects as canonical examples of
-this standard. Forked project configs reflect the original author's choices, not
-necessarily yours.
+**Important:** Do not treat configs from forked projects as canonical examples of this standard. Forked project configs reflect the original author's choices, not necessarily yours.
 
-At work or in open-source contributions, team repos may follow different
-conventions -- and that's expected. Key differences to watch for:
+At work or in open-source contributions, team repos may follow different conventions -- and that's expected. Key differences to watch for:
 
 - **Target framework:** teams may target different .NET versions. Match theirs.
-- **Test framework:** teams may use NUnit or MSTest instead of xUnit. Don't
-  migrate test frameworks without team agreement.
-- **Analyzers:** teams may use SonarAnalyzer, StyleCop, or a custom ruleset.
-  Adapt to what's configured.
-- **Project structure:** some teams use `Directory.Build.props` for shared config,
-  others inline everything in `.csproj`. Follow the established pattern.
+- **Test framework:** teams may use NUnit or MSTest instead of xUnit. Don't migrate test frameworks without team agreement.
+- **Analyzers:** teams may use SonarAnalyzer, StyleCop, or a custom ruleset. Adapt to what's configured.
+- **Project structure:** some teams use `Directory.Build.props` for shared config, others inline everything in `.csproj`. Follow the established pattern.
 
-In team contexts, apply what you can personally (enabling nullable reference types
-in your files, running analyzers locally) without imposing changes on shared config
-files. Your contributed code should still meet your personal quality bar even when
-the team's bar is lower.
+In team contexts, apply what you can personally (enabling nullable reference types in your files, running analyzers locally) without imposing changes on shared config files. Your contributed code should still meet your personal quality bar even when the team's bar is lower.
 
 ---
 
 ## Target Framework
 
-**Target .NET 8 (LTS) for personal projects.** Adjust to the team's minimum when
-contributing to shared codebases.
+**Target .NET 8 (LTS) for personal projects.** Adjust to the team's minimum when contributing to shared codebases.
 
 ```xml
 <!-- .csproj -->
@@ -107,16 +84,11 @@ Place at the solution root. These properties apply to all projects in the soluti
 </Project>
 ```
 
-**Why `TreatWarningsAsErrors`:** Same principle as Java's `-Werror` and
-TypeScript's `strict: true` -- catch problems at compile time, not in production.
+**Why `TreatWarningsAsErrors`:** Same principle as Java's `-Werror` and TypeScript's `strict: true` -- catch problems at compile time, not in production.
 
-**Why `AnalysisLevel=latest-all`:** Enables common Roslyn style, design, and
-security analyzers at their strictest level. This is the C# equivalent of
-enabling all Checkstyle + SpotBugs rules.
+**Why `AnalysisLevel=latest-all`:** Enables common Roslyn style, design, and security analyzers at their strictest level. This is the C# equivalent of enabling all Checkstyle + SpotBugs rules.
 
-**Why `Nullable=enable`:** Nullable reference types are C#'s most impactful
-type-safety feature -- the equivalent of TypeScript's `strictNullChecks`. Enabling
-it catches null-related bugs at compile time.
+**Why `Nullable=enable`:** Nullable reference types are C#'s most impactful type-safety feature -- the equivalent of TypeScript's `strictNullChecks`. Enabling it catches null-related bugs at compile time.
 
 ---
 
@@ -195,9 +167,7 @@ indent_size = 2
 
 ## XML Documentation Standard
 
-All public symbols must have XML documentation comments -- classes, interfaces,
-methods, properties, and constructors. The `CS1591` warning (enforced via
-`.editorconfig`) catches missing documentation.
+All public symbols must have XML documentation comments -- classes, interfaces, methods, properties, and constructors. The `CS1591` warning (enforced via `.editorconfig`) catches missing documentation.
 
 Enable documentation generation in each project:
 
@@ -228,6 +198,7 @@ public long ParseDuration(string input)
 ### Common XML doc patterns
 
 **Class:**
+
 ```csharp
 /// <summary>
 /// Manages retry logic with exponential backoff.
@@ -250,6 +221,7 @@ public class RetryPolicy
 ```
 
 **Interface:**
+
 ```csharp
 /// <summary>
 /// Storage adapter for persisting application state.
@@ -268,15 +240,13 @@ public interface IStorageAdapter
 }
 ```
 
-**Tests do not require XML documentation** -- the test method names and
-`[Fact]`/`[Theory]` attributes serve as the specification.
+**Tests do not require XML documentation** -- the test method names and `[Fact]`/`[Theory]` attributes serve as the specification.
 
 ---
 
 ## Test Framework Configuration
 
-**Use xUnit for all personal projects.** Add FluentAssertions for expressive
-assertions and Moq for mocking.
+**Use xUnit for all personal projects.** Add FluentAssertions for expressive assertions and Moq for mocking.
 
 ### Test project `.csproj`
 
@@ -314,15 +284,14 @@ dotnet test --collect:"XPlat Code Coverage" \
     /p:ThresholdStat=total
 ```
 
-**Coverage threshold:** 100% line coverage for personal projects. For contributed
-or forked projects, match the upstream's threshold.
+**Coverage threshold:** 100% line coverage for personal projects. For contributed or forked projects, match the upstream's threshold.
 
 ---
 
 ## Standard CLI Commands
 
 | Command | Purpose |
-|---|---|
+| --- | --- |
 | `dotnet build --warnaserrors` | Compile with warnings as errors |
 | `dotnet test` | Run all tests |
 | `dotnet test --collect:"XPlat Code Coverage"` | Run tests with coverage |
@@ -349,15 +318,13 @@ dotnet test --collect:"XPlat Code Coverage" \
     /p:ThresholdStat=total
 ```
 
-This is the C# equivalent of `./gradlew check` (Java), `npm run check`
-(TypeScript), or `task check` (Python).
+This is the C# equivalent of `./gradlew check` (Java), `npm run check` (TypeScript), or `task check` (Python).
 
 ---
 
 ## Pre-commit Hooks
 
-For personal C# projects, use a pre-commit hook that runs formatting and
-compilation checks.
+For personal C# projects, use a pre-commit hook that runs formatting and compilation checks.
 
 ### Using pre-commit framework
 
@@ -388,9 +355,7 @@ dotnet husky install
 dotnet husky add pre-commit -c "dotnet format --verify-no-changes && dotnet build --no-restore --warnaserrors"
 ```
 
-Running the full quality gate (including tests) in a pre-commit hook is viable
-for small projects but may be too slow for large solutions. At minimum, format
-and compile -- reserve the full gate for CI or a manual pre-push check.
+Running the full quality gate (including tests) in a pre-commit hook is viable for small projects but may be too slow for large solutions. At minimum, format and compile -- reserve the full gate for CI or a manual pre-push check.
 
 ---
 
@@ -400,8 +365,7 @@ and compile -- reserve the full gate for CI or a manual pre-push check.
 
 - Always specify the exact diagnostic ID being suppressed.
 - Always include a comment explaining why.
-- Use the narrowest scope possible (`#pragma warning disable` / `#pragma warning
-  restore` around the specific line).
+- Use the narrowest scope possible (`#pragma warning disable` / `#pragma warning restore` around the specific line).
 - File-level or project-level suppression is never acceptable in source code.
 
 ```csharp
@@ -436,8 +400,7 @@ public void Process(Request request)
 
 ## Common Nullable Reference Type Fix Patterns
 
-When enabling `<Nullable>enable</Nullable>`, these patterns address the most
-common warnings without reaching for `#pragma warning disable`.
+When enabling `<Nullable>enable</Nullable>`, these patterns address the most common warnings without reaching for `#pragma warning disable`.
 
 ### Null-forgiving operator (use sparingly)
 
@@ -548,6 +511,7 @@ public record Config(string ApiUrl, int Timeout);
 Standard NuGet packages for a new C#/.NET project:
 
 **Test project:**
+
 - `Microsoft.NET.Test.Sdk` -- test runner infrastructure
 - `xunit` -- test framework
 - `xunit.runner.visualstudio` -- VS Code/VS test discovery
@@ -566,38 +530,29 @@ Standard NuGet packages for a new C#/.NET project:
 </ItemGroup>
 ```
 
-The `Microsoft.CodeAnalysis.NetAnalyzers` package is included by default with
-`EnableNETAnalyzers=true`, but you can pin a specific version via a package
-reference for consistent behavior across machines.
+The `Microsoft.CodeAnalysis.NetAnalyzers` package is included by default with `EnableNETAnalyzers=true`, but you can pin a specific version via a package reference for consistent behavior across machines.
 
 ---
 
 ## Workflow for Applying Standards to an Existing Project
 
-**For personal projects:** apply the full standard below.
-**For team projects:** see [Scope](#scope--personal-vs-team-projects) first -- only
-apply what the team has agreed to, or what doesn't affect shared config.
+**For personal projects:** apply the full standard below. **For team projects:** see [Scope](#scope--personal-vs-team-projects) first -- only apply what the team has agreed to, or what doesn't affect shared config.
 
-1. **Create `Directory.Build.props`** at the solution root with the canonical
-   properties (nullable, warnings as errors, analysis level).
+1. **Create `Directory.Build.props`** at the solution root with the canonical properties (nullable, warnings as errors, analysis level).
 
 2. **Create `.editorconfig`** at the solution root with the canonical style rules.
 
-3. **Enable documentation generation** -- add `<GenerateDocumentationFile>` to
-   each project's `.csproj`.
+3. **Enable documentation generation** -- add `<GenerateDocumentationFile>` to each project's `.csproj`.
 
-4. **Set up test project** -- configure xUnit, FluentAssertions, Moq, and Coverlet
-   per the canonical test project config.
+4. **Set up test project** -- configure xUnit, FluentAssertions, Moq, and Coverlet per the canonical test project config.
 
 5. **Run formatter:** `dotnet format`
 
 6. **Run build with analysis:** `dotnet build --warnaserrors`
 
-7. **Fix nullable warnings** -- apply the fix patterns above. Start at leaf types
-   (models, DTOs) and work upward to services and controllers.
+7. **Fix nullable warnings** -- apply the fix patterns above. Start at leaf types (models, DTOs) and work upward to services and controllers.
 
-8. **Fix remaining analyzer warnings** -- `dotnet format analyzers` can auto-fix
-   some; the rest require manual fixes guided by the diagnostic IDs.
+8. **Fix remaining analyzer warnings** -- `dotnet format analyzers` can auto-fix some; the rest require manual fixes guided by the diagnostic IDs.
 
 9. **Verify clean:** `scripts/check.sh` should pass with no warnings.
 

@@ -27,8 +27,10 @@ Started: YYYY-MM-DD
 -->
 
 ### <path/to/first_file>
+
 - [ ] <ClassOrUnitName>
 - [ ] <ClassOrUnitName>
 
 ### <path/to/second_file>
+
 - [ ] <ClassOrUnitName>

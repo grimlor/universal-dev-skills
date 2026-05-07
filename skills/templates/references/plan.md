@@ -71,6 +71,7 @@ One paragraph: what this feature achieves and why it matters.
 - [ ] Plan updated, specs synced
 
 ## Session Log
+
 <!-- Append-only. One entry per session. Most recent at bottom. -->
 <!-- Use this format for each entry:
 

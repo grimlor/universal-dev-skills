@@ -2,13 +2,11 @@
 
 ## Context
 
-What prompted this design? Link to the spec document and summarize the
-key requirements that drive architectural choices.
+What prompted this design? Link to the spec document and summarize the key requirements that drive architectural choices.
 
 ## Component Structure
 
-What are the pieces and how do they relate? List modules, classes, or
-packages introduced or modified, and their responsibilities.
+What are the pieces and how do they relate? List modules, classes, or packages introduced or modified, and their responsibilities.
 
 <!-- Use a diagram, bullet hierarchy, or prose -- whichever communicates
      the structure most clearly. -->
@@ -31,14 +29,14 @@ Where does the system touch the outside world? Identify every port:
 
 ## Key Decisions
 
-Why this structure and not the obvious alternative? For each non-trivial
-choice, state:
+Why this structure and not the obvious alternative? For each non-trivial choice, state:
 
 - **Decision:** what was chosen
 - **Alternative considered:** what was rejected
 - **Rationale:** why -- in terms of the spec requirements, not personal preference
 
 ## Trivial Design
+
 <!-- If this feature follows an established pattern in an existing module,
      replace everything above with a single line:
 
