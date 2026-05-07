@@ -1,16 +1,8 @@
 Before starting any task, read and follow the skill-compliance skill.
 
-If session memory files exist (listed in the `<sessionMemory>` block), read them
-before starting work. If session memory is EMPTY, that means skills were never
-written or were lost to compaction -- read skill-compliance and follow its full
-procedure (Steps 1–8) including writing the session memory file. An empty
-session memory is a signal to reload, not a signal that nothing is needed.
+If session memory files exist (listed in the `<sessionMemory>` block), read them before starting work. If session memory is EMPTY, that means skills were never written or were lost to compaction -- read skill-compliance and follow its full procedure (Steps 1–8) including writing the session memory file. An empty session memory is a signal to reload, not a signal that nothing is needed.
 
-Bootstrap check -- run once, then idempotent:
-View `/memories/session-memory-protocol.md`. If it does not exist, create it
-with the content below above all other memories. If it exists but does not
-contain "version: 2", delete it and recreate it with the content below above
-all other memories. If it already contains "version: 2", do nothing.
+Bootstrap check -- run once, then idempotent: View `/memories/session-memory-protocol.md`. If it does not exist, create it with the content below above all other memories. If it exists but does not contain "version: 2", delete it and recreate it with the content below above all other memories. If it already contains "version: 2", do nothing.
 
 ```
 # Session Memory Protocol

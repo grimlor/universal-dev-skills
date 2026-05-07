@@ -5,7 +5,7 @@ Cursor supports rules (`.cursor/rules/`) and `AGENTS.md`, but does **not** nativ
 ## What Works Directly
 
 | UDS Component | Cursor Support | Notes |
-|---|---|---|
+| --- | --- | --- |
 | `AGENTS.md` | Yes | Root + subdirectories supported |
 | Skills (`SKILL.md`) | No | Must be converted to Cursor rules |
 | Instructions (`.instructions.md`) | No | Must be converted to Cursor rules |
@@ -40,7 +40,7 @@ alwaysApply: false
 ### Activation modes
 
 | Mode | Frontmatter | Behavior |
-|---|---|---|
+| --- | --- | --- |
 | Always Apply | `alwaysApply: true` | Applied to every chat session |
 | Apply Intelligently | `alwaysApply: false` + `description` | Agent decides based on description |
 | Specific Files | `globs: "**/*.py"` | Applied when matching files are in context |
@@ -49,7 +49,7 @@ alwaysApply: false
 ### Recommended conversion
 
 | UDS Skill | Cursor Rule | Activation |
-|---|---|---|
+| --- | --- | --- |
 | `skill-compliance` | `.cursor/rules/skill-compliance.mdc` | Always Apply |
 | `tool-usage` | `.cursor/rules/tool-usage.mdc` | Always Apply |
 | `code-quality-antipatterns` | `.cursor/rules/code-quality-antipatterns.mdc` | Always Apply |
@@ -72,6 +72,7 @@ alwaysApply: false
 ---
 
 # BDD Testing Conventions
+
 ...
 ```
 
@@ -102,7 +103,7 @@ On Team and Enterprise plans, administrators can create and enforce rules from t
 Cursor does not have a built-in memory or auto-note system:
 
 | Mechanism | Location | Behavior |
-|---|---|---|
+| --- | --- | --- |
 | Notepad | Cursor UI sidebar | Manual scratchpad per workspace; not auto-loaded into context |
 | Rules | `.cursor/rules/*.mdc` | Re-read each session; frontmatter controls activation |
 | `AGENTS.md` | Workspace root | Always-on instructions, re-read each session |

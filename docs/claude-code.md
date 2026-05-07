@@ -5,7 +5,7 @@ Claude Code supports skills via `.claude/skills/`, instructions via `.claude/rul
 ## What Works Directly
 
 | UDS Component | Claude Code Support | Notes |
-|---|---|---|
+| --- | --- | --- |
 | Skills (`SKILL.md`) | Yes | Via `.claude/skills/` directory |
 | `AGENTS.md` | Via `CLAUDE.md` | Claude Code uses `CLAUDE.md` as its equivalent |
 | Instructions (`.instructions.md`) | Yes | Via `.claude/rules/` (uses `paths` instead of `applyTo`) |
@@ -39,6 +39,7 @@ Before starting any task, read and follow the skill-compliance skill.
 ```
 
 Claude Code discovers `CLAUDE.md` in these locations:
+
 - Workspace root: `CLAUDE.md`
 - `.claude` folder: `.claude/CLAUDE.md`
 - User home: `~/.claude/CLAUDE.md`
@@ -50,13 +51,14 @@ Claude Code uses `.claude/rules/` for file-scoped instructions. These follow a f
 
 ```markdown
 ---
-name: 'Python Standards'
-description: 'Coding conventions for Python files'
+name: "Python Standards"
+description: "Coding conventions for Python files"
 paths:
-  - '**/*.py'
+  - "**/*.py"
 ---
 
 # Python coding standards
+
 - Follow PEP 8.
 - Use type hints for all function signatures.
 ```
@@ -84,7 +86,7 @@ Note that Claude uses comma-separated strings for the `tools` field, while VS Co
 VS Code reads Claude-format files alongside its native formats:
 
 | Claude Path | VS Code Equivalent | Setting |
-|---|---|---|
+| --- | --- | --- |
 | `.claude/skills/` | `.github/skills/` | Included in `chat.agentSkillsLocations` by default |
 | `.claude/rules/` | `.github/instructions/` | Included in `chat.instructionsFilesLocations` by default |
 | `.claude/agents/` | `.github/agents/` | Included in `chat.agentFilesLocations` by default |
@@ -97,7 +99,7 @@ This means you can use Claude-format paths and have them work in both Claude Cod
 Claude Code has built-in memory that survives context compaction:
 
 | Mechanism | Location | Behavior |
-|---|---|---|
+| --- | --- | --- |
 | `CLAUDE.md` | Workspace root, `.claude/`, or `~/.claude/` | Re-read from disk after every `/compact` -- most reliable anchor |
 | Auto memory | `~/.claude/projects/<proj>/memory/MEMORY.md` | First 200 lines auto-loaded; Claude writes insights here automatically |
 | Local variant | `CLAUDE.local.md` | Same as `CLAUDE.md` but gitignored -- for personal preferences |

@@ -5,7 +5,7 @@ OpenCode has native support for the Agent Skills specification (`SKILL.md`), `AG
 ## What Works Directly
 
 | UDS Component | OpenCode Support | Notes |
-|---|---|---|
+| --- | --- | --- |
 | Skills (`SKILL.md`) | Yes | Native support, same spec as agentskills.io |
 | `AGENTS.md` | Yes | Project root + global (`~/.config/opencode/AGENTS.md`) |
 | Instructions (`.instructions.md`) | No | Use `AGENTS.md` or `opencode.json` `instructions` |
@@ -52,7 +52,7 @@ OpenCode follows the same progressive disclosure model as the Agent Skills spec:
 ## Skill Locations
 
 | Scope | Path | Notes |
-|---|---|---|
+| --- | --- | --- |
 | Workspace | `.opencode/skills/` | Committed with your repo |
 | Claude compat | `.claude/skills/` | Fallback path, also scanned |
 | Cross-agent compat | `.agents/skills/` | Also scanned automatically |
@@ -62,10 +62,12 @@ OpenCode follows the same progressive disclosure model as the Agent Skills spec:
 ## AGENTS.md
 
 OpenCode reads `AGENTS.md` from:
+
 - **Project root** -- always-on instructions for the workspace
 - **`~/.config/opencode/AGENTS.md`** -- global instructions for all workspaces
 
 It also reads Claude Code's equivalent:
+
 - **`CLAUDE.md`** and **`.claude/CLAUDE.md`** in the workspace root
 
 ## Custom Instructions via opencode.json
@@ -86,10 +88,10 @@ Each entry in the `instructions` array is prepended to every conversation.
 
 OpenCode supports custom agents as markdown files:
 
-| Scope | Path |
-|---|---|
-| Workspace | `.opencode/agents/` |
-| Global | `~/.config/opencode/agents/` |
+| Scope     | Path                         |
+| --------- | ---------------------------- |
+| Workspace | `.opencode/agents/`          |
+| Global    | `~/.config/opencode/agents/` |
 
 Agent files follow the same markdown format with YAML frontmatter.
 
@@ -116,14 +118,14 @@ The `skill-compliance` skill includes an unconditional reload instruction (Step 
 
 OpenCode is designed for Claude Code compatibility. If you already have a Claude Code setup, most paths work out of the box:
 
-| Claude Code Path | OpenCode Reads It? |
-|---|---|
-| `.claude/skills/` | Yes |
-| `.claude/CLAUDE.md` | Yes |
-| `~/.claude/skills/` | Yes |
-| `~/.claude/CLAUDE.md` | Yes |
-| `.claude/rules/` | No -- use `AGENTS.md` instead |
-| `.claude/agents/` | No -- use `.opencode/agents/` |
+| Claude Code Path      | OpenCode Reads It?            |
+| --------------------- | ----------------------------- |
+| `.claude/skills/`     | Yes                           |
+| `.claude/CLAUDE.md`   | Yes                           |
+| `~/.claude/skills/`   | Yes                           |
+| `~/.claude/CLAUDE.md` | Yes                           |
+| `.claude/rules/`      | No -- use `AGENTS.md` instead |
+| `.claude/agents/`     | No -- use `.opencode/agents/` |
 
 ## Limitations
 

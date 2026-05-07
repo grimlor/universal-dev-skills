@@ -15,7 +15,7 @@ The enforcement model is the key design choice: the `skill-compliance` skill mak
 These skills define processes and decision rules. They apply regardless of language and delegate language-specific details to `references/` files.
 
 | Skill | Purpose |
-|-------|---------|
+| --- | --- |
 | **skill-compliance** | Pre-task routing -- identifies the task type, work surface, and languages in scope, then loads the right skills and references |
 | **tool-usage** | VS Code tool-first approach -- when to use tools vs. terminal commands |
 | **bdd-testing** | BDD test conventions -- system specification, not unit testing |
@@ -30,7 +30,7 @@ These skills define processes and decision rules. They apply regardless of langu
 These skills define toolchain configuration, linting, formatting, coverage thresholds, and documentation standards for a specific language ecosystem.
 
 | Skill | Ecosystem |
-|-------|-----------|
+| --- | --- |
 | **python-code-standards** | Ruff, Pyright, pytest, pyproject.toml |
 | **typescript-code-standards** | ESLint (flat config), TypeScript strict mode, Jest |
 | **java-code-standards** | Checkstyle, SpotBugs, Spotless, Gradle, JUnit 5 |
@@ -43,7 +43,7 @@ Java and C# standards are forward-looking -- authored before live projects exist
 Workflow skills use a `references/` subdirectory for language-specific details. The agent loads the right reference based on the files being edited.
 
 | Skill | References |
-|-------|------------|
+| --- | --- |
 | **bdd-testing** | `python.md`, `typescript.md`, `java.md`, `csharp.md`, `test-patterns.md` |
 | **bdd-feedback-loop** | `python.md`, `typescript.md`, `java.md`, `csharp.md` |
 | **tool-usage** | `python.md`, `typescript.md`, `java.md`, `csharp.md` |
@@ -55,7 +55,7 @@ Workflow skills use a `references/` subdirectory for language-specific details. 
 These skills work with multiple AI coding agents. The skill content (Markdown + YAML frontmatter) follows the [Agent Skills specification](https://agentskills.io/specification) and is fully portable. What differs is how each agent discovers and loads them.
 
 | Agent | Skills (SKILL.md) | AGENTS.md | Setup Guide |
-|-------|-------------------|-----------|-------------|
+| --- | --- | --- | --- |
 | **GitHub Copilot** (VS Code) | Native support | Native support | [Setup guide](docs/vscode-copilot.md) |
 | **GitHub Copilot CLI** | Native support | Native support | [Setup guide](docs/vscode-copilot.md) |
 | **Cursor** | Via rules conversion | Native support | [Setup guide](docs/cursor.md) |
@@ -126,7 +126,7 @@ git pull
 Whether `git pull` is sufficient depends on how your agent was set up:
 
 | Agent | `git pull` sufficient? | Notes |
-|-------|------------------------|-------|
+| --- | --- | --- |
 | **VS Code / Copilot** | ✅ Yes | Symlinks point at repo; changes flow through automatically |
 | **Copilot CLI** | ✅ Yes | Symlinks point at repo |
 | **Claude Code** | ✅ Skills only | New entry points (e.g., `CLAUDE.md`) require re-running setup |
@@ -191,6 +191,7 @@ description: "When to use this skill and what it covers."
 # Skill Title
 
 ## When This Skill Applies
+
 ...
 ```
 

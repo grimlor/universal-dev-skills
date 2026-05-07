@@ -5,6 +5,7 @@ This directory contains development notes, collaboration documents, and scripts 
 ## Purpose
 
 This folder is for:
+
 - Development notes and design discussions
 - Scripts and tools used during development
 - AI collaboration artifacts

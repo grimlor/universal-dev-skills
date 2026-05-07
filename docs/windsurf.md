@@ -5,7 +5,7 @@ Windsurf has native support for the Agent Skills specification (`SKILL.md`), `AG
 ## What Works Directly
 
 | UDS Component | Windsurf Support | Notes |
-|---|---|---|
+| --- | --- | --- |
 | Skills (`SKILL.md`) | Yes | Native support, follows agentskills.io spec |
 | `AGENTS.md` | Yes | Root = always-on, subdirectory = auto-glob scoping |
 | Instructions (`.instructions.md`) | No | Use Windsurf rules instead |
@@ -56,13 +56,14 @@ Skills can be invoked automatically (based on description matching) or manually 
 ## Skill Locations
 
 | Scope | Path | Notes |
-|---|---|---|
+| --- | --- | --- |
 | Workspace | `.windsurf/skills/` | Committed with your repo |
 | Cross-agent compat | `.agents/skills/` | Also scanned automatically |
 | Global | `~/.codeium/windsurf/skills/` | All workspaces on your machine |
 | System (Enterprise) | OS-specific (see below) | Deployed by IT, read-only |
 
 Enterprise system paths:
+
 - macOS: `/Library/Application Support/Windsurf/skills/`
 - Linux/WSL: `/etc/windsurf/skills/`
 - Windows: `C:\ProgramData\Windsurf\skills\`
@@ -84,7 +85,7 @@ Before starting any task, read and follow the skill-compliance skill.
 ### Windsurf rule activation modes
 
 | Mode | `trigger` value | Behavior |
-|---|---|---|
+| --- | --- | --- |
 | Always On | `always_on` | Included in every message |
 | Model Decision | `model_decision` | Description shown; full content loaded on demand |
 | Glob | `glob` | Applied when matching files are touched |
@@ -93,7 +94,7 @@ Before starting any task, read and follow the skill-compliance skill.
 ## Windsurf vs VS Code Comparison
 
 | Feature | VS Code / Copilot | Windsurf |
-|---|---|---|
+| --- | --- | --- |
 | Skills path | `.github/skills/` | `.windsurf/skills/` or `.agents/skills/` |
 | Instructions | `.github/instructions/*.instructions.md` | `.windsurf/rules/*.md` |
 | Custom agents | `.github/agents/*.agent.md` | Not supported |
@@ -106,7 +107,7 @@ Before starting any task, read and follow the skill-compliance skill.
 Windsurf automatically persists conversation insights:
 
 | Mechanism | Location | Behavior |
-|---|---|---|
+| --- | --- | --- |
 | Auto memories | `~/.codeium/windsurf/memories/` | Workspace-scoped, machine-local; Cascade writes insights automatically |
 | Global rules | `~/.codeium/windsurf/memories/global_rules.md` | User-defined, applied to all workspaces |
 | Workspace rules | `.windsurf/rules/*.md` | Re-read each session; supports `trigger` frontmatter |

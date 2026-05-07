@@ -5,7 +5,7 @@ GitHub Copilot in VS Code has native support for Agent Skills, custom instructio
 ## Concepts
 
 | VS Code Concept | UDS Equivalent | Location |
-|---|---|---|
+| --- | --- | --- |
 | Agent Skills (`SKILL.md`) | `skills/` directory | `.github/skills/` or custom path |
 | Custom Instructions (`.instructions.md`) | `instructions/` directory | `.github/instructions/` or custom path |
 | Custom Agents (`.agent.md`) | `agents/` directory | `.github/agents/` or custom path |
@@ -69,11 +69,11 @@ This makes the skills version-controlled with the project and available to all c
 
 VS Code also reads from user profile directories that persist across all workspaces:
 
-| Type | User Profile Path |
-|---|---|
-| Skills | `~/.copilot/skills/` |
+| Type         | User Profile Path          |
+| ------------ | -------------------------- |
+| Skills       | `~/.copilot/skills/`       |
 | Instructions | `~/.copilot/instructions/` |
-| Agents | `~/.copilot/agents/` |
+| Agents       | `~/.copilot/agents/`       |
 
 You can symlink or copy into these locations as an alternative to the settings approach:
 
@@ -112,7 +112,7 @@ This chain -- entry point → skill-compliance → relevant skills -- is what ma
 VS Code Copilot has the richest memory system of any supported platform:
 
 | Scope | Location | Loaded | Survives Compaction? |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | User memory | `/memories/` (memory tool) | First 200 lines auto-loaded every turn | Yes -- persists across all workspaces and conversations |
 | Session memory | `/memories/session/` (memory tool) | Filenames listed every turn; content on demand | Until conversation ends |
 | Repository memory | `/memories/repo/` (memory tool) | Create-only; stored locally in workspace | Yes -- persists across conversations in the same workspace |
@@ -130,7 +130,7 @@ Three layers ensure skills are re-read after compaction:
 ## Relevant VS Code Settings
 
 | Setting | Purpose |
-|---|---|
+| --- | --- |
 | `chat.agentSkillsLocations` | Directories to search for skills |
 | `chat.instructionsFilesLocations` | Directories to search for instruction files |
 | `chat.agentFilesLocations` | Directories to search for agent files |
@@ -179,7 +179,7 @@ The PreToolUse hook intercepts `run_in_terminal` calls and denies commands that 
 ### Quick reference
 
 | Layer | What it controls | How to configure |
-|---|---|---|
+| --- | --- | --- |
 | PreToolUse hooks | Terminal command allowlist/blocklist | `hooks/tool-usage-rules.json` |
 | Tool approval | Which tools can run and whether they need confirmation | `Chat: Manage Tool Approval` command |
 | Tool disable | Remove tools from availability entirely | Configure Tools picker in Chat view |
