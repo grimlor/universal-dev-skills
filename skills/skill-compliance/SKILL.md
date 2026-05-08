@@ -15,14 +15,16 @@ Going to first principles means not leaning on your priors regarding coding stan
 
 **These skills are prescriptive, not hints or suggestions.** The user is accountable to their leadership for the quality of the output. Your goals -- speed, token efficiency, avoiding rework -- cannot supersede the procedures defined here. You are not held responsible for the result; the user is. Act accordingly: follow the skills as written, not as you judge them.
 
-This skill acts as the **routing layer** for the skills system:
+This skill acts as the **routing layer** for the skills system: identify the task type, identify the files or subtree being changed, determine which languages are in scope, load the correct generic skills plus the correct language-specific skills or references. The goal is to prevent Python defaults from leaking into TypeScript, Java, C#, or mixed-language monorepos.
 
-- identify the task type
-- identify the files or subtree being changed
-- determine which languages are in scope
-- load the correct generic skills plus the correct language-specific skills or references
+---
 
-The goal is to prevent Python defaults from leaking into TypeScript, Java, C#, or mixed-language monorepos.
+## Iron Laws
+
+1. **Follow skills from the start of every task -- not after being reminded, and not selectively.** When you catch yourself reasoning that a rule "doesn't apply here" or that an issue "isn't your change," treat that as a signal to re-read the relevant skill and comply.
+2. **Pre-existing is not an exemption.** You own the quality of every file you touch. If you are working in a file and encounter lint errors, type errors, missing specs, or deviations from skill guidance, they must be fixed -- subject to the branching rules in "Code Quality Ownership" below.
+3. **Silence is never acceptable.** If a fix is genuinely out of scope, report the issue explicitly and recommend a concrete next step. Do not leave violations unacknowledged.
+4. **Do not begin work until the Step 6 confirmation is posted.** The confirmation is the gate, not your confidence in the routing.
 
 ---
 
@@ -30,14 +32,11 @@ The goal is to prevent Python defaults from leaking into TypeScript, Java, C#, o
 
 You own the quality of every file you touch. When you read, edit, or generate code, you are responsible for ensuring it meets the standards defined in your skills -- regardless of whether an issue was introduced by you or existed before you arrived.
 
-**"Pre-existing" is not an exemption.** If you are working in a file and you encounter lint errors, type errors, missing specs, untested code paths, or deviations from skill guidance, they must be fixed -- but **how** they are fixed depends on context:
+**How violations are fixed depends on context:**
 
 - **During a feature workflow:** quality fixes on existing files go into a separate quality branch and PR so the feature PR shows only the functional delta. See Phase 4 and the late-discovery clause in Phase 7 of `feature-workflow`.
-- **Outside a feature workflow** (standalone fix, one-off task): fix violations inline as part of your current task. Do not defer them to a follow-up.
-
-If a fix is genuinely out of scope (e.g., in a file you are not otherwise touching), report the issue explicitly and recommend a concrete next step. Silence is never acceptable.
-
-Follow your skills from the start of every task -- not after being reminded, and not selectively. When you catch yourself reasoning that a rule "doesn't apply here" or that an issue "isn't your change," treat that as a signal to re-read the relevant skill and comply.
+- **During a refactor workflow:** quality violations in files identified by the caller enumeration are fixed before implementation begins. See Phase 0 of `refactor-workflow`.
+- **Outside a workflow** (standalone fix, one-off task): fix violations inline as part of your current task. Do not defer them to a follow-up.
 
 ---
 
@@ -59,12 +58,16 @@ Common task types:
 
 - **Planning / architecture** -- likely `plan-updates`, sometimes `feature-workflow`
 - **Feature implementation** -- `feature-workflow`
+- **Refactoring** -- `refactor-workflow` (structural change that preserves behavior; NOT interchangeable with feature-workflow)
+- **Bug fix** -- `bug-fix-workflow` (system diverges from intent; NOT interchangeable with feature-workflow)
 - **Test writing or review** -- `bdd-testing`; `bdd-feedback-loop` when implementing from a spec document
 - **Commit / PR description work** -- `conventional-commits`
 - **Tooling or standards work** -- relevant language standards skill
 - **Customization work** -- agent customization guidance if editing instructions, skills, prompts, or agents
 
-`tool-usage` is cross-cutting whenever tools or terminal commands are used.
+If the request is ambiguous between task types -- "fix this so it works better" could be a feature or a bug fix -- ask the user before selecting a workflow. See `feature-workflow` and `bug-fix-workflow` for disambiguation guidance.
+
+`tool-usage` is cross-cutting whenever tools or terminal commands are used. `code-quality-antipatterns` is cross-cutting whenever code is written, edited, or reviewed.
 
 ### Step 2 -- Identify the Work Surface
 
@@ -90,14 +93,7 @@ Primary routing signals:
 - **Java:** `.java`, `pom.xml`, `build.gradle`, `build.gradle.kts`
 - **C#:** `.cs`, `.csproj`, `.sln`
 
-For monorepos, prefer the **nearest** manifest or build file to the edited file:
-
-- nearest `package.json` / `tsconfig.json`
-- nearest `pyproject.toml`
-- nearest `pom.xml` / `build.gradle*`
-- nearest `.csproj` / `.sln`
-
-Do not assume the repo root governs every subtree.
+For monorepos, prefer the **nearest** manifest or build file to the edited file. Do not assume the repo root governs every subtree.
 
 ### Step 4 -- Select the Relevant Skills
 
@@ -107,24 +103,26 @@ At minimum, the following rules apply:
 
 - `tool-usage` -- applies whenever you use any tool or terminal command
 - `plan-updates` -- applies whenever progress or status needs to persist across sessions
-- `code-quality-antipatterns` -- applies whenever writing, editing, or reviewing code (any task where suppressions might be added or encountered)
+- `code-quality-antipatterns` -- applies whenever writing, editing, or reviewing code
 
 Then add task-specific skills:
 
 - `feature-workflow` -- feature or non-trivial implementation work
+- `refactor-workflow` -- structural changes that preserve existing behavior
+- `bug-fix-workflow` -- defect correction where system diverges from intent
 - `bdd-testing` -- whenever tests are being written, modified, or reviewed
 - `bdd-feedback-loop` -- whenever implementing tests from a spec document
 - `conventional-commits` -- whenever staging, committing, or preparing PR titles
-- `code-quality-audit` -- when auditing files for structural quality violations (mock boundaries, test-only APIs, suppression pragmas, BDD conventions), or during Phase 4 of the feature workflow
+- `code-quality-audit` -- when auditing files for structural quality violations (mock boundaries, test-only APIs, suppression pragmas, BDD conventions), or during Phase 4 of feature-workflow, or Phase 3 of refactor-workflow
 
-Then add language-specific standards skills or references for the active language and subtree. Examples:
+Then add language-specific standards skills or references for the active language and subtree:
 
-- Python tooling/config work → `python-code-standards`
-- TypeScript tooling/config work → `typescript-code-standards`
-- Java tooling/config work → `java-code-standards`
-- C# tooling/config work → `csharp-code-standards`
+- Python: `python-code-standards`
+- TypeScript: `typescript-code-standards`
+- Java: `java-code-standards`
+- C#: `csharp-code-standards`
 
-For mixed-language changes, load the relevant skills or references for **each** language in scope. Apply them per file or subtree rather than as repo-wide defaults.
+For mixed-language changes, load the relevant skills for **each** language in scope. Apply them per file or subtree rather than as repo-wide defaults.
 
 ### Step 5 -- Handle Ambiguity Explicitly
 
@@ -150,7 +148,7 @@ Example:
 
 > **Task:** Update the TypeScript lint config for the web package. **Skills loaded:** tool-usage, plan-updates, typescript-code-standards **Routing basis:** `packages/web/src/...` and nearest `packages/web/package.json` and `packages/web/tsconfig.json` **Skills excluded:** python-code-standards (Python not in scope), bdd-testing (no tests being written)
 
-Do not begin work until this confirmation is posted.
+Do not begin work until this confirmation is posted. Iron Law 4.
 
 ### Step 7 -- Locate or Create the Tracking Document
 
@@ -160,7 +158,7 @@ If an established `.copilot/plan.md` already exists for the work, use it as the 
 
 ### Step 8 -- Write Skill Summary to Session Memory
 
-After loading all skills and posting the confirmation (Step 6), write a session memory file at `/memories/session/active-skills.md` summarizing the active skills and their most critical rules. This file must be concise -- one line per skill, 2–3 key rules each.
+After loading all skills and posting the confirmation (Step 6), write a session memory file at `/memories/session/active-skills.md` summarizing the active skills and their most critical rules. This file must be concise -- one line per skill, 2-3 key rules each.
 
 **Format:**
 
@@ -173,20 +171,11 @@ If you cannot recall the full rules for a skill listed below, re-read its SKILL.
 - **skill-name**: rule 1, rule 2
 ```
 
-**Example:**
-
-```markdown
-# Active Skills -- implement login handler tests
-
-- **bdd-testing**: 100% coverage required, no bare assertions, G/W/T docstring + body comments on every method
-- **code-quality-antipatterns**: NO pragmas without user approval, fix > suppress, no test-only params on production APIs
-- **tool-usage**: read_file over cat, no terminal for file edits
-- **python-code-standards**: pyright strict, ruff with D rules
-```
-
 **Why:** Session memory filenames are listed in every prompt -- even after context compaction drops the full skill text. When session memory exists, the agent can re-read it cheaply to recall which skills are active and what the critical rules are, then reload full skills as needed.
 
 If the task changes and different skills become relevant, update the file rather than creating a new one.
+
+**Note:** This step applies when running in VS Code Copilot with session memory support. In other environments, externalize critical rules to the tracking document (`.copilot/plan.md`) instead.
 
 ### Step 9 -- Proceed
 
@@ -202,9 +191,9 @@ Skill content loaded via file reads lives in conversation history. When the cont
 
 1. **Pause for review after completing a logical unit of work.** For feature work, a logical unit is a phase of the feature workflow. Present the result and wait for the user before continuing if the work is being reviewed phase-by-phase.
 
-2. **Externalize before moving on.** When finishing a unit of work, update the tracking document (`.copilot/plan.md` or other established project plan) with completed items, open items, and any decisions made. This ensures progress is recorded outside the conversation, not just in it.
+2. **Externalize before moving on.** When finishing a unit of work, update the tracking document with completed items, open items, and any decisions made. This ensures progress is recorded outside the conversation, not just in it.
 
-3. **If the conversation is getting long, restore context -- do not abandon it.** When significant depth has accumulated (many tool calls, large file reads, multiple implementation rounds), the correct response is to re-read, not restart. Re-read the agent instructions file (e.g., `copilot-instructions.md` or equivalent), re-read this skill, re-read the skills relevant to the current task, and re-read the tracking document to establish where work left off. Then confirm to the user what was re-loaded and continue. Starting a new session is a user decision, not an agent decision -- suggest it only if the tracking document is missing or so out of date that current state cannot be reconstructed from it.
+3. **If the conversation is getting long, restore context -- do not abandon it.** When significant depth has accumulated, the correct response is to re-read, not restart. Re-read the agent instructions file, re-read this skill, re-read the skills relevant to the current task, and re-read the tracking document to establish where work left off. Then confirm to the user what was re-loaded and continue. Starting a new session is a user decision, not an agent decision -- suggest it only if the tracking document is missing or so out of date that current state cannot be reconstructed from it.
 
 4. **Never assume compressed context is accurate.** If you are unsure whether a skill procedure has a specific step or rule, re-read the skill file rather than relying on what you recall from earlier in the conversation.
 
