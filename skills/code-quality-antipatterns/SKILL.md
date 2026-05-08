@@ -11,7 +11,7 @@ description: "Suppression pragma policy and common code quality antipatterns. Us
 
 1. **No suppression pragmas during implementation work.** While writing or modifying code, the answer to a diagnostic is always "fix the code", never "silence the warning".
 2. **Pragmas are only considered post-implementation**, during a final lint or type-check pass when a diagnostic genuinely resists clean fixing.
-3. **No suppression without explicit user approval in the current conversation.** The agent presents the diagnostic, the correct fix, why the fix is not viable, and the proposed pragma -- then waits.
+3. **No suppression without explicit user approval in the current conversation.** The agent presents the diagnostic, the correct fix, the demonstration that no code pattern resolves it, and the proposed pragma -- then waits.
 4. **Approved suppressions are line-level, rule-specific, and commented.** No file-level disables, no anonymous `# type: ignore`, no `/* eslint-disable */` blocks.
 
 ### Antipattern hygiene
@@ -25,6 +25,10 @@ Coverage suppressions follow `bdd-testing`'s coverage rule: every uncovered line
 ## Cross-Cutting Note
 
 This skill defines _whether_ a suppression is allowed. The language-specific standards skills (`python-code-standards`, `typescript-code-standards`, `java-code-standards`, `csharp-code-standards`) define _how_ to format one when the user has approved it.
+
+## Generated Code Scope Exclusion
+
+Files produced by a build step (protobuf generators, ORM schema generators, OpenAPI client generators, and similar) are excluded from pragma auditing entirely. These files are not hand-authored and are not within the agent's control. The correct response to quality concerns in generated files is to fix the generator configuration or post-process the output -- not to audit or suppress within the generated file. Generated files should be listed in `.gitignore` or a dedicated exclusion list for audit tools, not granted pragma permissions.
 
 ## Suppression Categories
 
@@ -41,8 +45,8 @@ The Iron Laws apply to every suppression mechanism:
 When a diagnostic survives the post-implementation pass and looks like a suppression candidate, the agent must:
 
 1. **Name the diagnostic.** Identify the exact rule and show the message. "The type checker complains" is not enough.
-2. **Present the correct fix first** as the primary recommendation.
-3. **Explain why the fix is not viable**, only if it genuinely is not. "Inconvenient" and "verbose" do not count.
+2. **Present the correct fix first** as the primary recommendation. The correct fix is always a code pattern: a type stub, an assertion, a type guard, a narrow wrapper, a platform-specific branch. Every apparent exception has a code-pattern solution.
+3. **Demonstrate that no code pattern resolves the diagnostic** -- not that a code pattern would take effort, but that one cannot be written. The only legitimate basis for this claim is a known checker inference limitation with no available workaround. "Inconvenient," "verbose," and "would take time" do not count. If a code pattern exists, step 3 cannot be satisfied and no pragma is justified.
 4. **Propose the suppression as the second option** -- the exact pragma, the required justification comment, and the narrowest possible scope.
 5. **Wait for the user to choose.** Do not default to the suppression.
 
@@ -62,7 +66,17 @@ When a diagnostic survives the post-implementation pass and looks like a suppres
 
 "Hard to test" is not "unreachable."
 
-#### 2. Type-Ignore Instead of Type Stubs
+#### 2. Preemptive Suppression
+
+**The antipattern:** Before a diagnostic has fired, the agent adds a suppression to code it *anticipates* might trigger a warning or fail coverage -- `# pragma: no cover` on a branch it expects to be hard to reach, `# type: ignore` on a call it thinks might have a type mismatch, a broad `except` around code it isn't sure will succeed. The suppression is added as defensive scaffolding, not in response to an observed diagnostic.
+
+**Why it's wrong:** Preemptive suppression bypasses the approval workflow entirely -- there is no diagnostic to present, because it was silenced before it could appear. The agent has made a unilateral judgment that the suppression is warranted without the evidence that would justify it. If the concern was valid, the diagnostic would have fired and the approval workflow would have caught it. If it was not valid, the suppression hides real information. Either way, the agent has traded a visible diagnostic for invisible silence.
+
+**How to detect it:** A suppression added during implementation work (not a final lint or type-check pass) is preemptive by definition -- Iron Law 1 applies. A suppression on code that has never been run against the actual checker is preemptive. A `pragma: no cover` added before the coverage report has been run is preemptive.
+
+**The correct response:** Remove the suppression. Run the checker. If the diagnostic fires, follow the approval workflow. If it does not fire, the suppression was unnecessary and the code is fine.
+
+#### 3. Type-Ignore Instead of Type Stubs
 
 **The antipattern:** A third-party library ships without type information. Instead of creating a stub file, the agent sprinkles `# type: ignore` on every call site.
 
@@ -83,7 +97,7 @@ Language-specific equivalents:
 | Java | `@SuppressWarnings("unchecked")` | Add proper generic bounds or cast through a checked method |
 | C# | `#pragma warning disable CS8600` | Use nullable annotations and proper null guards |
 
-#### 3. Type-Ignore Instead of Narrowing
+#### 4. Type-Ignore Instead of Narrowing
 
 **The antipattern:** A value has type `T | None`. Instead of narrowing with a guard, the agent adds `# type: ignore` or uses a force-unwrap (`!` in TS, `cast()` in Python).
 
@@ -118,7 +132,7 @@ if (!user) {
 const name = user.name;
 ```
 
-#### 4. Broad Suppressions Instead of Narrow Ones
+#### 5. Broad Suppressions Instead of Narrow Ones
 
 **The antipattern:** When a suppression is justified, the agent uses the broadest form available -- file-level `# noqa`, `/* eslint-disable */`, `@ts-nocheck`, `#pragma warning disable` without a matching `restore`.
 
@@ -140,7 +154,7 @@ const name = user.name;
 
 ### Evasion Antipatterns
 
-#### 5. Catch-All Exception Handling as a Runtime Pragma
+#### 6. Catch-All Exception Handling as a Runtime Pragma
 
 **The antipattern:** Instead of handling specific failure modes, the agent wraps code in `except Exception` (or equivalent) to suppress errors at runtime -- achieving the same silencing effect through different means.
 
@@ -148,7 +162,7 @@ const name = user.name;
 
 **The correct fix:** Catch the specific exception types that represent known failure modes. Let unexpected exceptions propagate.
 
-#### 6. Test-Only Parameters on Production APIs
+#### 7. Test-Only Parameters on Production APIs
 
 **The antipattern:** A production function is hard to test because it calls another function internally (e.g., `load_settings()`). Instead of mocking at the I/O boundary, the agent adds a parameter to the production function so tests can inject the dependency directly.
 
@@ -175,3 +189,4 @@ const name = user.name;
 2. **Running a final lint or type-check pass?** If a diagnostic resists clean fixing, follow the Approval Workflow before adding any suppression.
 3. **Reviewing code?** Flag any uncommented, broad, or unapproved pragma as a violation.
 4. **Encountered an existing pragma while editing?** Do not propagate the pattern. If the cause is now fixable, remove the pragma; otherwise leave it and note it.
+5. **Working in generated files?** Do not audit or suppress. See Generated Code Scope Exclusion above.
