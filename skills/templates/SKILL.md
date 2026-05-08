@@ -1,6 +1,6 @@
 ---
 name: templates
-description: "Document templates for the feature workflow. Use when creating a plan, spec, or design note -- read the relevant template file from references/ rather than reproducing structure from memory."
+description: "Document templates for various workflows, including feature and refactor workflows. Use when creating a plan, spec, or design note -- read the relevant template file from references/ rather than reproducing structure from memory."
 ---
 
 # Templates -- Canonical Document Structures
@@ -12,19 +12,19 @@ description: "Document templates for the feature workflow. Use when creating a p
 3. **Templates define structure only.** Population rules live in the requesting skill (`feature-workflow` or `plan-updates`).
 
 ## Available Templates
-
 | Template | File | Created during | Target path |
-| --- | --- | --- | --- |
-| Plan document | `references/plan.md` | Phase 1 -- Feature Definition | `.copilot/plan.md` |
-| Behavioral spec | `references/spec.md` | Phase 2 -- Spec Gate | `.copilot/specs.md` |
-| Design note | `references/design-note.md` | Phase 3 -- Architecture | `.copilot/design-note.md` |
-| Task tracking | `references/task.md` | Start of refactor / audit / remediation pass | `.copilot/task.md` |
+|---|---|---|---|
+| Plan document | `references/feature-plan.md` | Phase 1 -- Feature Definition | `.copilot/<feature name>-plan.md` |
+| Feature spec | `references/feature-spec.md` | Phase 2 -- Spec Gate (feature-workflow) | `.copilot/<feature name>-specs.md` |
+| Refactor adaptation plan | `references/refactor-adaptation-plan.md` | Phase 3 -- Spec Gate (refactor-workflow) | `.copilot/<refactor name>-adaptation-plan.md` |
+| Design note | `references/design-note.md` | Phase 3 -- Architecture (feature) / Phase 2 -- Design (refactor) | `.copilot/<feature/refactor name>-design-note.md` |
+| Task tracking | `references/task.md` | Start of refactor / audit / remediation pass | `.copilot/<task name>.md` |
 
 ### Language-Specific References
 
 | Template | Language references |
-| --- | --- |
-| Behavioral spec | `references/spec/python.md`, `references/spec/typescript.md`, `references/spec/java.md`, `references/spec/csharp.md` |
+|---|---|
+| Feature spec | `references/spec/python.md`, `references/spec/typescript.md`, `references/spec/java.md`, `references/spec/csharp.md` |
 
 ## On Invocation
 
