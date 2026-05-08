@@ -1,6 +1,6 @@
 ---
 name: code-quality-audit
-description: "Systematic audit of code against structural quality rules -- mock boundaries, test-only API pollution, suppression pragmas, and BDD conventions. Use when auditing a codebase or set of files for quality violations, during Phase 4 of the feature workflow, or as a standalone quality review task."
+description: "Systematic audit of code against structural quality rules -- mock boundaries, test-only API pollution, suppression pragmas, and BDD conventions. Use when auditing a codebase or set of files for quality violations, during Phase 4 of feature-workflow, during Phase 3 of refactor-workflow, or as a standalone quality review task."
 ---
 
 # Code Quality Audit -- Structural Inspection Procedure
@@ -8,26 +8,25 @@ description: "Systematic audit of code against structural quality rules -- mock 
 ## When This Skill Applies
 
 - **During Phase 4 of the feature workflow** -- scoped to the files the spec identifies for modification.
+- **During Phase 3 of the refactor workflow** -- scoped to the test files that exercise code touched by the refactor; the BDD audit step runs before the adaptation analysis.
 - **As a standalone task** -- when the user requests a quality audit, code review, or codebase health check.
 - **During remediation passes** -- when working through findings from a prior audit.
 
-This skill defines the **procedure** for conducting an audit. The **rules** being audited against live in other skills:
+## Iron Laws
 
-| Rule source | What it defines |
-| --- | --- |
-| `bdd-testing` | Mock boundary discipline, BDD conventions, coverage requirements |
-| `code-quality-antipatterns` | Suppression pragma policy, test-only API pollution |
-| Language-specific standards | Lint, type-check, and formatting rules |
-
-Read those skills before auditing. This skill tells you _how to inspect_; they tell you _what to inspect for_.
-
----
+1. **Report all findings.** Silence is never acceptable. A section with no violations must be stated explicitly as clean -- a missing section is not evidence of a clean result.
+2. **Charitable reading is required.** Before classifying a violation, identify what the code is trying to accomplish. Every finding must state the intent before stating the alternative. An audit that only names violations without understanding them produces findings that cannot be acted on.
+3. **Scope is set before the audit begins.** Do not expand scope during the audit. If violations are found in out-of-scope files, note them separately as observations for a follow-up audit -- do not mix them into the scoped findings.
 
 ## Audit Scope
 
 ### Feature workflow (Phase 4)
 
 Scope the audit to **existing files** that the spec indicates will be modified. New files created by the feature are exempt -- they will be written to standard from the start.
+
+### Refactor workflow (Phase 3)
+
+Scope the audit to **test files** that exercise code touched by the refactor. The BDD audit (Step 5) runs first; adaptation analysis does not begin until the audit is clean or all violations are remediated.
 
 ### Standalone audit
 
@@ -39,7 +38,7 @@ Scope is determined by the user's request. Default to the full source and test t
 
 ### Step 1 -- Mechanical Checks
 
-Run the project's configured lint and type-check toolchain on the scoped files. These are the same checks as Phase 4's original scope:
+Run the project's configured lint and type-check toolchain on the scoped files:
 
 - Lint errors (Ruff, ESLint, Checkstyle, Roslyn analyzers)
 - Type errors (Pyright, TypeScript compiler, javac, C# compiler)
@@ -80,7 +79,7 @@ For each finding, record:
 2. **Production callers** (should be zero -- verify with usage search)
 3. **Test callers** (list the test files and approximate count)
 4. **What it accomplishes** -- the test need it serves
-5. **Why it violates** -- `code-quality-antipatterns` §6 (test-only production APIs)
+5. **Why it violates** -- `code-quality-antipatterns` §7 (test-only production APIs)
 6. **The alternative** -- how tests can achieve the same goal using only the public API and I/O boundary mocks
 
 ### Step 4 -- Suppression Pragma Audit
@@ -107,7 +106,7 @@ For each test file in scope, check compliance with BDD conventions from the `bdd
 - **Method-level docstrings** -- Given / When / Then in title-case (not ALL-CAPS)
 - **Method body comments** -- `# Given`, `# When`, `# Then` structuring the test body
 - **Test organization** -- grouped by consumer requirement, not by code structure
-- **Assertion quality** -- no bare assertions without context; no tautology tests
+- **Assertion quality** -- no bare assertions without context; no tautology tests; no assertions on mock internals
 
 ---
 
@@ -176,11 +175,11 @@ The audit produces a findings document organized by category. Each finding must 
 
 ### Effort Classification
 
-| Effort     | Meaning                                                    |
-| ---------- | ---------------------------------------------------------- |
-| **High**   | Requires rethinking test setup patterns across many files. |
-| **Medium** | Targeted changes to specific files or classes.             |
-| **Low**    | Find-and-replace or single-function changes.               |
+| Effort | Meaning |
+| --- | --- |
+| **High** | Requires rethinking test setup patterns across many files. |
+| **Medium** | Targeted changes to specific files or classes. |
+| **Low** | Find-and-replace or single-function changes. |
 
 ---
 
@@ -204,7 +203,8 @@ Update at each checkpoint to maintain resumability across sessions.
 
 ## Relationship to Other Skills
 
-- **`feature-workflow`** Phase 4 invokes this skill's procedure (Steps 1–5) scoped to files identified by the spec.
+- **`feature-workflow`** Phase 4 invokes this skill scoped to files identified by the spec.
+- **`refactor-workflow`** Phase 3 invokes this skill scoped to test files touching the refactor; must be clean before adaptation analysis begins.
 - **`bdd-testing`** provides the mock boundary and BDD convention rules audited in Steps 2 and 5.
 - **`code-quality-antipatterns`** provides the suppression pragma and test-only API rules audited in Steps 3 and 4.
 - **`plan-updates`** provides the tracking format used during remediation.
