@@ -6,10 +6,13 @@ description: "Feedback loop procedure for implementing BDD test modules. Use whe
 # BDD Feedback Loop -- Test Implementation Procedure
 
 ## When This Skill Applies
-
 Whenever implementing tests from a BDD spec document. Each iteration of this loop covers one test module: read the spec, implement, verify, audit, log, and hand off.
 
-Do not proceed to the next module if unresolved failures remain from Steps 4, 5 or 7.
+## Iron Laws
+
+1. **Do not proceed to the next module if unresolved failures remain from Steps 4, 5, or 7.** Logged deviations do not authorize proceeding -- a deviation that cannot be resolved after three attempts requires a human decision before the module is considered complete.
+2. **The spec is an input, not an output.** Do not silently correct what appears to be a spec error -- flag it in the deviation log and implement what the spec says. Spec errors require human resolution before the module is considered complete.
+3. **Do not invent test classes or scenarios not present in the spec.** The spec defines the complete behavioral contract. Additions require spec updates first.
 
 ## Role in the Skill System
 
