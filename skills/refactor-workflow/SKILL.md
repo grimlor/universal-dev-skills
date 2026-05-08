@@ -21,10 +21,7 @@ Structured process for safely restructuring existing code. The goal is preserved
 1. **Enumerate callers before starting.** The full caller list is the blast radius. Scope defined without it is guesswork.
 2. **Preserve behavior, don't extend it.** New requirements discovered during the refactor belong in a separate feature. Stop, close the refactor at a stable intermediate state, open a feature branch.
 3. **Volume is a planning condition, not a stopping condition.** If the caller list exceeds single-pass scope, decompose into sequenced sub-tasks with stated dependencies before starting. Do not refuse; do not fragment without a sequencing plan.
-4. **Tests must be outcome-equivalent.** Assert on observable outputs through the public API -- what the system returned, what state changed, what error was raised. Assertions on mock internals (call counts, `assert_called_with`, `call_args`) are substitution failures and do not survive implementation swaps.
-5. **Prerequisite cleanup first.** If the existing code has inconsistencies the refactor would expose -- mixed abstraction patterns, inheritance where protocols are the target boundary -- resolve them as a separate prior task. Do not absorb prerequisite cleanup into the main refactor.
-6. **Retreat to design when the spec reveals gaps.** Do not patch around a design gap in the spec or test. Surface it, update the design note, resume.
-7. **The existing suite is the regression gate.** After implementation, both the new tests and the full pre-existing test suite must pass. New tests alone do not prove behavior is preserved.
+4. **Prerequisite cleanup first.** If the existing code has inconsistencies the refactor would expose -- mixed abstraction patterns, inheritance where protocols are the target boundary -- resolve them as a separate prior task. Do not absorb prerequisite cleanup into the main refactor.
 
 ## Phase Overview
 

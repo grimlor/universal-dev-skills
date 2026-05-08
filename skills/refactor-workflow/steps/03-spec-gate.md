@@ -1,47 +1,61 @@
 # Phase 3 -- Spec Gate
 
-**Purpose:** Write a BDD spec that proves existing observable behavior is preserved under the new structure. The spec is not about what the refactor adds -- it is about what it must not break.
+**Purpose:** Audit the existing test suite for BDD correctness, then analyze what needs to change to support the refactoring. The behavioral specification does not change -- the goal is to document how the mock boundary and fixture setup must adapt to the new interface.
 
 ---
 
-## Spec Shape for Refactors
+## Iron Laws
 
-Create `.copilot/specs.md` using the template from the `templates` skill (`references/spec.md`). Read the template directly.
+1. **Audit before analysis.** Do not proceed to the adaptation analysis on tests that fail the BDD audit. Wrong-shaped tests adapted to a new interface are still wrong-shaped. Remediate first.
+2. **Retreat to design when the analysis reveals gaps.** If analysis reveals that the design (Phase 2) does not specify how a particular behavior maps to the new interface, stop. Do not invent a mapping. Return to `steps/02-design.md`, update the design note with the gap and its resolution, then return here and continue. This iteration is expected.
+3. **Behavioral claims do not change.** WHAT and WHY clauses in existing test classes describe behavior the system makes to its consumers. If you find yourself needing to rewrite them, you have found a behavioral change, not a structural one. Stop and surface it to the user -- this is a scope signal, not a spec update.
 
-A refactor spec differs from a feature spec in scope: every scenario describes a behavior that currently exists and must continue to exist after the refactor. The spec is evidence of preservation, not specification of new capability.
+---
 
-For each behavior to preserve:
+## Step 1 -- BDD Audit
 
-- Write a REQUIREMENT class named for the consumer requirement being preserved (not for the internal class or module being restructured)
-- WHO is the caller or consumer that depends on this behavior continuing
-- WHAT enumerates the observable outcomes that prove the behavior still holds
-- WHY states what breaks downstream if this behavior is lost
+For each test class in the existing suite that exercises code touched by this refactor, verify against the `bdd-testing` skill:
 
-MOCK BOUNDARY is set at the NEW interface boundary -- the target interface from Phase 2, not the current one. The tests will run against fakes that implement the target interface, and against the real implementation once it exists.
+1. **Mock boundary is at the I/O boundary.** No mocking of internal code -- functions and classes that live in the codebase are not mocked. Mocks sit only at process boundaries, HTTP clients, database wire calls, process-level state.
+2. **No assertions on mock internals.** No `assert_called_with`, `call_args`, call counts, or any assertion that would fail if the mock were swapped for a conforming real implementation.
+3. **Three-part contract present.** Each class has REQUIREMENT/WHO/WHAT/WHY + MOCK BOUNDARY. Each test method has a Given/When/Then docstring and `# Given/# When/# Then` body comments.
+4. **Assertions include diagnostic messages.** Bare asserts are a violation.
+5. **WHAT count matches test count.** Every WHAT clause has exactly one implementing test method; every test method traces to exactly one WHAT clause.
 
-## Design Gap Protocol
+### If Violations Are Found
 
-If writing scenarios reveals that the design (Phase 2) does not specify how a particular behavior maps to the new interface, stop. Do not invent a mapping. Return to `steps/02-design.md`, update the design note with the gap and its resolution, then return here and continue.
+Wrong-shaped tests are a prerequisite issue -- the same discipline as Phase 0's quality baseline, applied to the test layer. Do not proceed to Step 2 until violations are remediated:
 
-This iteration is expected. Iron Law 6 applies.
+1. Surface the violations to the user with a summary: which classes, which rules violated.
+2. Remediate the violations per the `bdd-testing` and `code-quality-audit` skills.
+3. Confirm the full suite still passes after remediation.
+4. Then proceed to Step 2.
 
-## Coverage of Failure Modes
+## Step 2 -- Adaptation Analysis
 
-The spec must cover failure modes, not just happy paths. For every interaction at the target boundary:
+For each test class that passed the audit and exercises code touched by this refactor:
 
-- What happens when the boundary returns an empty result?
-- What happens when it raises?
-- What happens at volume limits or boundary values?
+1. **Identify the current mock boundary.** Where does this test class mock? What concrete type or interface is being substituted?
+2. **Identify the new mock boundary.** After the refactor, where should the mock boundary be? What new Protocol, port, or adapter shape does the fake need to conform to?
+3. **Identify fixture changes.** What new fakes need to be created? What existing fixtures need to be updated to conform to the new interface?
+4. **Check behavioral assertions.** Do the WHAT clauses and assertion bodies remain valid under the new interface? If yes -- they are untouched. If no -- stop and evaluate: this is a scope signal (Iron Law 3).
+5. **Check for new failure modes.** Does the new interface expose failure modes the old interface could not produce? For example: a Protocol method that can return None where the concrete implementation always returned a value; a new boundary that can raise where the old one swallowed errors. These are the only legitimate source of new test methods in a refactor.
 
-An unspecified failure mode in the refactor spec is a behavior the refactor is not required to preserve. That is a risk, not an acceptable gap.
+## Output
 
-## Present and Wait
+Produce a test adaptation plan using the `templates` skill (`references/refactor-adaptation-plan.md`). Read the template directly -- do not reproduce from memory. The plan documents, for each affected test class:
 
-Present the spec to the user. Wait for explicit acknowledgment before proceeding to Phase 4.
+- Audit result (pass / remediated, with notes if remediated)
+- Current mock boundary → new mock boundary
+- Fixture changes: fakes to create or update with the new interface they must conform to
+- Behavioral assertions: unchanged / needs wording update (rare) / new failure mode (exception case)
+- New test methods needed for newly exposed failure modes, with their Given/When/Then scenario
+
+Present the completed plan to the user and wait for acknowledgment before proceeding.
 
 ## Plan Update
 
-Check off "Spec gate complete" under Phase 3. Append a session log entry noting the scenario count and any design gaps that triggered a Phase 2 retreat.
+Check off "Spec gate complete" under Phase 3. Append a session log entry noting the test class count, any audit violations found and remediated, boundary changes identified, and any design gaps that triggered a Phase 2 retreat.
 
 ## Proceed
 

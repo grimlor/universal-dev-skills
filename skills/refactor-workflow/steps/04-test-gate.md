@@ -1,44 +1,34 @@
 # Phase 4 -- Test Gate
 
-**Purpose:** Write tests from the spec. Tests use fakes at the new interface boundary and assert on observable outputs only. Tests will fail at this point -- that is correct.
+**Purpose:** Implement the test adaptation plan from Phase 3. Adapt mock boundaries and fixture setup to the new interface. Leave behavioral assertions untouched. Add new tests only for failure modes identified in Phase 3.
 
 ---
 
-## Test File
+## Iron Law
 
-Create the test file following the `bdd-testing` skill conventions. Group classes by consumer requirement, not by the internal module being refactored.
+1. **Adapt the boundary, not the behavior.** Mock setup and fixture construction change to conform to the new interface. Behavioral assertions -- what the system returns, what state changes, what error is raised -- are untouched. If an assertion needs rewording to make sense under the new interface, it is a scope signal: stop and surface it before continuing.
 
-## Fakes at the Target Boundary
+---
 
-Tests are written against fakes that implement the target interface (the new Protocol, ABC, or adapter shape from Phase 2). The fakes are not the old concrete implementations -- they are purpose-built test doubles that conform to the new interface.
+## Procedure
 
-Fake design requirements:
+Work through the test adaptation plan from Phase 3 class by class:
 
-- Conform to the target interface exactly (same method signatures, same return type shapes)
-- Return configurable values so tests can exercise different scenarios
-- Raise on demand so failure-mode scenarios can be tested
-- Contain no production logic -- they are scaffolding, not implementations
+1. **Create or update fakes** to conform to the new interface (new Protocol, port, or adapter shape). Fakes must: conform to the target interface exactly; return configurable values; raise on demand; contain no production logic.
+2. **Update fixture setup** in each affected test class to use the new fakes and new mock boundary location.
+3. **Leave behavioral assertions untouched.** The WHAT clauses, Given/When/Then scenarios, and assertion bodies do not change unless Phase 3 explicitly identified a wording update. Any impulse to rewrite an assertion is a scope signal -- stop and evaluate.
+4. **Add new test methods** only for failure modes identified in Phase 3. Follow the `bdd-testing` skill three-part contract. These are the only net-new tests a refactor produces.
 
-## Outcome-Equivalence Check
+## Expected State After Adaptation
 
-Before writing each assertion, ask: _"If I swapped in the real implementation at this boundary, would this assertion still pass?"_
+Adapted tests will fail at this point because production code still uses the old interface -- that is correct. If an adapted test passes before implementation:
 
-If the answer is no -- the assertion is on mock internals (`assert_called_with`, `call_args`, call counts) rather than on observable outputs. Rewrite it to assert on what the system returns, what state changes, or what error is raised.
-
-See the `bdd-testing` skill, I/O Boundary section, for the substitution failure definition and examples.
-
-## Expected Failure
-
-Run the tests after writing them. They should fail because the production code still uses the old interface. If they pass:
-
-- The test is a tautology (it would pass without any real implementation)
-- The behavior already exists under the new interface (no implementation needed for this scenario -- note it and move on)
-
-A passing test that is neither a tautology nor evidence of existing behavior is a red flag. Stop and investigate before proceeding.
+- The behavioral assertion was so loose it passes against anything -- tighten it.
+- The behavior already exists under the new interface -- note it and move on.
 
 ## Plan Update
 
-Check off "Test gate complete" under Phase 4. Record the test count per class. Append a session log entry.
+Check off "Test gate complete" under Phase 4. Record the count of adapted classes and any new test methods added. Append a session log entry.
 
 ## Proceed
 
