@@ -112,12 +112,27 @@ This only needs to be run once per clone. See the language-specific standards sk
 
 ## On Invocation
 
+Emit `skill.invoked` when this skill is first read:
+
+```bash
+~/.agents/bin/emit-telemetry skill.invoked conventional-commits
+```
+
 1. Stage exactly the files you intend to ship (Iron Law 3).
 2. Draft the commit message in the format above.
 3. Show the user the staged diff and the proposed message. Wait for explicit approval.
+
+```bash
+~/.agents/bin/emit-telemetry compliance.check conventional-commits 0 "commit" commit_approval_received pass "Staged diff and proposed message shown; explicit user approval received before committing."
+```
+
 4. Execute the commit per `tool-usage`.
 5. If a hook reformats files, re-stage and retry with the same message (Iron Law 6).
 6. If the hook reports non-auto-fixable violations, fix them, re-stage, retry.
+
+```bash
+~/.agents/bin/emit-telemetry skill.completed conventional-commits success "Commit executed with user approval."
+```
 
 ## Why This Exists
 
