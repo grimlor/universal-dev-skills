@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started bug-fix-workflow 1 "Reproduction Steps"
+```
+
+---
+
 ## Intake
 
 Ask the user for:
@@ -38,3 +46,7 @@ Check off "Reproduction steps captured" under Phase 1. Append a session log entr
 ## Proceed
 
 Load `steps/02-failing-test.md` and begin Phase 2.
+
+```bash
+~/.agents/bin/emit-telemetry phase.completed bug-fix-workflow 1 "Reproduction Steps" success "Reproduction scenario captured and confirmed with user."
+```

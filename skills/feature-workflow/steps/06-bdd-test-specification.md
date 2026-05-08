@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started feature-workflow 6 "BDD Test Specification"
+```
+
+---
+
 ## Steps
 
 1. Create test classes from the spec (Phase 2), informed by the architecture (Phase 3). Follow the `bdd-testing` skill for all conventions -- class structure, REQUIREMENT/WHO/WHAT/WHY, MOCK BOUNDARY, three-part contract per method, assertion quality.
@@ -20,3 +28,8 @@ If implementation will be broken into sub-tasks (A, B, C within Phase 7), the BD
 ## Checkpoint
 
 Present the test file to the user. Confirm tests are failing. Wait for acknowledgment before loading Phase 7.
+
+```bash
+~/.agents/bin/emit-telemetry compliance.check feature-workflow 6 "BDD Test Specification" tests_failing_before_impl pass "All tests confirmed failing for the right reason before implementation begins."
+~/.agents/bin/emit-telemetry phase.completed feature-workflow 6 "BDD Test Specification" success "Test file complete; all tests failing; user acknowledged."
+```

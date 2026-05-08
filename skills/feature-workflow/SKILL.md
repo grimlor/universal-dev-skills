@@ -65,6 +65,15 @@ Spawning a prerequisite workflow is not a failure of process -- it is the correc
 - `templates` -- canonical document structures; plan (Phase 1), feature-spec (Phase 2), design note (Phase 3); read templates directly, never from memory
 - `tool-usage` -- cross-cutting; applies at every phase
 - `conventional-commits` -- commit message format; used at Phase 4 (quality branch) and after Phase 9
+- `_shared/telemetry.md` -- structured event logging; read before invoking this skill and emit `skill.invoked` before any phase begins
+
+## On Invocation
+
+Read `_shared/telemetry.md`, then emit `skill.invoked` before loading any phase step file:
+
+```bash
+~/.agents/bin/emit-telemetry skill.invoked feature-workflow
+```
 
 ## Content Routing -- Where Information Lives
 

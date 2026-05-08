@@ -230,6 +230,29 @@ def ensure_file_symlink(link: Path, target: Path, *, dry_run: bool) -> str:
     return f"  + {link} → {target}"
 
 
+def ensure_telemetry_binary(*, dry_run: bool) -> None:
+    """
+    Install the emit-telemetry binary at ~/.agents/bin/emit-telemetry.
+
+    This location is target-independent: every skill calls it via the same
+    absolute path regardless of which agent loaded the skill. Pairs with the
+    log location at ~/.agents/events.log.
+    """
+    print()
+    print("Telemetry")
+    print("\u2500" * 40)
+
+    link = Path.home() / ".agents" / "bin" / "emit-telemetry"
+    target = REPO_ROOT / "hooks" / "emit-telemetry"
+
+    print(f"Binary:   {link}")
+    print()
+    print(ensure_file_symlink(link, target, dry_run=dry_run))
+    print()
+    if not dry_run:
+        print(f"\u2713 emit-telemetry installed at {link}")
+
+
 def write_hook_config(dest: Path, *, dry_run: bool) -> str:
     """
     Write enforce-tool-usage.json with an absolute path to the shell script.
@@ -732,6 +755,9 @@ def main() -> None:
         print(f"Target: {workspace}")
     if dry_run:
         print("Mode:   DRY RUN")
+
+    # Telemetry binary is target-independent -- install once for any target.
+    ensure_telemetry_binary(dry_run=dry_run)
 
     if target == "all":
         # Run global targets; include cursor only if --workspace was provided

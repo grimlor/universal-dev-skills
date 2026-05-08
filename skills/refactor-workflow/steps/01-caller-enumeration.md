@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started refactor-workflow 1 "Caller Enumeration"
+```
+
+---
+
 ## Enumeration Procedure
 
 Use `semantic_search` and `grep_search` to find every location in the codebase that references the target interface, class, or module being refactored. Cast wide: imports, instantiations, subclasses, type annotations, and test fixtures all count.
@@ -31,7 +39,7 @@ Do not begin Phase 2 until the decomposition is accepted, if one is needed.
 
 ## Prerequisite Check
 
-Review the caller list for signs that prerequisite cleanup is needed before the main refactor (Iron Law 5). Signals:
+Review the caller list for signs that prerequisite cleanup is needed before the main refactor (Iron Law 4). Signals:
 
 - The target boundary has mixed abstraction patterns (some callers use inheritance, others duck-typing, others concrete construction)
 - A caller at the boundary uses a pattern that would be inconsistent with the target interface (e.g., ABC inheritance where the target is Protocol)
@@ -49,3 +57,7 @@ Record the full caller table in the plan. Check off "Caller enumeration complete
 ## Proceed
 
 Load `steps/02-design.md` and begin Phase 2.
+
+```bash
+~/.agents/bin/emit-telemetry phase.completed refactor-workflow 1 "Caller Enumeration" success "All callers enumerated; volume assessed; plan updated."
+```

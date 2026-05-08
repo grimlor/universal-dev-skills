@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started refactor-workflow 5 "Implementation"
+```
+
+---
+
 ## Iron Law
 
 1. **The existing suite is the regression gate.** After each caller is adapted, both the new tests and the full pre-existing test suite must pass. New tests alone do not prove behavior is preserved. If the existing suite breaks, stop -- do not move to the next caller until the regression is diagnosed and resolved.
@@ -41,3 +49,8 @@ After each caller is adapted and verified: check it off in the plan. Append a se
 ## Proceed
 
 Load `steps/06-verification.md` and begin Phase 6 when all callers in scope are adapted.
+
+```bash
+~/.agents/bin/emit-telemetry compliance.check refactor-workflow 5 "Implementation" full_suite_green_per_caller pass "New tests and full pre-existing suite pass after all callers adapted."
+~/.agents/bin/emit-telemetry phase.completed refactor-workflow 5 "Implementation" success "All callers adapted; full suite passing after each."
+```

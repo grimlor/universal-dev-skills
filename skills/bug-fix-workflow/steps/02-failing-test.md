@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started bug-fix-workflow 2 "Failing Test"
+```
+
+---
+
 ## Iron Law
 
 1. **Run the test and confirm it fails before proceeding.** A test written and fixed in the same motion may never have caught the bug. The failing run must be observed -- not assumed.
@@ -46,3 +54,8 @@ Check off "Failing test written and confirmed" under Phase 2. Append a session l
 ## Proceed
 
 Load `steps/03-root-cause.md` and begin Phase 3.
+
+```bash
+~/.agents/bin/emit-telemetry compliance.check bug-fix-workflow 2 "Failing Test" test_fails_for_right_reason pass "Test confirmed failing for the right reason; failure message is diagnostic."
+~/.agents/bin/emit-telemetry phase.completed bug-fix-workflow 2 "Failing Test" success "Failing test written and confirmed; regression guard in place."
+```

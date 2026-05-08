@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started feature-workflow 3 "Architecture"
+```
+
+---
+
 ## Iron Laws
 
 1. **Architectural decisions require explicit user review before proceeding.** They are the hardest to reverse. Do not move to Phase 4 without acknowledgment.
@@ -44,3 +52,7 @@ If step 2 reveals that existing code needs restructuring before the feature can 
 ## Checkpoint
 
 Present the design note to the user. Wait for explicit acknowledgment before loading Phase 4.
+
+```bash
+~/.agents/bin/emit-telemetry phase.completed feature-workflow 3 "Architecture" success "Design note complete and reviewed by user."
+```

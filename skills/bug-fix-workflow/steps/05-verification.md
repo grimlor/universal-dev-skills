@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started bug-fix-workflow 5 "Verification"
+```
+
+---
+
 ## Steps
 
 1. **Full suite** -- run the complete test suite. Both the new regression test and the full pre-existing suite must pass. Partial passage is not done.
@@ -23,3 +31,10 @@ The fix is closed when:
 - Coverage holds on modified files
 - Plan is closed with session log entry
 - Commit is clean and conventionally formatted
+
+```bash
+~/.agents/bin/emit-telemetry compliance.check bug-fix-workflow 5 "Verification" full_suite_green pass "Regression test and full pre-existing suite both pass."
+~/.agents/bin/emit-telemetry compliance.check bug-fix-workflow 5 "Verification" coverage_holds pass "Coverage maintained on modified files."
+~/.agents/bin/emit-telemetry phase.completed bug-fix-workflow 5 "Verification" success "Fix verified; plan closed; commit complete."
+~/.agents/bin/emit-telemetry skill.completed bug-fix-workflow success "Bug fix workflow complete. Failing test now passes; no regressions."
+```

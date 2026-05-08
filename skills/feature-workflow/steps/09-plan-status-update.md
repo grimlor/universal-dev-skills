@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started feature-workflow 9 "Plan Status Update"
+```
+
+---
+
 ## Steps
 
 1. Update the project's plan document -- check off all completed items. If scope expanded during implementation, add the new items before checking them off so the record is accurate.
@@ -22,3 +30,8 @@ The feature is closed when:
 ## If Work Is Incomplete
 
 If the session ends before the feature is fully done, the session log entry is still required. Record exactly where work stopped, what the next action is, and any open decisions. An incomplete plan with a clear session log is recoverable; an incomplete plan without one is not.
+
+```bash
+~/.agents/bin/emit-telemetry phase.completed feature-workflow 9 "Plan Status Update" success "Plan closed; session log appended; commit complete."
+~/.agents/bin/emit-telemetry skill.completed feature-workflow success "Feature workflow complete. All phases passed."
+```

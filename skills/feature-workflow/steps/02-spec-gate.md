@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started feature-workflow 2 "Spec Gate"
+```
+
+---
+
 ## Iron Laws
 
 1. **Spec gaps stop this phase.** When a gap is discovered -- here or in any later phase -- stop at the point of discovery, add the missing behavior to the spec, present it to the user, and wait for review before continuing.
@@ -40,3 +48,8 @@ If any answer is no -- stop. Create or complete the spec first.
 ## Checkpoint
 
 Present the completed spec to the user and wait for explicit acknowledgment before loading Phase 3.
+
+```bash
+~/.agents/bin/emit-telemetry compliance.check feature-workflow 2 "Spec Gate" spec_exists_and_reviewed pass "Spec exists, complete, and human-reviewed."
+~/.agents/bin/emit-telemetry phase.completed feature-workflow 2 "Spec Gate" success "Spec confirmed complete and reviewed."
+```

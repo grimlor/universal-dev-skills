@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started feature-workflow 5 "Prerequisite Validation"
+```
+
+---
+
 ## When This Phase Applies
 
 If the spec depends on external API behavior -- SDK models, REST endpoints, third-party service capabilities -- validate those assumptions now. Any behavior that assumes a specific external API response, data shape, or capability is a premise that can be wrong.
@@ -24,3 +32,8 @@ If the feature has no external dependencies (pure domain logic, UI-only changes,
 ## Checkpoint
 
 Update the plan and load Phase 6.
+
+```bash
+~/.agents/bin/emit-telemetry compliance.check feature-workflow 5 "Prerequisite Validation" external_premises_hold pass "All external API assumptions validated against real dependencies."
+~/.agents/bin/emit-telemetry phase.completed feature-workflow 5 "Prerequisite Validation" success "Premises validated or phase skipped (no external dependencies)."
+```

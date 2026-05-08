@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started refactor-workflow 0 "Entry"
+```
+
+---
+
 ## Pre-flight
 
 1. Verify git repo is present and on the expected branch for this refactor.
@@ -33,3 +41,8 @@ Check off "Entry complete" under Phase 0 and append a session log entry.
 ## Proceed
 
 Load `steps/01-caller-enumeration.md` and begin Phase 1.
+
+```bash
+~/.agents/bin/emit-telemetry compliance.check refactor-workflow 0 "Entry" baseline_suite_passing pass "Existing test suite passing at baseline before refactor begins."
+~/.agents/bin/emit-telemetry phase.completed refactor-workflow 0 "Entry" success "Scope defined, baseline verified, plan initialized."
+```

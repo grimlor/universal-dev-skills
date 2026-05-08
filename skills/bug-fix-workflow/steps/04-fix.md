@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started bug-fix-workflow 4 "Fix"
+```
+
+---
+
 ## Path A -- Minimal Fix
 
 Root cause is a targeted defect. Apply the smallest change that makes the failing test pass without restructuring abstractions or caller relationships.
@@ -21,6 +29,11 @@ Root cause is a targeted defect. Apply the smallest change that makes the failin
 4. If any existing test breaks: stop. The fix introduced a regression. Diagnose before continuing.
 5. Load `steps/05-verification.md` and proceed to Phase 5.
 
+```bash
+~/.agents/bin/emit-telemetry compliance.check bug-fix-workflow 4 "Fix" failing_test_now_passes pass "Target test passes; no regressions in existing suite."
+~/.agents/bin/emit-telemetry phase.completed bug-fix-workflow 4 "Fix" success "Minimal fix applied; failing test passes; full suite green."
+```
+
 ---
 
 ## Path B -- Structural Fix
@@ -35,3 +48,8 @@ Root cause is a structural defect. A targeted patch would suppress the symptom w
 4. At refactor-workflow Phase 3 (Spec Gate), the failing test is the first input to the BDD audit. It should be correctly shaped from Phase 2 -- if the audit finds violations, remediate before the adaptation analysis.
 5. The refactor is complete when the failing test passes alongside the full suite. This is the verification that the bug is fixed. The branch becomes a PR candidate at that point.
 6. bug-fix-workflow Phase 5 is superseded by refactor-workflow Phase 6 -- no separate verification step is needed.
+
+```bash
+~/.agents/bin/emit-telemetry compliance.check bug-fix-workflow 4 "Fix" structural_path_initiated pass "Structural root cause confirmed; transitioning to refactor-workflow on same branch."
+~/.agents/bin/emit-telemetry phase.completed bug-fix-workflow 4 "Fix" success "Structural fix path initiated; refactor-workflow takes over from here."
+```

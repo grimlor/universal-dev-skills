@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started feature-workflow 1 "Feature Definition"
+```
+
+---
+
 ## Steps
 
 1. **Name the feature.** A short, specific noun phrase -- not a verb phrase, not a sentence. This becomes the plan document title and the branch name root.
@@ -14,3 +22,7 @@
 ## Checkpoint
 
 Present the feature definition to the user. This is the "are we talking about the same thing?" checkpoint. Wait for explicit acknowledgment before loading Phase 2.
+
+```bash
+~/.agents/bin/emit-telemetry phase.completed feature-workflow 1 "Feature Definition" success "Feature named, goal stated, scope established, plan initialized."
+```

@@ -4,13 +4,21 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started feature-workflow 8 "Coverage Verification"
+```
+
+---
+
 ## Steps
 
 1. Run tests with coverage for the project's source package (see the language-specific standards skill for the exact command).
 2. If 100% statement AND branch coverage -- report results, update the plan, and proceed to Phase 9.
-3. If below 100% -- this is a blocking failure. Do not summarize and move on. For each uncovered line or partial branch: 
-    a. Identify the disposition: **write the spec** (real requirement the spec missed) or **remove the code** (dead code or over-engineering). 
-    b. Implement the disposition immediately. 
+3. If below 100% -- this is a blocking failure. Do not summarize and move on. For each uncovered line or partial branch:
+    a. Identify the disposition: **write the spec** (real requirement the spec missed) or **remove the code** (dead code or over-engineering).
+    b. Implement the disposition immediately.
     c. Re-run coverage. Repeat until 100% is achieved.
 
 ## Valid Dispositions
@@ -35,3 +43,8 @@ Three categories routinely appear only at coverage time:
 ## Checkpoint
 
 Report final coverage results to the user. Load Phase 9.
+
+```bash
+~/.agents/bin/emit-telemetry compliance.check feature-workflow 8 "Coverage Verification" coverage_100 pass "100% statement and branch coverage confirmed."
+~/.agents/bin/emit-telemetry phase.completed feature-workflow 8 "Coverage Verification" success "100% coverage achieved; all uncovered lines dispositioned."
+```

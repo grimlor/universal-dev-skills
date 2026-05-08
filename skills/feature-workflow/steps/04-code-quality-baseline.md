@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started feature-workflow 4 "Code Quality Baseline"
+```
+
+---
+
 ## Scope
 
 This phase covers only **existing files** the spec (Phase 2) and design (Phase 3) indicate will be modified. New files created by the feature are exempt -- they will be written to standard from the start. Files discovered later during implementation are handled by the late-discovery clause in Phase 7.
@@ -19,3 +27,8 @@ This phase covers only **existing files** the spec (Phase 2) and design (Phase 3
 ## Checkpoint
 
 Update the plan and load Phase 5.
+
+```bash
+~/.agents/bin/emit-telemetry compliance.check feature-workflow 4 "Code Quality Baseline" existing_files_clean pass "All files in scope are lint, type, and audit clean."
+~/.agents/bin/emit-telemetry phase.completed feature-workflow 4 "Code Quality Baseline" success "Quality baseline established; feature or quality branch ready."
+```

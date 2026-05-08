@@ -38,10 +38,18 @@ Load the step file for the current phase. Do not load all steps at once.
 | 6 -- Verification | `steps/06-verification.md` | Full suite green; coverage confirmed; plan closed |
 
 ## Relationship to Other Skills
-
 - `feature-workflow` -- for new capability; not interchangeable with this skill
 - `bdd-testing` -- test quality standards; referenced from Phase 3 and Phase 4
 - `plan-updates` -- progress tracking; used at Phase 0 (initialization) and Phase 6 (closure), and at every phase boundary
 - `templates` -- canonical document structures; read templates directly, never from memory
 - `tool-usage` -- cross-cutting; applies at every phase
 - `code-quality-audit` -- if pre-existing files modified by the refactor have quality violations, follow the audit procedure before beginning implementation
+- `_shared/telemetry.md` -- structured event logging; read before invoking this skill and emit `skill.invoked` before any phase begins
+
+## On Invocation
+
+Read `_shared/telemetry.md`, then emit `skill.invoked` before loading any phase step file:
+
+```bash
+~/.agents/bin/emit-telemetry skill.invoked refactor-workflow
+```

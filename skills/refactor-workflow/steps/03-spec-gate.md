@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started refactor-workflow 3 "Spec Gate"
+```
+
+---
+
 ## Iron Laws
 
 1. **Audit before analysis.** Do not proceed to the adaptation analysis on tests that fail the BDD audit. Wrong-shaped tests adapted to a new interface are still wrong-shaped. Remediate first.
@@ -60,3 +68,8 @@ Check off "Spec gate complete" under Phase 3. Append a session log entry noting 
 ## Proceed
 
 Load `steps/04-test-gate.md` and begin Phase 4.
+
+```bash
+~/.agents/bin/emit-telemetry compliance.check refactor-workflow 3 "Spec Gate" bdd_audit_clean pass "All test classes passed BDD audit or were remediated before adaptation analysis."
+~/.agents/bin/emit-telemetry phase.completed refactor-workflow 3 "Spec Gate" success "BDD audit complete; adaptation plan produced and user-reviewed."
+```

@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started feature-workflow 7 "Implementation"
+```
+
+---
+
 ## Iron Laws
 
 1. **Do not deviate from the reviewed architecture.** If the design needs to change, return to Phase 3, update the design note, get user review, then resume here. Do not silently re-architect during implementation.
@@ -44,3 +52,8 @@ If implementation requires modifying existing files not identified in Phase 4 th
 ## Checkpoint
 
 When all tests pass, update the plan and load Phase 8.
+
+```bash
+~/.agents/bin/emit-telemetry compliance.check feature-workflow 7 "Implementation" all_tests_pass pass "All failing tests now pass; no suppression pragmas used."
+~/.agents/bin/emit-telemetry phase.completed feature-workflow 7 "Implementation" success "All tests passing; architecture followed; plan updated."
+```

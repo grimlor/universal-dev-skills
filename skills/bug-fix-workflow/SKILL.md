@@ -45,7 +45,6 @@ If the bug fix reveals missing intended behavior -- something the system never d
 Transitioning to another workflow is not a failure of process -- it is the correct response when root cause analysis reveals that the work is larger or different in kind than the initial report suggested.
 
 ## Relationship to Other Skills
-
 - `refactor-workflow` -- Phase 4 may transition into this skill when root cause is structural; the failing test from Phase 2 travels with the branch as the acceptance criterion
 - `feature-workflow` -- not interchangeable; if the bug fix reveals missing intended behavior, close the bug fix branch and open a feature-workflow
 - `bdd-testing` -- test quality standards; referenced from Phase 2
@@ -53,3 +52,12 @@ Transitioning to another workflow is not a failure of process -- it is the corre
 - `templates` -- plan template at Phase 1; read directly, never from memory
 - `tool-usage` -- cross-cutting; applies at every phase
 - `conventional-commits` -- commit message format; `fix:` type for minimal fixes; `refactor:` type if the branch transitions to structural fix
+- `_shared/telemetry.md` -- structured event logging; read before invoking this skill and emit `skill.invoked` before any phase begins
+
+## On Invocation
+
+Read `_shared/telemetry.md`, then emit `skill.invoked` before loading any phase step file:
+
+```bash
+~/.agents/bin/emit-telemetry skill.invoked bug-fix-workflow
+```

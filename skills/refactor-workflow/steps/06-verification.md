@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started refactor-workflow 6 "Verification"
+```
+
+---
+
 ## Full Suite
 
 Run the complete test suite -- both the new refactor tests and the full pre-existing suite. Both must pass. Partial passage (new tests green, existing suite broken) is not done.
@@ -47,3 +55,10 @@ The refactor is closed when:
 - Old interface is removed (if applicable)
 - Plan is closed with session log entry
 - Commit is clean and conventionally formatted
+
+```bash
+~/.agents/bin/emit-telemetry compliance.check refactor-workflow 6 "Verification" full_suite_green pass "New and pre-existing suite both pass."
+~/.agents/bin/emit-telemetry compliance.check refactor-workflow 6 "Verification" coverage_100 pass "100% statement and branch coverage on modified files."
+~/.agents/bin/emit-telemetry phase.completed refactor-workflow 6 "Verification" success "Full suite green; coverage 100%; old interface removed; plan closed."
+~/.agents/bin/emit-telemetry skill.completed refactor-workflow success "Refactor workflow complete. All phases passed."
+```

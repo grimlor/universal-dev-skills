@@ -4,6 +4,14 @@
 
 ---
 
+Emit `phase.started` before any work begins:
+
+```bash
+~/.agents/bin/emit-telemetry phase.started bug-fix-workflow 3 "Root Cause"
+```
+
+---
+
 ## Diagnosis Procedure
 
 Using the failing test as the entry point, trace the defect:
@@ -38,3 +46,8 @@ Check off "Root cause identified" under Phase 3. Record the root cause location 
 ## Proceed
 
 Load `steps/04-fix.md` and begin Phase 4.
+
+```bash
+~/.agents/bin/emit-telemetry compliance.check bug-fix-workflow 3 "Root Cause" root_cause_identified pass "Root cause located; targeted vs structural determination made and user-acknowledged."
+~/.agents/bin/emit-telemetry phase.completed bug-fix-workflow 3 "Root Cause" success "Root cause identified; fix path determined."
+```
