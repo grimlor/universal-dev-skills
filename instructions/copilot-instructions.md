@@ -1,3 +1,6 @@
+---
+applyTo: "**"
+---
 ## Telemetry -- always on, always first
 
 Before loading any other skill, read the `telemetry` skill. It defines the emission protocol for all skill activity and its Iron Laws govern the remainder of the session. Timestamps are recorded and **will be reviewed for compliance**.
