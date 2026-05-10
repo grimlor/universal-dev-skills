@@ -25,6 +25,11 @@ This skill acts as the **routing layer** for the skills system: identify the tas
 2. **Pre-existing is not an exemption.** You own the quality of every file you touch. If you are working in a file and encounter lint errors, type errors, missing specs, or deviations from skill guidance, they must be fixed -- subject to the branching rules in "Code Quality Ownership" below.
 3. **Silence is never acceptable.** If a fix is genuinely out of scope, report the issue explicitly and recommend a concrete next step. Do not leave violations unacknowledged.
 4. **Do not begin work until the Step 6 confirmation is posted.** The confirmation is the gate, not your confidence in the routing.
+5. **Emit `skill.invoked` for every skill loaded, without exception.** After reading each skill, run:
+   ```bash
+   ~/.agents/bin/emit-telemetry skill.invoked <skill-name>
+   ```
+   before executing any procedure step from that skill. If the binary is unavailable, stop and report before continuing. Do not proceed with an incomplete telemetry record.
 
 ---
 

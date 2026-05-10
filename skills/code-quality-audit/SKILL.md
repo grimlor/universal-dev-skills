@@ -175,11 +175,11 @@ The audit produces a findings document organized by category. Each finding must 
 
 ### Effort Classification
 
-| Effort | Meaning |
-| --- | --- |
-| **High** | Requires rethinking test setup patterns across many files. |
-| **Medium** | Targeted changes to specific files or classes. |
-| **Low** | Find-and-replace or single-function changes. |
+| Effort     | Meaning                                                    |
+| ---------- | ---------------------------------------------------------- |
+| **High**   | Requires rethinking test setup patterns across many files. |
+| **Medium** | Targeted changes to specific files or classes.             |
+| **Low**    | Find-and-replace or single-function changes.               |
 
 ---
 

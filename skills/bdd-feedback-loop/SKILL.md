@@ -6,6 +6,7 @@ description: "Feedback loop procedure for implementing BDD test modules. Use whe
 # BDD Feedback Loop -- Test Implementation Procedure
 
 ## When This Skill Applies
+
 Whenever implementing tests from a BDD spec document. Each iteration of this loop covers one test module: read the spec, implement, verify, audit, log, and hand off.
 
 ## Iron Laws

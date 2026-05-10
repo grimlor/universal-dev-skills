@@ -68,7 +68,7 @@ When a diagnostic survives the post-implementation pass and looks like a suppres
 
 #### 2. Preemptive Suppression
 
-**The antipattern:** Before a diagnostic has fired, the agent adds a suppression to code it *anticipates* might trigger a warning or fail coverage -- `# pragma: no cover` on a branch it expects to be hard to reach, `# type: ignore` on a call it thinks might have a type mismatch, a broad `except` around code it isn't sure will succeed. The suppression is added as defensive scaffolding, not in response to an observed diagnostic.
+**The antipattern:** Before a diagnostic has fired, the agent adds a suppression to code it _anticipates_ might trigger a warning or fail coverage -- `# pragma: no cover` on a branch it expects to be hard to reach, `# type: ignore` on a call it thinks might have a type mismatch, a broad `except` around code it isn't sure will succeed. The suppression is added as defensive scaffolding, not in response to an observed diagnostic.
 
 **Why it's wrong:** Preemptive suppression bypasses the approval workflow entirely -- there is no diagnostic to present, because it was silenced before it could appear. The agent has made a unilateral judgment that the suppression is warranted without the evidence that would justify it. If the concern was valid, the diagnostic would have fired and the approval workflow would have caught it. If it was not valid, the suppression hides real information. Either way, the agent has traded a visible diagnostic for invisible silence.
 

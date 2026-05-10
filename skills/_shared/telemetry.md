@@ -43,6 +43,7 @@ Re-reads of the same skill within a session (e.g., after context compaction) sho
 ```
 
 Example:
+
 ```bash
 ~/.agents/bin/emit-telemetry skill.invoked refactor-workflow
 ~/.agents/bin/emit-telemetry skill.invoked bdd-testing
@@ -60,6 +61,7 @@ Emitted at the top of each step file, before any work begins.
 ```
 
 Example:
+
 ```bash
 ~/.agents/bin/emit-telemetry phase.started feature-workflow 1 "Feature Definition"
 ```
@@ -79,6 +81,7 @@ Outcome values: `success`, `partial`, `blocked`
 `blocked` is used when a gate check fails and work cannot proceed.
 
 Example:
+
 ```bash
 ~/.agents/bin/emit-telemetry phase.completed feature-workflow 1 "Feature Definition" success "Feature named, goal stated, scope established, plan initialized."
 ```
@@ -96,6 +99,7 @@ Emitted when a specific rule or gate condition is evaluated. Use for Iron Law ch
 Outcome values: `pass`, `fail`
 
 Example:
+
 ```bash
 ~/.agents/bin/emit-telemetry compliance.check feature-workflow 2 "Spec Gate" spec_exists_and_reviewed pass "Spec exists, complete, and human-reviewed."
 ```
@@ -111,6 +115,7 @@ Emitted at the final phase of the skill, after all phases are done and the plan 
 ```
 
 Example:
+
 ```bash
 ~/.agents/bin/emit-telemetry skill.completed feature-workflow success "All phases passed."
 ```
@@ -120,7 +125,7 @@ Example:
 ## When to Emit
 
 | Event | When |
-|---|---|
+| --- | --- |
 | `skill.invoked` | Each time a skill is read and invoked, before executing any procedure step -- applies to every skill, not just workflow skills; re-reads within a session emit again |
 | `phase.started` | Top of every step file, first action before reading any plan or writing any content |
 | `phase.completed` | End of every step file, after the checkpoint, before loading the next step |

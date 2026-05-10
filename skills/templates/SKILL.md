@@ -12,8 +12,9 @@ description: "Document templates for various workflows, including feature and re
 3. **Templates define structure only.** Population rules live in the requesting skill (`feature-workflow` or `plan-updates`).
 
 ## Available Templates
+
 | Template | File | Created during | Target path |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | Plan document | `references/feature-plan.md` | Phase 1 -- Feature Definition | `.copilot/<feature name>-plan.md` |
 | Feature spec | `references/feature-spec.md` | Phase 2 -- Spec Gate (feature-workflow) | `.copilot/<feature name>-specs.md` |
 | Refactor adaptation plan | `references/refactor-adaptation-plan.md` | Phase 3 -- Spec Gate (refactor-workflow) | `.copilot/<refactor name>-adaptation-plan.md` |
@@ -23,7 +24,7 @@ description: "Document templates for various workflows, including feature and re
 ### Language-Specific References
 
 | Template | Language references |
-|---|---|
+| --- | --- |
 | Feature spec | `references/spec/python.md`, `references/spec/typescript.md`, `references/spec/java.md`, `references/spec/csharp.md` |
 
 ## On Invocation

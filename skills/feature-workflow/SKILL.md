@@ -7,7 +7,7 @@ description: "Spec-before-code feature development workflow. Use when the user r
 
 ## The Problem This Solves
 
-AI agents default to writing code immediately. This produces rework, scope creep, and implementations that solve *a* problem but not *the user's* problem. Software engineering asks "is the system understood, designed, verified, and documented?" -- not just "is the code written?" This workflow encodes that discipline: define it, spec it, design it, clean the workspace, test it, build it, verify it, record it.
+AI agents default to writing code immediately. This produces rework, scope creep, and implementations that solve _a_ problem but not _the user's_ problem. Software engineering asks "is the system understood, designed, verified, and documented?" -- not just "is the code written?" This workflow encodes that discipline: define it, spec it, design it, clean the workspace, test it, build it, verify it, record it.
 
 ## When This Skill Applies
 
@@ -34,7 +34,7 @@ If the request is ambiguous -- "fix this so it works better" could be a feature 
 Load the step file for the current phase. Do not load all steps at once.
 
 | Phase | Step file | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | 1 -- Feature Definition | `steps/01-feature-definition.md` | Name, goal, scope, plan initialized |
 | 2 -- Spec Gate | `steps/02-spec-gate.md` | Behavioral spec exists and is reviewed |
 | 3 -- Architecture | `steps/03-architecture.md` | Internal structure designed and reviewed; structural prerequisites identified |
@@ -80,7 +80,7 @@ Read `_shared/telemetry.md`, then emit `skill.invoked` before loading any phase 
 When migrating content from existing documents into the template system:
 
 | Source content | Destination |
-|---|---|
+| --- | --- |
 | Motivation / Why | Plan → Goal |
 | Approach / Solution | Design Note, or Plan → Context/Constraints |
 | Root Cause / Current State | Spec → Overview, or Plan → Context/Constraints |
@@ -89,4 +89,4 @@ When migrating content from existing documents into the template system:
 | Behavioral requirements | Spec → Behaviors (one per test class) |
 | API surface | Spec → Public API Surface |
 
-When in doubt: "Is this *what* to build (spec), *why/how* to build it (design note), or *project state* (plan)?" Content lives in exactly one place.
+When in doubt: "Is this _what_ to build (spec), _why/how_ to build it (design note), or _project state_ (plan)?" Content lives in exactly one place.

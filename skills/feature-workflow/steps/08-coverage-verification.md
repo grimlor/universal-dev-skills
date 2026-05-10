@@ -14,12 +14,16 @@ Emit `phase.started` before any work begins:
 
 ## Steps
 
-1. Run tests with coverage for the project's source package (see the language-specific standards skill for the exact command).
-2. If 100% statement AND branch coverage -- report results, update the plan, and proceed to Phase 9.
-3. If below 100% -- this is a blocking failure. Do not summarize and move on. For each uncovered line or partial branch:
-    a. Identify the disposition: **write the spec** (real requirement the spec missed) or **remove the code** (dead code or over-engineering).
-    b. Implement the disposition immediately.
-    c. Re-run coverage. Repeat until 100% is achieved.
+<ol>
+<li>Run tests with coverage for the project's source package (see the language-specific standards skill for the exact command).</li>
+<li>If 100% statement AND branch coverage -- report results, update the plan, and proceed to Phase 9.</li>
+<li>If below 100% -- this is a blocking failure. Do not summarize and move on. For each uncovered line or partial branch:</li>
+    <ol type="a">
+        <li>Identify the disposition: **write the spec** (real requirement the spec missed) or **remove the code** (dead code or over-engineering).</li>
+        <li>Implement the disposition immediately.</li>
+        <li>Re-run coverage. Repeat until 100% is achieved.</li>
+    </ol>
+</ol>
 
 ## Valid Dispositions
 

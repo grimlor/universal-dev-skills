@@ -27,7 +27,7 @@ Structured process for diagnosing and correcting defective behavior. The goal is
 Load the step file for the current phase. Do not load all steps at once.
 
 | Phase | Step file | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | 1 -- Reproduction Steps | `steps/01-reproduction-steps.md` | Structured intake; Given/When/Then scenario |
 | 2 -- Failing Test | `steps/02-failing-test.md` | BDD test encoding the bug; confirmed failing |
 | 3 -- Root Cause | `steps/03-root-cause.md` | Why; minimal vs. structural determination |
@@ -45,6 +45,7 @@ If the bug fix reveals missing intended behavior -- something the system never d
 Transitioning to another workflow is not a failure of process -- it is the correct response when root cause analysis reveals that the work is larger or different in kind than the initial report suggested.
 
 ## Relationship to Other Skills
+
 - `refactor-workflow` -- Phase 4 may transition into this skill when root cause is structural; the failing test from Phase 2 travels with the branch as the acceptance criterion
 - `feature-workflow` -- not interchangeable; if the bug fix reveals missing intended behavior, close the bug fix branch and open a feature-workflow
 - `bdd-testing` -- test quality standards; referenced from Phase 2
