@@ -1,12 +1,6 @@
 ## Telemetry -- always on, always first
 
-Before loading any skill, read `_shared/telemetry.md`. Then, immediately after reading each skill and before executing any procedure step from it, run:
-
-```bash
-~/.agents/bin/emit-telemetry skill.invoked <skill-name>
-```
-
-This applies to every skill without exception -- workflow skills, cross-cutting skills, language standards skills, and skill-compliance itself. Emission must occur per skill, immediately after the read, not batched at session end. Timestamps are recorded in the log and **will be reviewed for compliance**. Batching emissions is a compliance violation regardless of whether the correct events eventually appear.
+Before loading any other skill, read the `telemetry` skill. It defines the emission protocol for all skill activity and its Iron Laws govern the remainder of the session. Timestamps are recorded and **will be reviewed for compliance**.
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: skill-compliance
-description: "ALWAYS READ FIRST. Before performing any task, identify the task type, the files being modified, and the relevant languages or subprojects, then load the right skills and references and confirm them to the user. Use at the start of every task, before any other skill."
+description: "Read immediately after the telemetry skill. Before performing any task, identify the task type, the files being modified, and the relevant languages or subprojects, then load the right skills and references and confirm them to the user. Use at the start of every task, after telemetry."
 ---
 
 # Skill Compliance -- Polyglot Routing
@@ -21,7 +21,7 @@ This skill acts as the **routing layer** for the skills system: identify the tas
 
 ## Iron Laws
 
-1. **Read and follow `_shared/telemetry.md` -- no exceptions.** Every skill loaded must emit `skill.invoked` immediately after it is read and before any procedure step is executed. Every skill completed must emit `skill.completed`. Timestamps are recorded and **will be reviewed for compliance**. Batching emissions at session end is a violation regardless of whether the correct events eventually appear.
+1. **The `telemetry` skill must be read and active before this skill is followed.** If you have not yet read `telemetry`, stop and read it now before proceeding. The `telemetry` skill's Iron Laws govern all emissions for this skill and every skill loaded afterward.
 2. **Follow skills from the start of every task -- not after being reminded, and not selectively.** When you catch yourself reasoning that a rule "doesn't apply here" or that an issue "isn't your change," treat that as a signal to re-read the relevant skill and comply.
 3. **Pre-existing is not an exemption.** You own the quality of every file you touch. If you are working in a file and encounter lint errors, type errors, missing specs, or deviations from skill guidance, they must be fixed -- subject to the branching rules in "Code Quality Ownership" below.
 4. **Silence is never acceptable.** If a fix is genuinely out of scope, report the issue explicitly and recommend a concrete next step. Do not leave violations unacknowledged.
@@ -98,14 +98,13 @@ For monorepos, prefer the **nearest** manifest or build file to the edited file.
 
 ### Step 4 -- Select the Relevant Skills
 
-Read each identified skill's `SKILL.md` in full. Do not skim. Do not summarize from memory. Use the file read tool to load the complete content. Emit `skill.invoked` for each skill immediately after reading it per Iron Law 1.
+Read each identified skill's `SKILL.md` in full. Do not skim. Do not summarize from memory. Use the file read tool to load the complete content. Emit `skill.invoked` for each skill immediately after reading it per the `telemetry` skill's Iron Laws.
 
-At minimum, the following rules apply:
+At minimum, the following skills apply to every task:
 
 - `tool-usage` -- applies whenever you use any tool or terminal command
 - `plan-updates` -- applies whenever progress or status needs to persist across sessions
 - `code-quality-antipatterns` -- applies whenever writing, editing, or reviewing code
-- `_shared/telemetry.md` -- read as part of Step 4; defines the full event schema for all telemetry emissions
 
 Then add task-specific skills:
 
@@ -148,7 +147,7 @@ Before beginning any work, post a message to the user that includes:
 
 Example:
 
-> **Task:** Update the TypeScript lint config for the web package. **Skills loaded:** tool-usage, plan-updates, typescript-code-standards **Routing basis:** `packages/web/src/...` and nearest `packages/web/package.json` and `packages/web/tsconfig.json` **Skills excluded:** python-code-standards (Python not in scope), bdd-testing (no tests being written)
+> **Task:** Update the TypeScript lint config for the web package. **Skills loaded:** telemetry, skill-compliance, tool-usage, plan-updates, typescript-code-standards **Routing basis:** `packages/web/src/...` and nearest `packages/web/package.json` and `packages/web/tsconfig.json` **Skills excluded:** python-code-standards (Python not in scope), bdd-testing (no tests being written)
 
 Do not begin work until this confirmation is posted. Iron Law 5.
 
