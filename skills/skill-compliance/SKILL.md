@@ -21,15 +21,11 @@ This skill acts as the **routing layer** for the skills system: identify the tas
 
 ## Iron Laws
 
-1. **Follow skills from the start of every task -- not after being reminded, and not selectively.** When you catch yourself reasoning that a rule "doesn't apply here" or that an issue "isn't your change," treat that as a signal to re-read the relevant skill and comply.
-2. **Pre-existing is not an exemption.** You own the quality of every file you touch. If you are working in a file and encounter lint errors, type errors, missing specs, or deviations from skill guidance, they must be fixed -- subject to the branching rules in "Code Quality Ownership" below.
-3. **Silence is never acceptable.** If a fix is genuinely out of scope, report the issue explicitly and recommend a concrete next step. Do not leave violations unacknowledged.
-4. **Do not begin work until the Step 6 confirmation is posted.** The confirmation is the gate, not your confidence in the routing.
-5. **Emit `skill.invoked` for every skill loaded, without exception.** After reading each skill, run:
-   ```bash
-   ~/.agents/bin/emit-telemetry skill.invoked <skill-name>
-   ```
-   before executing any procedure step from that skill. If the binary is unavailable, stop and report before continuing. Do not proceed with an incomplete telemetry record.
+1. **Read and follow `_shared/telemetry.md` -- no exceptions.** Every skill loaded must emit `skill.invoked` immediately after it is read and before any procedure step is executed. Every skill completed must emit `skill.completed`. Timestamps are recorded and **will be reviewed for compliance**. Batching emissions at session end is a violation regardless of whether the correct events eventually appear.
+2. **Follow skills from the start of every task -- not after being reminded, and not selectively.** When you catch yourself reasoning that a rule "doesn't apply here" or that an issue "isn't your change," treat that as a signal to re-read the relevant skill and comply.
+3. **Pre-existing is not an exemption.** You own the quality of every file you touch. If you are working in a file and encounter lint errors, type errors, missing specs, or deviations from skill guidance, they must be fixed -- subject to the branching rules in "Code Quality Ownership" below.
+4. **Silence is never acceptable.** If a fix is genuinely out of scope, report the issue explicitly and recommend a concrete next step. Do not leave violations unacknowledged.
+5. **Do not begin work until the Step 6 confirmation is posted.** The confirmation is the gate, not your confidence in the routing.
 
 ---
 
@@ -102,14 +98,14 @@ For monorepos, prefer the **nearest** manifest or build file to the edited file.
 
 ### Step 4 -- Select the Relevant Skills
 
-Read each identified skill's `SKILL.md` in full. Do not skim. Do not summarize from memory. Use the file read tool to load the complete content.
+Read each identified skill's `SKILL.md` in full. Do not skim. Do not summarize from memory. Use the file read tool to load the complete content. Emit `skill.invoked` for each skill immediately after reading it per Iron Law 1.
 
 At minimum, the following rules apply:
 
 - `tool-usage` -- applies whenever you use any tool or terminal command
 - `plan-updates` -- applies whenever progress or status needs to persist across sessions
 - `code-quality-antipatterns` -- applies whenever writing, editing, or reviewing code
-- `_shared/telemetry.md` -- read once as part of Step 4; emit `skill.invoked` for every skill loaded, not just workflow skills, before executing any skill procedure
+- `_shared/telemetry.md` -- read as part of Step 4; defines the full event schema for all telemetry emissions
 
 Then add task-specific skills:
 
@@ -154,7 +150,7 @@ Example:
 
 > **Task:** Update the TypeScript lint config for the web package. **Skills loaded:** tool-usage, plan-updates, typescript-code-standards **Routing basis:** `packages/web/src/...` and nearest `packages/web/package.json` and `packages/web/tsconfig.json` **Skills excluded:** python-code-standards (Python not in scope), bdd-testing (no tests being written)
 
-Do not begin work until this confirmation is posted. Iron Law 4.
+Do not begin work until this confirmation is posted. Iron Law 5.
 
 ### Step 7 -- Locate or Create the Tracking Document
 

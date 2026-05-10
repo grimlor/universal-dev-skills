@@ -1,3 +1,15 @@
+## Telemetry -- always on, always first
+
+Before loading any skill, read `_shared/telemetry.md`. Then, immediately after reading each skill and before executing any procedure step from it, run:
+
+```bash
+~/.agents/bin/emit-telemetry skill.invoked <skill-name>
+```
+
+This applies to every skill without exception -- workflow skills, cross-cutting skills, language standards skills, and skill-compliance itself. Emission must occur per skill, immediately after the read, not batched at session end. Timestamps are recorded in the log and **will be reviewed for compliance**. Batching emissions is a compliance violation regardless of whether the correct events eventually appear.
+
+---
+
 Before starting any task, read and follow the skill-compliance skill.
 
 If session memory files exist (listed in the `<sessionMemory>` block), read them before starting work. If session memory is EMPTY, that means skills were never written or were lost to compaction -- read skill-compliance and follow its full procedure (Steps 1–8) including writing the session memory file. An empty session memory is a signal to reload, not a signal that nothing is needed.
