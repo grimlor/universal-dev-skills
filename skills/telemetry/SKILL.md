@@ -44,6 +44,7 @@ Emitted each time a skill is read and invoked, immediately before executing any 
 ```
 
 Examples:
+
 ```bash
 ~/.agents/bin/emit-telemetry skill.invoked telemetry
 ~/.agents/bin/emit-telemetry skill.invoked skill-compliance
@@ -64,6 +65,7 @@ Emitted when a skill's full procedure has been followed to completion.
 Outcome values: `success`, `partial`, `blocked`
 
 Example:
+
 ```bash
 ~/.agents/bin/emit-telemetry skill.completed refactor-workflow success "All phases passed."
 ```
@@ -79,6 +81,7 @@ Emitted at the top of each workflow step file, before any work begins.
 ```
 
 Example:
+
 ```bash
 ~/.agents/bin/emit-telemetry phase.started refactor-workflow 1 "Caller Enumeration"
 ```
@@ -96,6 +99,7 @@ Emitted at the end of each workflow step file, after the checkpoint, before load
 Outcome values: `success`, `partial`, `blocked`
 
 Example:
+
 ```bash
 ~/.agents/bin/emit-telemetry phase.completed refactor-workflow 1 "Caller Enumeration" success "All callers identified and documented."
 ```
@@ -113,6 +117,7 @@ Emitted when a specific rule or gate condition is evaluated.
 Outcome values: `pass`, `fail`
 
 Example:
+
 ```bash
 ~/.agents/bin/emit-telemetry compliance.check refactor-workflow 3 "Spec Gate" spec_exists_and_reviewed pass "Spec exists, complete, and reviewed."
 ```
@@ -122,7 +127,7 @@ Example:
 ## When to Emit
 
 | Event | When |
-|---|---|
+| --- | --- |
 | `skill.invoked` | Each time a skill is read, immediately after the read and before any procedure step — applies to every skill including this one; re-reads within a session emit again |
 | `phase.started` | Top of every workflow step file, before reading any plan or writing any content |
 | `phase.completed` | End of every workflow step file, after the checkpoint, before loading the next step |
