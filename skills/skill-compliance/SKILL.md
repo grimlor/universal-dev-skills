@@ -104,6 +104,7 @@ At minimum, the following rules apply:
 - `tool-usage` -- applies whenever you use any tool or terminal command
 - `plan-updates` -- applies whenever progress or status needs to persist across sessions
 - `code-quality-antipatterns` -- applies whenever writing, editing, or reviewing code
+- `_shared/telemetry.md` -- read once as part of Step 4; emit `skill.invoked` for every skill loaded, not just workflow skills, before executing any skill procedure
 
 Then add task-specific skills:
 

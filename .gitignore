@@ -23,3 +23,7 @@ __pycache__/
 # Copilot work plans
 .copilot/*
 !.copilot/README.md
+
+# Copilot telemetry build info
+build/emit-telemetry
+emit-telemetry.spec

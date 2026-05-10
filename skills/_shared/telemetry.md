@@ -34,7 +34,9 @@ Install the binary by running `python3 scripts/setup.py --target <your-target>` 
 
 ### `skill.invoked`
 
-Emitted at the start of skill execution, before any phase begins.
+Emitted each time a skill is read and invoked, immediately before executing any procedure step. Applies to every skill -- workflow skills, cross-cutting skills, and language standards skills alike. Workflow skills also emit phase-level markers (`phase.started`, `phase.completed`) from their step files; `skill.invoked` is the entry signal for the skill itself, not a substitute for those markers.
+
+Re-reads of the same skill within a session (e.g., after context compaction) should emit again -- repeated emissions are valid data, not noise.
 
 ```bash
 ~/.agents/bin/emit-telemetry skill.invoked <skill>
@@ -42,7 +44,9 @@ Emitted at the start of skill execution, before any phase begins.
 
 Example:
 ```bash
-~/.agents/bin/emit-telemetry skill.invoked feature-workflow
+~/.agents/bin/emit-telemetry skill.invoked refactor-workflow
+~/.agents/bin/emit-telemetry skill.invoked bdd-testing
+~/.agents/bin/emit-telemetry skill.invoked python-code-standards
 ```
 
 ---
@@ -117,7 +121,7 @@ Example:
 
 | Event | When |
 |---|---|
-| `skill.invoked` | SKILL.md On Invocation section, before loading any phase step file |
+| `skill.invoked` | Each time a skill is read and invoked, before executing any procedure step -- applies to every skill, not just workflow skills; re-reads within a session emit again |
 | `phase.started` | Top of every step file, first action before reading any plan or writing any content |
 | `phase.completed` | End of every step file, after the checkpoint, before loading the next step |
 | `compliance.check` | Any step file that explicitly evaluates a rule: Iron Law checks, gate conditions, coverage results, audit outcomes |
