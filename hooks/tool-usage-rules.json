@@ -156,6 +156,31 @@
       "match": "leading_only",
       "allowed_subcommands": ["run"],
       "guidance": "Only 'gh run' commands are permitted (e.g. gh run view, gh run list). For PR and issue operations use the GitHub MCP tools. See the tool-usage skill."
+    },
+    {
+      "name": "uv_runner",
+      "commands": ["uv"],
+      "match": "leading_only",
+      "allowed_subcommands": [
+        "pip",
+        "sync",
+        "lock",
+        "add",
+        "remove",
+        "init",
+        "venv",
+        "tool",
+        "self",
+        "cache",
+        "export",
+        "tree",
+        "python",
+        "--version",
+        "--help",
+        "-V",
+        "-h"
+      ],
+      "guidance": "Do not use 'uv run' to execute scripts or interpreters. Use uv only for package/environment management (pip, sync, lock, add, venv, etc.). For running code, show the script to the user. See the tool-usage skill."
     }
   ],
 

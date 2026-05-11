@@ -60,6 +60,7 @@ The git operations in the routing table above (status, commit, branch, push, bla
 ## When Terminal Is Appropriate
 
 - **Package installation**: `pip install`, `npm install`, `dotnet restore`, etc.
+- **Taskipy tasks**: Run `task <name>` directly — do NOT prefix with `uv run`. Taskipy is installed in the environment and available as a standalone command.
 - **Build/compilation**: complex builds requiring environment setup
 - **Background processes**: servers, long-running tasks (`isBackground=true`)
 - **Environment setup**: virtual environments, cloud CLI auth
