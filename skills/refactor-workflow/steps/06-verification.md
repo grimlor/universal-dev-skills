@@ -12,21 +12,29 @@ Emit `phase.started` before any work begins:
 
 ---
 
-## Full Suite
+## Full Check
 
-Run the complete test suite -- both the new refactor tests and the full pre-existing suite. Both must pass. Partial passage (new tests green, existing suite broken) is not done.
+Run the full pre-commit gate. The canonical command is:
 
-If the existing suite is broken: return to Phase 5 and diagnose before continuing here.
+```bash
+uv run task check
+```
+
+This runs `format`, `lint`, `type` (full project), and `test` in sequence. All must pass. If the project uses `task cov` in place of `task test`, substitute accordingly — check `pyproject.toml` for the project's task definitions.
+
+**Do not substitute individual file-scoped commands for `task check`.** File-scoped type checking passes when full project analysis does not, because type errors can only manifest when pyright resolves the complete import graph. `task check` is the only valid pre-commit gate.
+
+If any step fails: fix the issue and re-run `task check` in full before proceeding. Do not commit with a partial pass.
 
 ## Coverage
 
-Run coverage on the production files modified by the refactor. Apply the coverage procedure from the `bdd-testing` skill:
+If the project uses `task cov` as the test step (i.e., `task check` was run with coverage), confirm 100% statement and branch coverage on modified production files. Apply the coverage procedure from the `bdd-testing` skill:
 
-- 100% statement and branch coverage is the only passing score
+- 100% is the only passing score
 - Every uncovered line is an unspecified behavior -- write the spec or remove the code
 - "Pre-existing" is not a disposition
 
-If coverage reveals uncovered lines in the new interface code: return to Phase 3 (Spec Gate), add the missing scenario, then Phase 4 (Test Gate) to add the test, then return here.
+If coverage reveals uncovered lines: return to Phase 3 (Spec Gate), add the missing scenario, then Phase 4 (Test Gate) to add the test, then return here.
 
 ## Old Interface Cleanup
 
@@ -46,19 +54,21 @@ If the refactor replaces an old interface rather than extending alongside it, co
 
 Follow the `conventional-commits` skill for commit message format. The commit for a refactor typically uses `refactor:` as the type. If a prerequisite cleanup task was committed separately earlier, this commit covers only the main refactor.
 
+Show the staged diff and proposed commit message to HITL and wait for explicit approval before executing the commit. Do not commit autonomously.
+
 ## Done
 
 The refactor is closed when:
 
-- Full suite passes (new + pre-existing)
-- Coverage is 100% on modified files
+- `task check` passes in full (format, lint, full-project type check, tests)
+- Coverage is 100% on modified files (if using `task cov`)
 - Old interface is removed (if applicable)
 - Plan is closed with session log entry
-- Commit is clean and conventionally formatted
+- Commit approved by HITL and executed
 
 ```bash
-~/.agents/bin/emit-telemetry compliance.check refactor-workflow 6 "Verification" full_suite_green pass "New and pre-existing suite both pass."
+~/.agents/bin/emit-telemetry compliance.check refactor-workflow 6 "Verification" task_check_pass pass "task check: format, lint, type, test all passed."
 ~/.agents/bin/emit-telemetry compliance.check refactor-workflow 6 "Verification" coverage_100 pass "100% statement and branch coverage on modified files."
-~/.agents/bin/emit-telemetry phase.completed refactor-workflow 6 "Verification" success "Full suite green; coverage 100%; old interface removed; plan closed."
+~/.agents/bin/emit-telemetry phase.completed refactor-workflow 6 "Verification" success "task check clean; coverage confirmed; old interface removed; plan closed; commit approved."
 ~/.agents/bin/emit-telemetry skill.completed refactor-workflow success "Refactor workflow complete. All phases passed."
 ```
