@@ -149,10 +149,18 @@
       ],
       "match": "leading_only",
       "guidance": "Do not run scripts in the terminal. Show the script to the user and ask them to approve running it. See the tool-usage skill."
+    },
+    {
+      "name": "gh_cli",
+      "commands": ["gh"],
+      "match": "leading_only",
+      "allowed_subcommands": ["run"],
+      "guidance": "Only 'gh run' commands are permitted (e.g. gh run view, gh run list). For PR and issue operations use the GitHub MCP tools. See the tool-usage skill."
     }
   ],
 
   "allowed": [
+    "gh",
     "pip",
     "pip3",
     "uv",

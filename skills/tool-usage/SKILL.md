@@ -51,6 +51,7 @@ For platform-dependent tasks (GitHub vs ADO vs GitLab vs ...), do not hardcode a
 | Pull / merge requests | `pull_request\|merge_request` | Git provider web UI |
 | Work items / issues | `issue\|work_item` | Project tracker web UI |
 | CI / pipeline status | `pipeline\|build\|check` | CI provider web UI |
+| CI run logs / job details | `gh run view` in terminal (with file redirect) | -- |
 
 Example: in a GitHub workspace with GitKraken installed, searching `review` finds `gitlens_start_review`. In an ADO workspace with `ado-workflows-mcp`, searching `pull_request` finds ADO PR tools. With neither installed, fall back to the web UI.
 
@@ -64,6 +65,7 @@ The git operations in the routing table above (status, commit, branch, push, bla
 - **Environment setup**: virtual environments, cloud CLI auth
 - **Type-check + lint sweep**: language-native analyzers after edits (Iron Law 4)
 - **Commands with no tool equivalent**
+- **GitHub Actions logs**: `gh run view <id> --json jobs` and `gh run view <id> --log-failed` to retrieve CI failure details. Use file redirects (e.g. `> path/to/output.json`) to capture full output that would exceed terminal display limits. No MCP tool currently provides equivalent functionality.
 
 For language-specific terminal commands (Bun coverage workflow, Ruff severity, etc.), see the relevant reference file.
 
