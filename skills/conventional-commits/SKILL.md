@@ -71,6 +71,15 @@ The PR title becomes the squash commit message and must follow the same format.
 
 For worked examples, read `references/examples.md`.
 
+## Pre-Commit Quality Gate
+
+Before every commit, the agent **must** run the project's quality gate and verify it passes. Do not commit with a failing gate.
+
+1. **Lint/format/type:** Run `pre-commit run` or `task check` (whichever the project uses). All checks must pass.
+2. **Coverage:** Run `task cov` and verify 100% line + branch coverage on new/modified code. See the `bdd-testing` skill for coverage requirements and remediation procedure.
+
+If either step fails, fix the issues and re-run before attempting the commit. Do not skip coverage because lint passed.
+
 ## Pre-Commit Hooks
 
 Pre-commit hooks (or equivalent staged-file checks) may run before a commit is accepted. Commits can fail at the hook stage until staged files satisfy the configured quality gates.
@@ -105,7 +114,7 @@ If the commit still fails after re-staging the auto-formatted output, the remain
 Activation depends on the project's toolchain. Python projects using the canonical setup use:
 
 ```bash
-uv run pre-commit install
+pre-commit install
 ```
 
 This only needs to be run once per clone. See the language-specific standards skill for your active stack (e.g., `python-code-standards`).

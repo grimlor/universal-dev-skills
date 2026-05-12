@@ -110,7 +110,7 @@ cov    = "uv run pytest tests/ --cov=<package_name> --cov-report=term-missing"
 check  = "task format && task lint && task type && task test"
 ```
 
-The `check` task runs the full quality gate: format → lint → type → test. Run `uv run task check` before committing when not using pre-commit hooks for all four checks (pre-commit hooks cover format/lint/type but not tests).
+The `check` task runs the full quality gate: format → lint → type → test. Run `task check` before committing when not using pre-commit hooks for all four checks (pre-commit hooks cover format/lint/type but not tests).
 
 ### Ruff
 
@@ -225,7 +225,7 @@ Update `rev` to the latest ruff release when setting up a new project. Check [gi
 Activate pre-commit in the virtual environment after `.pre-commit-config.yaml` is in place:
 
 ```bash
-uv run pre-commit install
+pre-commit install
 ```
 
 ---
@@ -308,14 +308,12 @@ Advances the current_step pointer …
 
 1. **Update `pyproject.toml`** -- add/replace `[tool.ruff]`, `[tool.ruff.lint]`, `[tool.ruff.lint.isort]`, `[tool.ruff.lint.per-file-ignores]`, `[tool.ruff.format]`, `[tool.pyright]`, and taskipy tasks per the canonical config above.
 
-2. **Run format:** `uv run task format` (or `uv run ruff format src/ tests/`)
+2. **Run format:** `task format` (or `ruff format src/ tests/`)
 
-3. **Run lint with auto-fix:** `uv run task lint` (or `uv run ruff check --fix src/ tests/`)
+3. **Run lint with auto-fix:** `task lint` (or `ruff check --fix src/ tests/`)
 
 4. **Fix remaining issues manually** -- ruff reports unfixable violations with file + line. Common unfixable rules: `D401` (imperative mood), `D107`/`D105`/`D102` (missing docstrings).
 
-5. **Verify clean:** `uv run ruff check src/ tests/` should print `All checks passed!`
+5. **Run type check:** `task type` -- fix any Pyright errors introduced.
 
-6. **Run type check:** `uv run task type` -- fix any Pyright errors introduced.
-
-7. **Commit:** `chore(lint): add pydocstyle rules and fix docstring issues`
+6. **Commit:** `chore(lint): add pydocstyle rules and fix docstring issues`

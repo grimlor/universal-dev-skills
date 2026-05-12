@@ -17,7 +17,7 @@ Emit `phase.started` before any work begins:
 Run the full pre-commit gate. The canonical command is:
 
 ```bash
-uv run task check
+task check
 ```
 
 This runs `format`, `lint`, `type` (full project), and `test` in sequence. All must pass. If the project uses `task cov` in place of `task test`, substitute accordingly — check `pyproject.toml` for the project's task definitions.
