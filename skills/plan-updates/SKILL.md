@@ -1,6 +1,6 @@
 ---
 name: plan-updates
-description: "Progress tracking in project artifacts -- plan, task, and BDD spec documents. Use after completing each phase of the feature workflow, at checkpoints during refactoring or audit passes, when adding or updating behavioral specs, or when the user asks to update project status."
+description: "Progress tracking in project artifacts -- plan, task, and BDD spec documents. Use after completing each phase of any workflow (feature, refactor, bug-fix), at checkpoints during audit passes, when adding or updating behavioral specs, or when the user asks to update project status."
 ---
 
 # Plan Updates -- Tracking Progress in Project Artifacts
@@ -8,14 +8,14 @@ description: "Progress tracking in project artifacts -- plan, task, and BDD spec
 ## Iron Laws
 
 1. **Locate before writing.** Use the decision table below to find or create the right tracking document; never improvise a new format.
-2. **Check off only when complete.** Implementation done AND tests pass against the real implementation -- not against fakes or mocks of system-internal code. No speculative checkoffs.
+2. **Check off only when complete.** It is not complete until the HITL approves the phase. Implementation done AND tests pass against the real implementation -- not against fakes or mocks of system-internal code. No speculative checkoffs.
 3. **Append-only Session Log.** Never edit or delete previous entries.
-4. **Update at every checkpoint** -- after each completed phase of `feature-workflow`, and at the end of each test class for refactoring/audit passes (not just at the end of each file).
+4. **Update at every checkpoint** -- after each completed phase of `feature-workflow`, `refactor-workflow`, or `bug-fix-workflow`, and at the end of each test class for audit passes (not just at the end of each file).
 5. **Don't restructure plans without being asked.** Section ordering and narrative text are off-limits unless the user requests changes.
 
 ## When This Skill Applies
 
-After completing each phase of `feature-workflow`, at checkpoints during refactoring/audit/remediation passes, or whenever progress status needs updating.
+After completing each phase of `feature-workflow`, `refactor-workflow`, or `bug-fix-workflow`, at checkpoints during audit/remediation passes, or whenever progress status needs updating.
 
 ## Locating the Tracking Document
 
@@ -25,7 +25,9 @@ All tracking artifacts live in `.copilot/` (git-ignored). The user moves artifac
 | --- | --- | --- |
 | `.copilot/plan.md` already exists | Use it | Markdown with phase-grouped checkboxes |
 | Feature / non-trivial change, no plan yet | Create `.copilot/plan.md` | Read template from `templates` skill (`references/plan.md`) |
-| Refactoring / audit / remediation pass | Create or update `.copilot/task.md` | Update at every class checkpoint |
+| Bug fix | Create `.copilot/plan.md` | Simpler plan: reproduction → failing test → fix → verification |
+| Refactoring pass | Create `.copilot/plan.md` | Multi-phase plan: entry → design → spec/test gate → implementation → verification |
+| Audit / remediation pass | Create or update `.copilot/task.md` | Update at every class checkpoint |
 
 If `.copilot/` does not exist, create it and add `.copilot/` to `.gitignore` before writing files there. Never write plan, task, or spec artifacts to `docs/`, the project root, `specs/`, or `tests/` -- if the user wants to promote an artifact, they will move it themselves.
 
@@ -66,7 +68,7 @@ Template: `templates` skill, `references/task.md`.
 
 Template: `templates` skill, `references/spec.md` (plus the matching language reference under `references/spec/`).
 
-- Initial spec classes are created during Phase 2 (Spec Gate) of `feature-workflow`.
+- Initial spec classes are created during the Spec Gate phase of `feature-workflow` or `refactor-workflow`, or during the Failing Test phase of `bug-fix-workflow`.
 - If implementation reveals requirements not in the spec, add them here -- do not let the test file drift ahead of the spec.
 - Keep in sync with actual test files: if a test class exists in code, its spec must exist here.
 - If the project splits specs by domain, use additional files under `.copilot/` (e.g., `.copilot/specs-parser.md`) following the same template.
